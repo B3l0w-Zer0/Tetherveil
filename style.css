@@ -1,0 +1,66 @@
+/*     <<<   !!!   v General Menu v   !!!   >>>     */
+
+/*General Menu Wrapper and Casing*/
+.gen-menu-wrapper {
+    width: 15%;
+    height: 90%;
+    right: 0;
+    bottom: 5%;
+    background: red;
+    display: none;
+    position: fixed;
+    z-index: 2000;
+
+}
+
+
+
+/*grid that contains all the category buttons */
+.gen-menu-grid {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 15px;
+    position: relative;
+    z-index: 2500;
+}
+
+/*single button for categories in the general menu*/
+.gen-menu-categ-btn {
+    width: 90%;
+    height: 100px;
+    background: blue;
+    display: flex;
+    position: relative;
+    z-index: 3000;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+}
+/*Hover effekt for category buttons in general menu*/
+.gen-menu-categ-btn:hover {
+    background: darkBlue;
+}
+
+/*     <<<   !!!   ^ General Menu End ^   !!!   >>>     */
+
+/*     <<<   !!!   v General Menu Monster Inventory v   !!!   >>>     */
+
+/*Wrapper that contains the Monsters Menu that gets called on Buttonclick in General Sidebar Menu*/
+.gen-menu-monsters-wrapper {
+    background: green;
+    display: none;
+    width: 30%;
+    height: 90%;
+    position: fixed;
+    z-index: 2000;
+}
+
+/*Monster Card that contains all small fields*/
+.gen-menu-monsters-card {
+
+}
+
+
+/*     <<<   !!!   ^ General Menu Monsters Inventory End ^   !!!   >>>     */

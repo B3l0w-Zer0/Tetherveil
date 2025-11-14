@@ -1,0 +1,26 @@
+[
+  {
+    "id": "flammenwurf",
+    "name": "Flammenwurf",
+    "type": "fire",
+    "power": 90
+  },
+  {
+    "id": "aquaknarre",
+    "name": "Aquaknarre",
+    "type": "water",
+    "power": 40
+  },
+  {
+    "id": "rasierblatt",
+    "name": "Rasierblatt",
+    "type": "grass",
+    "power": 55
+  },
+  {
+    "id": "tackle",
+    "name": "Tackle",
+    "type": "normal",
+    "power": 35
+  }
+]

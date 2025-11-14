@@ -1,0 +1,104 @@
+To Do:
+
+
+Updates:
+~~ 28.09.2025 ~~
+created monsters.json
+added damageCalc.js in fight
+added ownPlayerAttack.js in fight
+
+
+import Phaser from "phaser";
+export class Fight extends Phaser.Scene {
+  constructor() {
+    super("Fight");
+  }
+
+  preload() {
+    this.load.json("monsters", "./data/monsters/monsters.json");
+  }
+
+  create() {
+    const battleWrapper = document.createElement('div');
+
+    //field for own monster
+
+    //field with all attacks of own monster
+    const monsters = this.cache.json.get("monsters");
+    console.log("geladene Monster: ", monsters);
+    const currentMonst = monsters[0];
+
+    const attacksWrapper = document.createElement('div');
+      attacksWrapper.style.position = "absolute";
+      attacksWrapper.style.bottom = "20px";
+      attacksWrapper.style.left = "50%";
+      attacksWrapper.style.transform = "translateX(-50%)";
+      attacksWrapper.style.display = "grid";
+      attacksWrapper.style.gridTemplateColumns = "1fr 1fr";
+      attacksWrapper.style.gap = "10px";
+      attacksWrapper.style.width = "400px";
+      attacksWrapper.style.padding = "10px";
+      attacksWrapper.style.background = "rgba(0,0,0,0.6)";
+      attacksWrapper.style.borderRadius = "12px";
+
+      
+      this.attacksWrapper = attacksWrapper;
+
+      renderAttacks(this.attacksWrapper, currentMonst.attacks, (attack) => {
+            console.log(`${attack.name} wurde ausgewählt!`);
+            //this.handleAttack(currentMonster, attack);
+        });
+
+  //end of field with attacks
+
+    
+    battleWrapper.appendChild(attacksWrapper);
+
+    document.body.appendChild(battleWrapper);
+
+    // Zurück mit ESC
+    this.keys = this.input.keyboard.addKeys("ESC");
+  }
+
+  update() {
+    if (Phaser.Input.Keyboard.JustDown(this.keys.ESC)) {
+      this.scene.start("StartMap");
+    }
+  }
+}
+
+  function renderAttacks(container, attacks, onAttackSelected) {
+    container.innerHTML = ""; // alte Buttons löschen
+
+    const typeColors = {
+        fire: "#e74c3c",
+        water: "#3498db",
+        grass: "#2ecc71",
+        electric: "#f1c40f",
+        normal: "#95a5a6",
+        poison: "#9b59b6",
+        ice: "#5dade2",
+        fighting: "#e67e22",
+        ground: "#d35400",
+        psychic: "#8e44ad",
+    };
+
+    attacks.slice(0, 4).forEach((attack) => {
+        const btn = document.createElement("button");
+        btn.innerText = attack.name;
+        btn.style.padding = "15px";
+        btn.style.fontSize = "16px";
+        btn.style.fontWeight = "bold";
+        btn.style.border = "none";
+        btn.style.borderRadius = "8px";
+        btn.style.cursor = "pointer";
+        btn.style.color = "white";
+        btn.style.backgroundColor = typeColors[attack.type] || "#7f8c8d";
+
+        btn.addEventListener("click", () => {
+            if (onAttackSelected) onAttackSelected(attack);
+        });
+
+        container.appendChild(btn);
+    });
+}

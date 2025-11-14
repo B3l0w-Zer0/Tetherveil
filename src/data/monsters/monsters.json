@@ -1,0 +1,24 @@
+[
+  {
+    "id": "glurak",
+    "name": "Glurak",
+    "hp": 360,
+    "attacks": [
+      { "name": "Flammenwurf", "type": "fire" },
+      { "name": "Flügelschlag", "type": "normal" },
+      { "name": "Feuersturm", "type": "fire" },
+      { "name": "Kratzer", "type": "normal" }
+    ]
+  },
+  {
+    "id": "turtok",
+    "name": "Turtok",
+    "hp": 400,
+    "attacks": [
+      { "name": "Aquaknarre", "type": "water" },
+      { "name": "Hydropumpe", "type": "water" },
+      { "name": "Biss", "type": "normal" },
+      { "name": "Eisstrahl", "type": "ice" }
+    ]
+  }
+]
