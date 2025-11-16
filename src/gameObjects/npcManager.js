@@ -8,7 +8,12 @@ export default class NPCManager {
 
     addNPC(config) {
         const npc = new NPC(this.scene, config);
-        this.scene.physics.add.collider(npc.sprite, this.scene.walls);
+
+        // Kollision NPC <-> Tilemap-Layer
+        if (this.scene.walls) {
+            this.scene.physics.add.collider(npc.sprite, this.scene.walls);
+        }
+
         this.npcs.push(npc);
         return npc;
     }
@@ -29,11 +34,16 @@ export default class NPCManager {
 
     getNearbyNPC(player, radius = 60) {
         const r2 = radius * radius;
+
         for (let npc of this.npcs) {
             const dx = player.x - npc.sprite.x;
             const dy = player.y - npc.sprite.y;
-            if ((dx * dx + dy * dy) < r2) return npc; // schneller: squared distance
+
+            if ((dx * dx + dy * dy) <= r2) {
+                return npc;
+            }
         }
+
         return null;
     }
 }

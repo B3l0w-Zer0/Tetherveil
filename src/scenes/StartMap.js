@@ -1,4 +1,5 @@
 import {createGenMenu, toggleGenMenu} from '../menus/mapMenuGeneral.js';
+import npcManager from '../gameObjects/npcManager.js';
 export class StartMap extends Phaser.Scene {
   constructor() {
     super("startMap");
@@ -110,6 +111,19 @@ export class StartMap extends Phaser.Scene {
       }
     });
 
+      // NPC-Manager
+      this.npcManager = new npcManager(this);
+
+      // Beispiel-NPC
+      this.npcManager.addNPC({
+          x: 370,
+          y: 250,
+          texture: "npc",
+          name: "Bob",
+          dialog: ["Hallo!", "Wie geht’s?"],
+          speed: 35
+      });
+
 
   }
 
@@ -118,6 +132,8 @@ export class StartMap extends Phaser.Scene {
       let speed = this.keys.SHIFT.isDown ? 400 : 200;
       const body = this.player.body;
       body.setVelocity(0);
+
+      this.npcManager.update();
 
       if (this.cursors.left.isDown || this.keys.A.isDown) body.setVelocityX(-speed);
       else if (this.cursors.right.isDown || this.keys.D.isDown) body.setVelocityX(speed);
