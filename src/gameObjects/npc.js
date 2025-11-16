@@ -7,7 +7,10 @@ export class NPC {
         this.speed = config.speed || 30;
 
         this.sprite = scene.physics.add.sprite(config.x, config.y, config.texture);
-        this.sprite.setImmovable(false);
+        this.sprite.setImmovable(true);
+        this.sprite.setPushable(false);
+        this.sprite.setCollideWorldBounds(true);
+        this.sprite.body.setBoundsRectangle(scene.physics.world.bounds);
 
         // interne Movement-States
         this.moveTimer = 0;
@@ -41,7 +44,8 @@ export class NPC {
         // zufällige Richtung auswählen
         const d = Phaser.Utils.Array.GetRandom(this.directions);
 
-        this.sprite.setVelocity(d.x * this.speed, d.y * this.speed);
+        this.sprite.setVelocity(d.x * (this.speed * 2), d.y * (this.speed * 2));
+
     }
 
     checkIfStuck() {

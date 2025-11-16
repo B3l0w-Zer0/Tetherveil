@@ -1,5 +1,6 @@
 import {createGenMenu, toggleGenMenu} from '../menus/mapMenuGeneral.js';
 import npcManager from '../gameObjects/npcManager.js';
+
 export class StartMap extends Phaser.Scene {
   constructor() {
     super("startMap");
@@ -19,9 +20,12 @@ export class StartMap extends Phaser.Scene {
     this.physics.world.setBounds(0, 0, worldWidth, worldHeight);
 
     // Spieler
-    this.player = this.add.rectangle(450, 300, 32, 32, 0x00ff00);
-    this.physics.add.existing(this.player);
-    this.player.body.setCollideWorldBounds(true); // verhindert, dass er den Rand verlässt
+      this.player = this.physics.add.sprite(450, 300, null); // null = keine Textur
+      this.player.setDisplaySize(32, 32);
+      this.player.setTint(0x00ff00); // grün färben
+      this.player.body.setCollideWorldBounds(true);
+      this.player.body.pushable = true; // Player kann geschubst werden, aber nicht durch immovable objects
+
 
     // Kamera folgt dem Spieler dynamisch
     this.cameras.main.startFollow(this.player, true, 0.08, 0.08); // sanftes Folgen
@@ -123,6 +127,8 @@ export class StartMap extends Phaser.Scene {
           dialog: ["Hallo!", "Wie geht’s?"],
           speed: 35
       });
+
+
 
 
   }
