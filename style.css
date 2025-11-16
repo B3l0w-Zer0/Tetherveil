@@ -59,7 +59,12 @@
 
 /*Monster Card that contains all small fields*/
 .gen-menu-monsters-card {
-
+    background: blue;
+    display: flex;
+    width: 90%;
+    height: 17%;
+    position: absolute;
+    z-index: 2500;
 }
 
 
