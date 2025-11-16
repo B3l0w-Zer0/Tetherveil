@@ -1,4 +1,4 @@
-//import { createGenItemsMenu } from "src/menus/ItemsInvMenuGen.js";
+//import { createGenItemsMenu } from "src/menus/itemsInvMenuGen.js";
 
 let genMenuStatus = false;
 
