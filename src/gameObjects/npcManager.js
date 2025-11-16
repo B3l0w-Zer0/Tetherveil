@@ -3,6 +3,7 @@ import { NPC } from './npc.js';
 export default class NPCManager {
     constructor(scene) {
         this.scene = scene;
+        this.group = scene.physics.add.group();
         this.npcs = [];
     }
 
@@ -14,6 +15,12 @@ export default class NPCManager {
             this.scene.physics.add.collider(npc.sprite, this.scene.walls);
         }
 
+        // ← HIER NEU: Kollision NPC <-> Player
+        if (this.scene.player) {
+            this.scene.physics.add.collider(npc.sprite, this.scene.player);
+        }
+
+        this.group.add(npc.sprite);
         this.npcs.push(npc);
         return npc;
     }
