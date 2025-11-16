@@ -1,11 +1,4 @@
-export function createBag() {
-
-    let bagStatus = false;
-    let tempCurrentDiv = 'none';
-    let typeID = 'attack'
-
-    const bagWrapper = document.createElement('div');
-
+export function createFightItemsInv() {
     const bagOpen = document.createElement('div');
 
 
