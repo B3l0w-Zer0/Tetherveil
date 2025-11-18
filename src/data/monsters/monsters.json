@@ -1,24 +1,35 @@
 [
   {
-    "id": "glurak",
-    "name": "Glurak",
-    "hp": 360,
-    "attacks": [
-      { "name": "Flammenwurf", "type": "fire" },
-      { "name": "Flügelschlag", "type": "normal" },
-      { "name": "Feuersturm", "type": "fire" },
-      { "name": "Kratzer", "type": "normal" }
-    ]
+    "sortingID": "0001",
+    "name": "Burnt Witch",
+    "monsterID": "burntWitch",
+    "type": "fire",
+    "health": 70,
+    "physicalAttack": 30,
+    "physicalDefense": 20,
+    "soulAttack": 75,
+    "soulDefense": 60,
+    "speed": 55,
+    "description": "The restless soul of a witch, burnt by townsfolk",
+    "icon": "assets/images/vessels/fireWitch.jpg",
+    "inventory": [2],
+    "attacks": [4],
+    "level": 3,
+    "nextEvol": "burntWitchBetter"
   },
   {
-    "id": "turtok",
-    "name": "Turtok",
-    "hp": 400,
-    "attacks": [
-      { "name": "Aquaknarre", "type": "water" },
-      { "name": "Hydropumpe", "type": "water" },
-      { "name": "Biss", "type": "normal" },
-      { "name": "Eisstrahl", "type": "ice" }
-    ]
+    "sortingID": "0002",
+    "name": "Burnt Witch2",
+    "monsterID": "burntWitch2",
+    "type": "fire",
+    "health": 70,
+    "physicalAttack": 30,
+    "physicalDefense": 20,
+    "soulAttack": 75,
+    "soulDefense": 60,
+    "speed": 55,
+    "description": "The restless soul of a witch, burnt by townsfolk",
+    "icon": "assets/images/vessels/fireWitch.jpg",
+    "catchrate": 60
   }
 ]
