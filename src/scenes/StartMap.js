@@ -56,7 +56,7 @@ export class StartMap extends Phaser.Scene {
         this.keys = this.input.keyboard.addKeys("W,A,S,D,ESC,SHIFT,TAB,E");
         this.menuOpen = false;
 
-        // ESC-Menü (dein Code bleibt gleich)
+        // ESC-Menü (HTML)
         this.menu = document.createElement("div");
         this.menu.style.position = "absolute";
         this.menu.style.top = "50%";
@@ -69,11 +69,18 @@ export class StartMap extends Phaser.Scene {
         this.menu.style.border = "2px solid white";
         this.menu.style.borderRadius = "10px";
         this.menu.style.textAlign = "center";
-        this.menu.style.zIndex = "10000";
+        this.menu.style.zIndex = "1000";
+
+        this.menu.innerHTML = `
+      <h2 style="color:white; margin-bottom:20px;">Pause Menü</h2>
+      <button id="resumeBtn" style="display:block; margin:10px auto; padding:10px 20px;">Resume</button>
+      <button id="optionsBtn" style="display:block; margin:10px auto; padding:10px 20px;">Options</button>
+      <button id="fightBtn" style="display:block; margin:10px auto; padding:10px 20px;">Kampf starten</button>
+      <button id="backMenuBtn" style="display:block; margin:10px auto; padding:10px 20px;">Back to Menu</button>`;
 
         document.getElementById("game-container").appendChild(this.menu);
 
-// Button-Funktionen
+        // Button-Funktionen
         document.getElementById("resumeBtn").addEventListener("click", () => {
             this.menu.style.display = "none";
             this.menuOpen = false;
