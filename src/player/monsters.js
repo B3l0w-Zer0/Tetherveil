@@ -86,7 +86,7 @@ async function addMonstToCollection(monsterID) {
     console.log("collection after adding: ", collection);
 }
 
-export function addMonstToTeam(monsterID) {
+export async function addMonstToTeam(monsterID) {
 
 }
 
@@ -109,7 +109,7 @@ export function levelMonstUp() {
 export function randomizeMonstLevel() {
     const currentMap = getCurrentMap();
 
-    /*switchcase mapid von currentmap
+    /*switchcase mapID von currentmap
     map 1 -> randomize level 2 - 12;
     map 2 -> ...
      */
