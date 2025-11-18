@@ -16,7 +16,7 @@ export const mapConfig = {
     tilesets: [
         {
             key: "tiles",
-            path: "assets/tiles/ChatGPT Image 11. Nov. 2025, 23_07_43.png"
+            path: "assets/tiles/ChatGPT.png"
         }
         // Weitere Tilesets hier hinzufügen...
     ]

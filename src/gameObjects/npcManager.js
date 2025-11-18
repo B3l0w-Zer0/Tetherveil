@@ -10,12 +10,16 @@ export default class NPCManager {
     addNPC(config) {
         const npc = new NPC(this.scene, config);
 
-        // Kollision NPC <-> Tilemap-Layer
-        if (this.scene.walls) {
-            this.scene.physics.add.collider(npc.sprite, this.scene.walls);
+        // Kollision NPC <-> alle Collision/Wall-Layer
+        if (this.scene.mapManager && this.scene.mapManager.layers) {
+            Object.entries(this.scene.mapManager.layers).forEach(([name, layer]) => {
+                if (name.toLowerCase().includes('wall') || name.toLowerCase().includes('collision')) {
+                    this.scene.physics.add.collider(npc.sprite, layer);
+                }
+            });
         }
 
-        // ← HIER NEU: Kollision NPC <-> Player
+        // Kollision NPC <-> Player
         if (this.scene.player) {
             this.scene.physics.add.collider(npc.sprite, this.scene.player);
         }
