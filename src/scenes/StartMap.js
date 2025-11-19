@@ -1,6 +1,6 @@
 import {createGenMenu, toggleGenMenu} from '../menus/mapMenuGeneral.js';
 import npcManager from '../gameObjects/npcManager.js';
-import { MapManager } from '../mapping/mapManager.js';  // ← NEU!
+import { mapManager } from '../mapping/mapManager.js';  // ← NEU!
 import { mapConfig } from '../mapping/mapConfig.js';    // ← NEU!
 
 export class StartMap extends Phaser.Scene {
@@ -35,7 +35,7 @@ export class StartMap extends Phaser.Scene {
         this.npcManager = new npcManager(this);
 
         // 4. Map-Manager erstellen
-        this.mapManager = new MapManager(this);
+        this.mapManager = new mapManager(this);
 
         // 5. Map laden
         const startMapKey = mapConfig.maps[0].key;

@@ -1,6 +1,6 @@
 import { mapConfig } from './mapConfig.js';
 
-export class MapManager {
+export class mapManager {
     constructor(scene) {
         this.scene = scene;
         this.currentMap = null;
@@ -386,6 +386,7 @@ export class MapManager {
 
     /**
      * Gibt den aktuellen Map-Key zurück
+     * yeeeeyyy
      */
     getCurrentMapKey() {
         return this.currentMapKey;
