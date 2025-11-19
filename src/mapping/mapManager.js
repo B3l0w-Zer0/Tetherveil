@@ -386,7 +386,7 @@ export class mapManager {
 
     /**
      * Gibt den aktuellen Map-Key zurück
-     * yeeeeyyy
+     * yeeeeyyy yeeey
      */
     getCurrentMapKey() {
         return this.currentMapKey;
