@@ -10,7 +10,7 @@ export class NPC {
         this.sprite.setImmovable(true);
         this.sprite.setPushable(false);
         this.sprite.setCollideWorldBounds(true);
-        this.sprite.body.setBoundsRectangle(scene.physics.world.bounds);
+
 
         // interne Movement-States
         this.moveTimer = 0;

@@ -1,6 +1,6 @@
 import { mapConfig } from './mapConfig.js';
 
-export class MapManager {
+export class mapManager {
     constructor(scene) {
         this.scene = scene;
         this.currentMap = null;
@@ -90,26 +90,42 @@ export class MapManager {
     loadAllLayers(tileset) {
         this.layers = {};
 
+        console.log('🎨 LOADALLLAYERS GESTARTET!');
+        console.log('🎨 Anzahl Layer:', this.currentMap.layers.length);
+
         // Alle Layer durchgehen
         this.currentMap.layers.forEach((layerData, index) => {
             const layerName = layerData.name;
 
-            // Nur Tile-Layer erstellen (keine Object-Layer)
-            if (layerData.type === 'TiledTileLayer') {
+            console.log(`🎨 Versuche Layer zu laden: ${layerName}`);
+
+            // Versuche einfach den Layer zu erstellen
+            // Wenn es funktioniert = Tile-Layer, wenn nicht = Object-Layer
+            try {
                 const layer = this.currentMap.createLayer(layerName, tileset, 0, 0);
 
-                // Depth basierend auf Layer-Reihenfolge setzen
-                layer.setDepth(index);
+                if (layer) {
+                    // Layer erfolgreich erstellt!
+                    layer.setVisible(true);
+                    layer.setAlpha(1);
+                    layer.setDepth(index);
 
-                this.layers[layerName] = layer;
+                    this.layers[layerName] = layer;
 
-                console.log(`Layer geladen: ${layerName} (Depth: ${index})`);
+                    console.log(`✅ Layer geladen: ${layerName} (Depth: ${index})`);
+                } else {
+                    console.log(`⏭️ Kein Tile-Layer: ${layerName}`);
+                }
+            } catch (e) {
+                console.log(`⏭️ Fehler beim Laden: ${layerName}`, e.message);
             }
         });
 
-        // Player Depth über normale Layers, aber unter "Above Player" Layers
+        // Player Depth
         this.scene.player.setDepth(100);
     }
+
+
 
 
 
