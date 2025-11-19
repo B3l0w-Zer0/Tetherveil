@@ -14,7 +14,7 @@
     "icon": "assets/images/vessels/fireWitch.jpg",
     "inventory": [2],
     "attacks": [4],
-    "level": 3,
+    "level": null,
     "nextEvol": "burntWitchBetter"
   },
   {
