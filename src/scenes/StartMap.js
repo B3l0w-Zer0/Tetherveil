@@ -87,6 +87,7 @@ export class StartMap extends Phaser.Scene {
         });
 
         document.getElementById("optionsBtn").addEventListener("click", () => {
+            this.scene.start("Options");
             alert("Optionsmenü (noch nicht implementiert)");
         });
 
