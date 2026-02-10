@@ -1,0 +1,238 @@
+[
+  {
+    "sortingID": "0001",
+    "name": "Burnt Witch",
+    "monsterID": "burntWitch",
+    "type": "fire",
+
+    "baseHealth": { "min": 60, "max": 80 },
+    "basePhysicalAttack": { "min": 20, "max": 40 },
+    "basePhysicalDefense": { "min": 10, "max": 30 },
+    "baseSoulAttack": { "min": 60, "max": 90 },
+    "baseSoulDefense": { "min": 50, "max": 70 },
+    "baseSpeed": { "min": 45, "max": 70 },
+
+
+    "increaseHealth": {"min":  4, "max":  7 },
+    "increasePhysicalAttack": {"min":  2, "max":  4 },
+    "increasePhysicalDefense": { "min": 5, "max": 8 },
+    "increaseSoulAttack": { "min": 3, "max": 7 },
+    "increaseSoulDefense": { "min": 1, "max": 3 },
+    "increaseSpeed": { "min": 3, "max": 5 },
+
+
+    "description": "The restless soul of a witch, burnt by townsfolk",
+    "icon": "assets/images/monsters/fireWitch.jpg",
+    "inventory": [2],
+    "attacks": [4],
+    "level": 1,
+    "evolLevel": 15,
+    "nextEvol": "burntWitchEvolution"
+  },
+
+
+  {
+    "sortingID": "0002",
+    "name": "Burnt Witch Evolution",
+    "monsterID": "burntWitchEvolution",
+    "icon": "assets/images/monsters/fireWitchEvolved.jpg",
+    "description": "Evolved burnt witch"
+  },
+
+
+  {
+    "sortingID": "0003",
+    "name": "Burnt Witch 2",
+    "monsterID": "burntWitch2",
+    "type": "fire",
+
+    "baseHealth": { "min": 60, "max": 80 },
+    "basePhysicalAttack": { "min": 20, "max": 40 },
+    "basePhysicalDefense": { "min": 10, "max": 30 },
+    "baseSoulAttack": { "min": 60, "max": 90 },
+    "baseSoulDefense": { "min": 50, "max": 70 },
+    "baseSpeed": { "min": 45, "max": 70 },
+
+
+    "increaseHealth": {"min":  4, "max":  7 },
+    "increasePhysicalAttack": {"min":  2, "max":  4 },
+    "increasePhysicalDefense": { "min": 5, "max": 8 },
+    "increaseSoulAttack": { "min": 3, "max": 7 },
+    "increaseSoulDefense": { "min": 1, "max": 3 },
+    "increaseSpeed": { "min": 3, "max": 5 },
+
+
+    "description": "The restless soul of a witch, burnt by townsfolk",
+    "icon": "assets/images/monsters/fireWitch.jpg",
+    "inventory": [2],
+    "attacks": [4],
+    "level": 1,
+    "evolLevel": 15,
+    "nextEvol": "burntWitch2Evolution"
+  },
+
+  {
+    "sortingID": "0004",
+    "name": "Burnt Witch Evolution 2",
+    "monsterID": "burntWitch2Evolution",
+    "icon": "assets/images/monsters/fireWitchEvolved.jpg",
+    "description": "Evolved burnt witch2"
+  },
+
+  {
+    "sortingID": "0005",
+    "name": "test1",
+    "monsterID": "test1",
+    "type": "test1",
+
+    "baseHealth": { "min": 60, "max": 80 },
+    "basePhysicalAttack": { "min": 20, "max": 40 },
+    "basePhysicalDefense": { "min": 10, "max": 30 },
+    "baseSoulAttack": { "min": 60, "max": 90 },
+    "baseSoulDefense": { "min": 50, "max": 70 },
+    "baseSpeed": { "min": 45, "max": 70 },
+
+
+    "increaseHealth": {"min":  4, "max":  7 },
+    "increasePhysicalAttack": {"min":  2, "max":  4 },
+    "increasePhysicalDefense": { "min": 5, "max": 8 },
+    "increaseSoulAttack": { "min": 3, "max": 7 },
+    "increaseSoulDefense": { "min": 1, "max": 3 },
+    "increaseSpeed": { "min": 3, "max": 5 },
+
+
+    "description": "this is a test number 1",
+    "icon": "assets/images/monsters/fireWitch.jpg",
+    "inventory": [2],
+    "attacks": [4],
+    "level": 1,
+    "evolLevel": 15,
+    "nextEvol": "test1Evolution"
+  },
+
+  {
+    "sortingID": "0006",
+    "name": "test1Evolution",
+    "monsterID": "test1Evolution",
+    "icon": "assets/images/monsters/fireWitchEvolved.jpg",
+    "description": "Evolved test1"
+  },
+
+
+  {
+    "sortingID": "0007",
+    "name": "test2",
+    "monsterID": "test2",
+    "type": "test2",
+
+    "baseHealth": { "min": 60, "max": 80 },
+    "basePhysicalAttack": { "min": 20, "max": 40 },
+    "basePhysicalDefense": { "min": 10, "max": 30 },
+    "baseSoulAttack": { "min": 60, "max": 90 },
+    "baseSoulDefense": { "min": 50, "max": 70 },
+    "baseSpeed": { "min": 45, "max": 70 },
+
+
+    "increaseHealth": {"min":  4, "max":  7 },
+    "increasePhysicalAttack": {"min":  2, "max":  4 },
+    "increasePhysicalDefense": { "min": 5, "max": 8 },
+    "increaseSoulAttack": { "min": 3, "max": 7 },
+    "increaseSoulDefense": { "min": 1, "max": 3 },
+    "increaseSpeed": { "min": 3, "max": 5 },
+
+
+    "description": "this is a test number 2",
+    "icon": "assets/images/monsters/fireWitch.jpg",
+    "inventory": [2],
+    "attacks": [4],
+    "level": 1,
+    "evolLevel": 15,
+    "nextEvol": "test2Evolution"
+  },
+
+  {
+    "sortingID": "0008",
+    "name": "test2Evolution",
+    "monsterID": "test2Evolution",
+    "icon": "assets/images/monsters/fireWitchEvolved.jpg",
+    "description": "Evolved test2"
+  },
+
+  {
+    "sortingID": "0009",
+    "name": "test3",
+    "monsterID": "test3",
+    "type": "test3",
+
+    "baseHealth": { "min": 60, "max": 80 },
+    "basePhysicalAttack": { "min": 20, "max": 40 },
+    "basePhysicalDefense": { "min": 10, "max": 30 },
+    "baseSoulAttack": { "min": 60, "max": 90 },
+    "baseSoulDefense": { "min": 50, "max": 70 },
+    "baseSpeed": { "min": 45, "max": 70 },
+
+
+    "increaseHealth": {"min":  4, "max":  7 },
+    "increasePhysicalAttack": {"min":  2, "max":  4 },
+    "increasePhysicalDefense": { "min": 5, "max": 8 },
+    "increaseSoulAttack": { "min": 3, "max": 7 },
+    "increaseSoulDefense": { "min": 1, "max": 3 },
+    "increaseSpeed": { "min": 3, "max": 5 },
+
+
+    "description": "this is a test number 3",
+    "icon": "assets/images/monsters/fireWitch.jpg",
+    "inventory": [2],
+    "attacks": [4],
+    "level": 1,
+    "evolLevel": 15,
+    "nextEvol": "test3Evolution"
+  },
+
+  {
+    "sortingID": "0010",
+    "name": "test3Evolution",
+    "monsterID": "test3Evolution",
+    "icon": "assets/images/monsters/fireWitchEvolved.jpg",
+    "description": "Evolved test3"
+  },
+
+  {
+    "sortingID": "0011",
+    "name": "test4",
+    "monsterID": "test4",
+    "type": "test4",
+
+    "baseHealth": { "min": 60, "max": 80 },
+    "basePhysicalAttack": { "min": 20, "max": 40 },
+    "basePhysicalDefense": { "min": 10, "max": 30 },
+    "baseSoulAttack": { "min": 60, "max": 90 },
+    "baseSoulDefense": { "min": 50, "max": 70 },
+    "baseSpeed": { "min": 45, "max": 70 },
+
+
+    "increaseHealth": {"min":  4, "max":  7 },
+    "increasePhysicalAttack": {"min":  2, "max":  4 },
+    "increasePhysicalDefense": { "min": 5, "max": 8 },
+    "increaseSoulAttack": { "min": 3, "max": 7 },
+    "increaseSoulDefense": { "min": 1, "max": 3 },
+    "increaseSpeed": { "min": 3, "max": 5 },
+
+
+    "description": "this is a test number 4",
+    "icon": "assets/images/monsters/fireWitch.jpg",
+    "inventory": [2],
+    "attacks": [4],
+    "level": 1,
+    "evolLevel": 15,
+    "nextEvol": "test4Evolution"
+  },
+
+  {
+    "sortingID": "0012",
+    "name": "test4Evolution",
+    "monsterID": "test4Evolution",
+    "icon": "assets/images/monsters/fireWitchEvolved.jpg",
+    "description": "Evolved test4"
+  }
+]
