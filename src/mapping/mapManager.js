@@ -1,6 +1,6 @@
 import { mapConfig } from './mapConfig.js';
 
-export class mapManager {
+export class MapManager {
     constructor(scene) {
         this.scene = scene;
         this.currentMap = null;
@@ -365,7 +365,6 @@ export class mapManager {
             console.log(`Encounter-Zone: ${props.pokemon} (Rate: ${props.encounterRate})`);
         });
     }
-
     /**
      * Räumt die aktuelle Map auf
      */
@@ -383,7 +382,6 @@ export class mapManager {
         this.layers = {};
         this.currentMap = null;
     }
-
     /**
      * Gibt den aktuellen Map-Key zurück
      * yeeeeyyy yeeey
