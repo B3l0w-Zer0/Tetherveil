@@ -2,7 +2,7 @@ import { mapManager } from '/src/mapping/mapManager.js';
 const mapMan = new mapManager();
 
 export async function getAllMonsters() {
-    const res = await fetch("./src/data/monsters/wildMonsters.json")
+    const res = await fetch("./src/data/monsterData/wildMonsters.json")
     return await res.json();
 }
 
@@ -39,9 +39,9 @@ function saveUsedIDs(list) {
 }
 
 export function loadMonstInfo(surrogateID) {
-    const team = getTeam();
+    const collection = getCollection();
 
-    const monster = team.find(monst => monst.surrogateID === surrogateID);
+    const monster = collection.find(monst => monst.surrogateID === surrogateID);
     if (!monster) {
         console.error("Monster not found!");
         return;
@@ -58,7 +58,7 @@ export function catchMonster(monsterID) {
     addMonstToCollection(monsterID)
 }
 
-async function addMonstToCollection(monsterID) {
+export async function addMonstToCollection(monsterID) {
     const allMons = await getAllMonsters();
     let collection = getCollection();
 
@@ -98,7 +98,8 @@ async function addMonstToCollection(monsterID) {
         teamMember: false,
         isMain: false,
         type: monDef.type,
-        health: monDef.health,
+        maxHealth: monDef.maxHealth,
+        currentHealth: monDef.currentHealth,
         physicalAttack: monDef.physicalAttack,
         physicalDefense: monDef.physicalDefense,
         soulAttack: monDef.soulAttack,
@@ -112,7 +113,7 @@ async function addMonstToCollection(monsterID) {
         isPoisoned: false,
         inventory: [2],
         attacks: [4],
-        level: randomizeMonstLevel()
+        // Todo level: randomizeMonstLevel() find a better way to do this shit. It shouldnt be randomized. It should be randomized earlier with the wild monster spawning in
         }
     );
     saveCollection(collection);
@@ -148,6 +149,7 @@ export async function addMonstToTeam(surrogateID) {
             teamMember: true,
             type: monDef.type,
             health: monDef.health,
+            currentHealth: monDef.currentHealth,
             physicalAttack: monDef.physicalAttack,
             physicalDefense: monDef.physicalDefense,
             soulAttack: monDef.soulAttack,
@@ -459,6 +461,10 @@ export async function evolveWildMonst(wildSurrogateID) {
     return evolvedMonster;
 }
 
+function increaseWildMonstLevelupStats(){
+
+}
+
 export function giveMonstItem(itemID) {
 
 }
@@ -466,3 +472,6 @@ export function giveMonstItem(itemID) {
 export function removeMonstItem(itemID) {
 
 }
+
+
+

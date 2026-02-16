@@ -1,4 +1,6 @@
 //import { createGenItemsMenu } from "src/menus/itemsInvMenuGen.js";
+import { createGenMonstMenu } from "/src/menus/monstInvMenuGen.js";
+import { addMonstToTeam, addMonstToCollection } from "../player/monsters.js";
 
 let genMenuStatus = false;
 
@@ -12,6 +14,7 @@ export function createGenMenu() {
     const container = document.getElementById("game-container");
     genMenuWrapper.appendChild(genMenuGrid)
     container.appendChild(genMenuWrapper);
+
     console.log('General Menu wurde erstellt');
     return genMenuWrapper;
 }
@@ -32,10 +35,7 @@ export function toggleGenMenu(genMenu) {
         const genMenuGrid = document.createElement('div');
         genMenuGrid.classList.add('gen-menu-grid');
 
-        function  createGenMonstMenu(){
-            console.log("Monster Menu created");
-            return 1;
-        }
+
 
     function createGenItemsMenu(){
         console.log("Items Menu created");
@@ -58,7 +58,7 @@ export function toggleGenMenu(genMenu) {
     }
 
     const genMenuBtns = [
-        { text: 'Monsters', function: createGenMonstMenu, },
+        { text: 'Monsters', function: createGenMonstMenu},
         { text: "Items", function: createGenItemsMenu},
         { text: "Quests", function: createGenQuestMenu},
         { text: "Map", function: createMenuMap},
@@ -75,8 +75,13 @@ export function toggleGenMenu(genMenu) {
             btn.function();
 
         });
-        genMenuGrid.appendChild(button)
+        genMenuGrid.appendChild(button);
     });
     return genMenuGrid;
 }
+
+
+
+
+
 
