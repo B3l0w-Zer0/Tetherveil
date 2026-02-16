@@ -18,15 +18,50 @@ export class StartMap extends Phaser.Scene {
         mapConfig.maps.forEach(map => {
             this.load.tilemapTiledJSON(map.key, map.tilemapPath);
         });
+
+        // Player Bilder laden
+        this.load.spritesheet("player", "assets/sprites/player_spritesheet.png", {
+            frameWidth: 32,
+            frameHeight: 32
+        });
+
     }
 
     create() {
         // 1. Spieler erstellen
-        this.player = this.physics.add.sprite(450, 300, null);
+        this.player = this.physics.add.sprite(450, 300, "player", 0);
         this.player.setDisplaySize(32, 32);
-        this.player.setTint(0x00ff00);
+
         this.player.body.setCollideWorldBounds(true);
         this.player.body.pushable = true;
+
+        this.anims.create({
+            key: "walk-down",
+            frames: this.anims.generateFrameNumbers("player", {start: 0, end: 2}),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: "walk-left",
+            frames: this.anims.generateFrameNumbers("player", {start: 3, end: 5}),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: "walk-right",
+            frames: this.anims.generateFrameNumbers("player", {start: 6, end: 8}),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: "walk-up",
+            frames: this.anims.generateFrameNumbers("player", {start: 9, end: 11}),
+            frameRate: 10,
+            repeat: -1
+        });
 
         // 2. Kamera folgt dem Spieler
         this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
@@ -121,32 +156,97 @@ export class StartMap extends Phaser.Scene {
         // === NPCs updaten ===
         this.npcManager.update();
 
-        if (!this.menuOpen) {
-            let speed = this.keys.SHIFT.isDown ? 400 : 200;
-            const body = this.player.body;
-            body.setVelocity(0);
-
-            if (this.cursors.left.isDown || this.keys.A.isDown) body.setVelocityX(-speed);
-            else if (this.cursors.right.isDown || this.keys.D.isDown) body.setVelocityX(speed);
-
-            if (this.cursors.up.isDown || this.keys.W.isDown) body.setVelocityY(-speed);
-            else if (this.cursors.down.isDown || this.keys.S.isDown) body.setVelocityY(speed);
-
-        } else {
-            this.player.body.setVelocity(0);
-        }
-
-        // ESC-Menü
+        // === Menü-Handling ===
         if (Phaser.Input.Keyboard.JustDown(this.keys.ESC)) {
             const visible = this.menu.style.display === "none";
             this.menu.style.display = visible ? "block" : "none";
             this.menuOpen = visible;
+
+            // Wenn Menü aufgeht: Player stoppen + Animation stoppen
+            if (this.menuOpen) {
+                this.player.body.setVelocity(0);
+                this.player.anims.stop();
+            }
         }
 
-        // TAB-Menü
         if (Phaser.Input.Keyboard.JustDown(this.keys.TAB)) {
             toggleGenMenu(this.genMenu);
             this.menuOpen = !this.menuOpen;
+
+            if (this.menuOpen) {
+                this.player.body.setVelocity(0);
+                this.player.anims.stop();
+            }
+        }
+
+        // Wenn Menü offen ist: keine Bewegung
+        if (this.menuOpen) return;
+
+        // === Movement ===
+        const speed = this.keys.SHIFT.isDown ? 400 : 200;
+        const body = this.player.body;
+
+        let vx = 0;
+        let vy = 0;
+
+        if (this.cursors.left.isDown || this.keys.A.isDown) vx -= 1;
+        else if (this.cursors.right.isDown || this.keys.D.isDown) vx += 1;
+
+        if (this.cursors.up.isDown || this.keys.W.isDown) vy -= 1;
+        else if (this.cursors.down.isDown || this.keys.S.isDown) vy += 1;
+
+        // Diagonal normalisieren (sonst diagonal schneller)
+        if (vx !== 0 && vy !== 0) {
+            const inv = 1 / Math.sqrt(2);
+            vx *= inv;
+            vy *= inv;
+        }
+
+        body.setVelocity(vx * speed, vy * speed);
+
+        // === Animation + Idle Frames ===
+        // Merke letzte Richtung (für Idle)
+        if (!this.lastDir) this.lastDir = "down";
+
+        if (vx === 0 && vy === 0) {
+            // Idle: Frame je Richtung (0=down, 3=left, 6=right, 9=up)
+            this.player.anims.stop();
+
+            switch (this.lastDir) {
+                case "down":
+                    this.player.setFrame(0);
+                    break;
+                case "left":
+                    this.player.setFrame(3);
+                    break;
+                case "right":
+                    this.player.setFrame(6);
+                    break;
+                case "up":
+                    this.player.setFrame(9);
+                    break;
+            }
+
+            return;
+        }
+
+        // Lauf-Animation je nach dominanter Achse
+        if (Math.abs(vx) > Math.abs(vy)) {
+            if (vx > 0) {
+                this.lastDir = "right";
+                this.player.anims.play("walk-right", true);
+            } else {
+                this.lastDir = "left";
+                this.player.anims.play("walk-left", true);
+            }
+        } else {
+            if (vy > 0) {
+                this.lastDir = "down";
+                this.player.anims.play("walk-down", true);
+            } else {
+                this.lastDir = "up";
+                this.player.anims.play("walk-up", true);
+            }
         }
     }
 }
