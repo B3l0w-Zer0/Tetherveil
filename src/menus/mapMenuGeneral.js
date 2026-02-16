@@ -1,6 +1,6 @@
 //import { createGenItemsMenu } from "src/menus/itemsInvMenuGen.js";
 import { createGenMonstMenu } from "/src/menus/monstInvMenuGen.js";
-import { addMonstToTeam, addMonstToCollection } from "../player/monsters.js";
+//import { addMonstToTeam, addMonstToCollection } from "../player/monsters.js";
 
 let genMenuStatus = false;
 

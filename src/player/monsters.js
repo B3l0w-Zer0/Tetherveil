@@ -1,5 +1,5 @@
-import { mapManager } from '/src/mapping/mapManager.js';
-const mapMan = new mapManager();
+import { MapManager } from '/src/mapping/mapManager.js';
+const mapMan = new MapManager();
 
 export async function getAllMonsters() {
     const res = await fetch("./src/data/monsterData/wildMonsters.json")
