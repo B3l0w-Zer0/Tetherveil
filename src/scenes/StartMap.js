@@ -2,6 +2,7 @@ import {createGenMenu, toggleGenMenu} from '../menus/mapMenuGeneral.js';
 import npcManager from '../gameObjects/npcManager.js';
 import { MapManager } from '../mapping/mapManager.js';
 import { mapConfig } from '../mapping/mapConfig.js';
+import Options from './Options.js';  // 👈 NEU: Import für Settings
 
 export class StartMap extends Phaser.Scene {
     constructor() {
@@ -24,7 +25,6 @@ export class StartMap extends Phaser.Scene {
             frameWidth: 32,
             frameHeight: 32
         });
-
     }
 
     create() {
@@ -63,18 +63,18 @@ export class StartMap extends Phaser.Scene {
             repeat: -1
         });
 
-        // 2. Kamera folgt dem Spieler
-        this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
-
-        // 3. NPC-Manager erstellen
+        // 2. NPC-Manager erstellen
         this.npcManager = new npcManager(this);
 
-        // 4. Map-Manager erstellen
+        // 3. Map-Manager erstellen
         this.mapManager = new MapManager(this);
 
-        // 5. Map laden
+        // 4. Map laden
         const startMapKey = mapConfig.maps[0].key;
         this.mapManager.loadMap(startMapKey);
+
+        // 5. 👇 KAMERA SETUP (NACH Map-Laden!)
+        this.setupCamera();
 
         // 6. Manuellen NPC hinzufügen
         this.npcManager.addNPC({
@@ -122,7 +122,7 @@ export class StartMap extends Phaser.Scene {
         });
 
         document.getElementById("optionsBtn").addEventListener("click", () => {
-            this.scene.start("options");
+            this.scene.start("options", { previousScene: this.scene.key }); // 👈 Vorherige Szene übergeben
             this.menu.style.display = "none";
         });
 
@@ -150,6 +150,67 @@ export class StartMap extends Phaser.Scene {
                 this.scale.startFullscreen();
             }
         });
+    }
+
+    // 👇 NEUE METHODE: Kamera Setup
+    setupCamera() {
+        // Hole aktuelle Map vom MapManager
+        const currentMap = this.mapManager.currentMap;
+
+        if (!currentMap) {
+            console.warn("Keine Map geladen - Kamera-Setup übersprungen");
+            return;
+        }
+
+        const mapWidth = currentMap.widthInPixels;
+        const mapHeight = currentMap.heightInPixels;
+
+        // Kamera-Grenzen auf Map begrenzen
+        this.cameras.main.setBounds(0, 0, mapWidth, mapHeight);
+
+        // World-Grenzen für Physics
+        this.physics.world.setBounds(0, 0, mapWidth, mapHeight);
+
+        // Spieler folgen mit smooth camera
+        this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
+
+        // Deadzone für smootheres Folgen
+        this.cameras.main.setDeadzone(100, 100);
+
+        // Zoom basierend auf Auflösung anpassen
+        this.adjustCameraZoom();
+
+        // Pixel-Perfect Rendering (optional, für Pixel-Art)
+        this.cameras.main.roundPixels = true;
+    }
+
+    // 👇 NEUE METHODE: Zoom anpassen
+    adjustCameraZoom() {
+        const settings = Options.getSettings();
+
+        if (!settings || !settings.resolution) {
+            this.cameras.main.setZoom(1.0);
+            return;
+        }
+
+        const [width, height] = settings.resolution.split('x').map(Number);
+
+        // Zoom-Level basierend auf Auflösung
+        // Je größer die Auflösung, desto mehr zoomen wir raus
+        // So bleibt das Spielgefühl konsistent
+        let zoom = 1.0;
+
+        if (width >= 2560) {
+            zoom = 0.65;  // 1440p / 4K
+        } else if (width >= 1920) {
+            zoom = 0.8;   // Full HD
+        } else if (width >= 1600) {
+            zoom = 0.9;   // HD+
+        } else {
+            zoom = 1.0;   // 720p (Standard)
+        }
+
+        this.cameras.main.setZoom(zoom);
     }
 
     update() {

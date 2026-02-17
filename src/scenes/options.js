@@ -12,6 +12,7 @@ export default class Options extends Phaser.Scene {
             sfxVolume: 0.8,
 
             // Grafik
+            resolution: '1280x720',  // 👈 NEU
             fullscreen: false,
             pixelPerfect: true,
             showFPS: false,
@@ -35,12 +36,15 @@ export default class Options extends Phaser.Scene {
         };
 
         this.settings = this.loadSettings();
-        this.currentTab = 'audio'; // audio, graphics, controls
+        this.currentTab = 'audio';
         this.waitingForKey = null;
     }
 
     create() {
         const { width, height } = this.scale;
+
+        // Vorherige Szene speichern
+        this.previousScene = this.scene.settings.data?.previousScene || "Menu";
 
         // Hintergrund
         this.add.rectangle(width / 2, height / 2, width, height, 0x000000).setAlpha(0.8);
@@ -55,7 +59,7 @@ export default class Options extends Phaser.Scene {
         // Tab-Buttons erstellen
         this.createTabs(width);
 
-        // Container für Optionen (wird je nach Tab gefüllt)
+        // Container für Optionen
         this.optionsContainer = this.add.container(0, 0);
 
         // Zurück-Button
@@ -164,6 +168,9 @@ export default class Options extends Phaser.Scene {
         const startY = 200;
         const spacing = 80;
 
+        // Auflösungs-Auswahl (NEU)
+        this.createResolutionSelect(width / 2, startY);
+
         const options = [
             { label: "Vollbild", key: 'fullscreen', action: () => this.toggleFullscreen() },
             { label: "Pixel Perfect", key: 'pixelPerfect' },
@@ -173,7 +180,79 @@ export default class Options extends Phaser.Scene {
         ];
 
         options.forEach((option, index) => {
-            this.createToggle(width / 2, startY + index * spacing, option.label, option.key, option.action);
+            this.createToggle(width / 2, startY + (index + 1) * spacing, option.label, option.key, option.action);
+        });
+    }
+
+    // 👇 NEUE METHODE
+    createResolutionSelect(x, y) {
+        const resolutions = [
+            '1280x720',   // HD Ready
+            '1600x900',   // HD+
+            '1920x1080',  // Full HD
+            '2560x1440',  // QHD
+        ];
+
+        const labelText = this.add.text(x - 200, y, "Auflösung", {
+            fontFamily: "sans-serif",
+            fontSize: "24px",
+            color: "#ffffff"
+        }).setOrigin(0, 0.5);
+
+        const currentRes = this.settings.resolution;
+        const resButton = this.add.text(x + 150, y, currentRes, {
+            fontFamily: "monospace",
+            fontSize: "20px",
+            color: "#ffffff",
+            backgroundColor: "#444444",
+            padding: { x: 15, y: 8 }
+        })
+            .setOrigin(0.5)
+            .setInteractive({ useHandCursor: true })
+            .on("pointerover", () => resButton.setStyle({ backgroundColor: "#555555" }))
+            .on("pointerout", () => resButton.setStyle({ backgroundColor: "#444444" }))
+            .on("pointerdown", () => {
+                playSound(sounds.click);
+
+                // Cycle durch Auflösungen
+                const currentIndex = resolutions.indexOf(this.settings.resolution);
+                const nextIndex = (currentIndex + 1) % resolutions.length;
+                this.settings.resolution = resolutions[nextIndex];
+                resButton.setText(this.settings.resolution);
+
+                this.saveSettings();
+
+                // Zeige Hinweis dass Neustart nötig ist
+                this.showRestartHint();
+            });
+
+        this.optionsContainer.add([labelText, resButton]);
+    }
+
+    // 👇 NEUE METHODE
+    showRestartHint() {
+        // Entferne alten Hinweis falls vorhanden
+        if (this.restartHintText) {
+            this.restartHintText.destroy();
+        }
+
+        const { width, height } = this.scale;
+
+        this.restartHintText = this.add.text(width / 2, height - 120,
+            "⚠️ Neustart erforderlich um Auflösung zu übernehmen", {
+                fontFamily: "sans-serif",
+                fontSize: "20px",
+                color: "#ffaa00",
+                backgroundColor: "#000000",
+                padding: { x: 15, y: 10 }
+            }).setOrigin(0.5);
+
+        // Hinweis nach 5 Sekunden ausblenden
+        this.time.delayedCall(5000, () => {
+            if (this.restartHintText) {
+                this.restartHintText.destroy();
+                this.restartHintText = null;
+            }
         });
     }
 
@@ -227,33 +306,27 @@ export default class Options extends Phaser.Scene {
     }
 
     createSlider(x, y, label, settingKey, onChange) {
-        // Label
         const labelText = this.add.text(x - 300, y, label, {
             fontFamily: "sans-serif",
             fontSize: "24px",
             color: "#ffffff"
         }).setOrigin(0, 0.5);
 
-        // Slider-Hintergrund
         const sliderBg = this.add.rectangle(x + 50, y, 300, 10, 0x555555).setOrigin(0, 0.5);
 
-        // Slider-Füllstand
         const currentValue = this.settings[settingKey];
         const sliderFill = this.add.rectangle(x + 50, y, 300 * currentValue, 10, 0x66ff66)
             .setOrigin(0, 0.5);
 
-        // Slider-Knopf
         const sliderKnob = this.add.circle(x + 50 + 300 * currentValue, y, 15, 0xffffff)
             .setInteractive({ useHandCursor: true, draggable: true });
 
-        // Wert-Anzeige
         const valueText = this.add.text(x + 380, y, `${Math.round(currentValue * 100)}%`, {
             fontFamily: "sans-serif",
             fontSize: "24px",
             color: "#ffffff"
         }).setOrigin(0, 0.5);
 
-        // Drag-Funktionalität
         this.input.on('drag', (pointer, gameObject, dragX) => {
             if (gameObject === sliderKnob) {
                 const minX = x + 50;
@@ -275,14 +348,12 @@ export default class Options extends Phaser.Scene {
     createToggle(x, y, label, settingKey, onToggle) {
         const isEnabled = this.settings[settingKey];
 
-        // Label
         const labelText = this.add.text(x - 200, y, label, {
             fontFamily: "sans-serif",
             fontSize: "24px",
             color: "#ffffff"
         }).setOrigin(0, 0.5);
 
-        // Toggle-Button
         const toggleBg = this.add.rectangle(x + 150, y, 80, 40, isEnabled ? 0x66ff66 : 0x555555)
             .setOrigin(0.5)
             .setInteractive({ useHandCursor: true });
@@ -361,7 +432,6 @@ export default class Options extends Phaser.Scene {
             if (keyName === 'ARROWLEFT') keyName = '←';
             if (keyName === 'ARROWRIGHT') keyName = '→';
 
-            // Prüfen ob Taste bereits belegt ist
             const existingBinding = Object.keys(this.settings.keybindings).find(
                 key => key !== bindingKey && this.settings.keybindings[key] === keyName
             );
@@ -395,7 +465,7 @@ export default class Options extends Phaser.Scene {
     resetKeybindings() {
         this.settings.keybindings = { ...this.defaultSettings.keybindings };
         this.saveSettings();
-        this.switchTab('steuerung'); // UI neu laden
+        this.switchTab('steuerung');
     }
 
     toggleFullscreen() {
@@ -424,7 +494,7 @@ export default class Options extends Phaser.Scene {
             .on("pointerout", () => backButton.setStyle({ backgroundColor: "#333333" }))
             .on("pointerdown", () => {
                 playSound(sounds.click);
-                this.scene.start("Menu");
+                this.scene.start(this.previousScene); // 👈 Geändert
             });
     }
 
@@ -436,13 +506,11 @@ export default class Options extends Phaser.Scene {
         const saved = localStorage.getItem('tetherVeilSettings');
         if (saved) {
             const parsed = JSON.parse(saved);
-            // Mit Defaults mergen für neue Einstellungen
             return { ...this.defaultSettings, ...parsed };
         }
         return { ...this.defaultSettings };
     }
 
-    // Hilfsfunktion um Einstellungen im Spiel zu nutzen
     static getSettings() {
         const saved = localStorage.getItem('tetherVeilSettings');
         if (saved) {
@@ -451,7 +519,6 @@ export default class Options extends Phaser.Scene {
         return null;
     }
 
-    // Hilfsfunktion um Keybinding zu prüfen
     static isKeyPressed(action, keyCode) {
         const settings = this.getSettings();
         if (!settings) return false;
