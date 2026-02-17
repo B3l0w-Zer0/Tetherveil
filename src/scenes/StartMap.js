@@ -122,8 +122,8 @@ export class StartMap extends Phaser.Scene {
         });
 
         document.getElementById("optionsBtn").addEventListener("click", () => {
-            this.scene.start("Options");
-            alert("Optionsmenü (noch nicht implementiert)");
+            this.scene.start("options");
+            this.menu.style.display = "none";
         });
 
         document.getElementById("fightBtn").addEventListener("click", () => {
