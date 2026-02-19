@@ -1,0 +1,47 @@
+{
+  "villageMap": [
+    {
+      "id": "bob",
+      "x": 370,
+      "y": 250,
+      "texture": "npc_male_1",
+      "name": "Bob der Schmied",
+      "dialog": [
+        "Willkommen in meiner Schmiede!",
+        "Ich kann deine Waffen reparieren.",
+        "Komm wieder wenn du Hilfe brauchst!"
+      ],
+      "speed": 35,
+      "items": [],
+      "quests": ["quest_001"]
+    },
+    {
+      "id": "lisa",
+      "x": 500,
+      "y": 300,
+      "texture": "npc_female_1",
+      "name": "Lisa die Händlerin",
+      "dialog": [
+        "Hast du etwas zu verkaufen?",
+        "Meine Preise sind fair!"
+      ],
+      "speed": 40,
+      "items": ["health_potion", "mana_potion"],
+      "shop": true
+    }
+  ],
+  "forestMap": [
+    {
+      "id": "oldman",
+      "x": 200,
+      "y": 400,
+      "texture": "npc_old",
+      "name": "Alter Einsiedler",
+      "dialog": [
+        "Geh nicht tiefer in den Wald...",
+        "Dort lauern Gefahren!"
+      ],
+      "speed": 20
+    }
+  ]
+}

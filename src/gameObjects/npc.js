@@ -68,7 +68,7 @@ export class NPC {
     }
 
     startDialog(dialogSystem) {
-        dialogSystem.startDialog(this.dialog);
+        dialogSystem.startDialog(this.dialog, this.name);
     }
 
     giveItems(playerInventory) {

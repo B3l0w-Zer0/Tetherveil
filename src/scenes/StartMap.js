@@ -3,6 +3,7 @@ import npcManager from '../gameObjects/npcManager.js';
 import { MapManager } from '../mapping/mapManager.js';
 import { mapConfig } from '../mapping/mapConfig.js';
 import Options from './Options.js';
+import { DialogSystem } from '../gameObjects/dialogSystem.js';
 
 export class StartMap extends Phaser.Scene {
     constructor() {
@@ -152,6 +153,8 @@ export class StartMap extends Phaser.Scene {
                 this.scale.startFullscreen();
             }
         });
+        // DialogSystem erstellen für NPC Dialog und Textboxen
+        this.dialogSystem = new DialogSystem(this);
     }
 
     setupCamera() {
@@ -187,6 +190,24 @@ export class StartMap extends Phaser.Scene {
     }
 
     update() {
+        this.dialogSystem.update();
+
+        // E-Taste für NPC-Interaktion
+        if (Phaser.Input.Keyboard.JustDown(this.keys.E) && !this.menuOpen) {
+            const nearbyNPC = this.npcManager.getNearbyNPC(this.player, 60);
+
+            if (nearbyNPC && !this.dialogSystem.isActive) {
+                nearbyNPC.startDialog(this.dialogSystem);
+            }
+        }
+
+        // Wenn Dialog aktiv: keine Bewegung
+        if (this.dialogSystem.isActive) {
+            this.player.body.setVelocity(0);
+            this.player.anims.stop();
+            return;
+        }
+
         // === NPCs updaten ===
         this.npcManager.update();
 
