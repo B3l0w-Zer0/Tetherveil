@@ -2,7 +2,7 @@ import {createGenMenu, toggleGenMenu} from '../menus/mapMenuGeneral.js';
 import npcManager from '../gameObjects/npcManager.js';
 import { MapManager } from '../mapping/mapManager.js';
 import { mapConfig } from '../mapping/mapConfig.js';
-import Options from './Options.js';  // 👈 NEU: Import für Settings
+import Options from './Options.js';
 
 export class StartMap extends Phaser.Scene {
     constructor() {
@@ -73,7 +73,7 @@ export class StartMap extends Phaser.Scene {
         const startMapKey = mapConfig.maps[0].key;
         this.mapManager.loadMap(startMapKey);
 
-        // 5. 👇 KAMERA SETUP (NACH Map-Laden!)
+        // 5. Kamera Setup (NACH Map-Laden!)
         this.setupCamera();
 
         // 6. Manuellen NPC hinzufügen
@@ -122,8 +122,10 @@ export class StartMap extends Phaser.Scene {
         });
 
         document.getElementById("optionsBtn").addEventListener("click", () => {
-            this.scene.start("options", { previousScene: this.scene.key }); // 👈 Vorherige Szene übergeben
+            this.scene.pause();
+            this.scene.launch("options", { previousScene: this.scene.key });
             this.menu.style.display = "none";
+            this.menuOpen = false;
         });
 
         document.getElementById("fightBtn").addEventListener("click", () => {
@@ -152,9 +154,7 @@ export class StartMap extends Phaser.Scene {
         });
     }
 
-    // 👇 NEUE METHODE: Kamera Setup
     setupCamera() {
-        // Hole aktuelle Map vom MapManager
         const currentMap = this.mapManager.currentMap;
 
         if (!currentMap) {
@@ -177,40 +177,13 @@ export class StartMap extends Phaser.Scene {
         // Deadzone für smootheres Folgen
         this.cameras.main.setDeadzone(100, 100);
 
-        // Zoom basierend auf Auflösung anpassen
-        this.adjustCameraZoom();
-
-        // Pixel-Perfect Rendering (optional, für Pixel-Art)
-        this.cameras.main.roundPixels = true;
-    }
-
-    // 👇 NEUE METHODE: Zoom anpassen
-    adjustCameraZoom() {
+        // Zoom aus Settings laden
         const settings = Options.getSettings();
-
-        if (!settings || !settings.resolution) {
-            this.cameras.main.setZoom(1.0);
-            return;
-        }
-
-        const [width, height] = settings.resolution.split('x').map(Number);
-
-        // Zoom-Level basierend auf Auflösung
-        // Je größer die Auflösung, desto mehr zoomen wir raus
-        // So bleibt das Spielgefühl konsistent
-        let zoom = 1.0;
-
-        if (width >= 2560) {
-            zoom = 0.65;  // 1440p / 4K
-        } else if (width >= 1920) {
-            zoom = 0.8;   // Full HD
-        } else if (width >= 1600) {
-            zoom = 0.9;   // HD+
-        } else {
-            zoom = 1.0;   // 720p (Standard)
-        }
-
+        const zoom = settings?.zoomLevel || 1.0;
         this.cameras.main.setZoom(zoom);
+
+        // Pixel-Perfect Rendering
+        this.cameras.main.roundPixels = true;
     }
 
     update() {

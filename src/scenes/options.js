@@ -4,7 +4,6 @@ export default class Options extends Phaser.Scene {
     constructor() {
         super("options");
 
-        // Standard-Einstellungen
         this.defaultSettings = {
             // Audio
             masterVolume: 1.0,
@@ -12,9 +11,8 @@ export default class Options extends Phaser.Scene {
             sfxVolume: 0.8,
 
             // Grafik
-            resolution: '1280x720',  // 👈 NEU
+            zoomLevel: 1.0,  // 👈 Nur Zoom
             fullscreen: false,
-            pixelPerfect: true,
             showFPS: false,
             particleEffects: true,
             screenShake: true,
@@ -43,29 +41,19 @@ export default class Options extends Phaser.Scene {
     create() {
         const { width, height } = this.scale;
 
-        // Vorherige Szene speichern
         this.previousScene = this.scene.settings.data?.previousScene || "Menu";
 
-        // Hintergrund
         this.add.rectangle(width / 2, height / 2, width, height, 0x000000).setAlpha(0.8);
 
-        // Titel
         this.add.text(width / 2, 50, "Optionen", {
             fontFamily: "serif",
             fontSize: "48px",
             color: "#ffffff"
-        }).setOrigin(0.5);
+        }).setOrigin(0.5).setScrollFactor(0);
 
-        // Tab-Buttons erstellen
         this.createTabs(width);
-
-        // Container für Optionen
         this.optionsContainer = this.add.container(0, 0);
-
-        // Zurück-Button
         this.createBackButton(width, height);
-
-        // Initial Audio-Tab anzeigen
         this.switchTab('audio');
     }
 
@@ -89,6 +77,7 @@ export default class Options extends Phaser.Scene {
                 padding: { x: 20, y: 10 }
             })
                 .setOrigin(0.5)
+                .setScrollFactor(0)
                 .setInteractive({ useHandCursor: true })
                 .on("pointerover", () => {
                     if (this.currentTab !== tabKey) {
@@ -112,7 +101,6 @@ export default class Options extends Phaser.Scene {
     switchTab(tabName) {
         this.currentTab = tabName;
 
-        // Tab-Button-Styles aktualisieren
         Object.keys(this.tabButtons).forEach(key => {
             if (key === tabName) {
                 this.tabButtons[key].setStyle({ backgroundColor: "#555555", color: "#ffffff" });
@@ -121,10 +109,8 @@ export default class Options extends Phaser.Scene {
             }
         });
 
-        // Container leeren
         this.optionsContainer.removeAll(true);
 
-        // Richtige Optionen anzeigen
         switch (tabName) {
             case 'audio':
                 this.createAudioOptions();
@@ -143,20 +129,17 @@ export default class Options extends Phaser.Scene {
         const startY = 200;
         const spacing = 100;
 
-        // Master Volume
         this.createSlider(width / 2, startY, "Gesamtlautstärke", 'masterVolume', (value) => {
             this.settings.masterVolume = value;
             this.game.sound.volume = value;
             this.saveSettings();
         });
 
-        // Music Volume
         this.createSlider(width / 2, startY + spacing, "Musiklautstärke", 'musicVolume', (value) => {
             this.settings.musicVolume = value;
             this.saveSettings();
         });
 
-        // SFX Volume
         this.createSlider(width / 2, startY + spacing * 2, "Effektlautstärke", 'sfxVolume', (value) => {
             this.settings.sfxVolume = value;
             this.saveSettings();
@@ -165,15 +148,14 @@ export default class Options extends Phaser.Scene {
 
     createGraphicsOptions() {
         const { width } = this.scale;
-        const startY = 200;
+        const startY = 250;
         const spacing = 80;
 
-        // Auflösungs-Auswahl (NEU)
-        this.createResolutionSelect(width / 2, startY);
+        // Zoom-Auswahl
+        this.createZoomSelect(width / 2, startY);
 
         const options = [
             { label: "Vollbild", key: 'fullscreen', action: () => this.toggleFullscreen() },
-            { label: "Pixel Perfect", key: 'pixelPerfect' },
             { label: "FPS anzeigen", key: 'showFPS', action: () => this.toggleFPS() },
             { label: "Partikeleffekte", key: 'particleEffects' },
             { label: "Bildschirmwackeln", key: 'screenShake' }
@@ -184,74 +166,93 @@ export default class Options extends Phaser.Scene {
         });
     }
 
-    // 👇 NEUE METHODE
-    createResolutionSelect(x, y) {
-        const resolutions = [
-            '1280x720',   // HD Ready
-            '1600x900',   // HD+
-            '1920x1080',  // Full HD
-            '2560x1440',  // QHD
+    createZoomSelect(x, y) {
+        const zoomLevels = [
+            { label: '50%', value: 0.5 },
+            { label: '60%', value: 0.6 },
+            { label: '70%', value: 0.7 },
+            { label: '75%', value: 0.75 },
+            { label: '80%', value: 0.8 },
+            { label: '90%', value: 0.9 },
+            { label: '100%', value: 1.0 },
+            { label: '110%', value: 1.1 },
+            { label: '125%', value: 1.25 },
+            { label: '150%', value: 1.5 },
+            { label: '175%', value: 1.75 },
+            { label: '200%', value: 2.0 }
         ];
 
-        const labelText = this.add.text(x - 200, y, "Auflösung", {
+        const labelText = this.add.text(x - 300, y, "Zoom", {
             fontFamily: "sans-serif",
-            fontSize: "24px",
+            fontSize: "28px",
             color: "#ffffff"
         }).setOrigin(0, 0.5);
 
-        const currentRes = this.settings.resolution;
-        const resButton = this.add.text(x + 150, y, currentRes, {
-            fontFamily: "monospace",
-            fontSize: "20px",
+        const currentZoom = this.settings.zoomLevel || 1.0;
+        const currentLabel = zoomLevels.find(z => z.value === currentZoom)?.label || '100%';
+
+        // Minus Button
+        const minusButton = this.add.text(x + 80, y, "−", {
+            fontFamily: "sans-serif",
+            fontSize: "32px",
             color: "#ffffff",
             backgroundColor: "#444444",
-            padding: { x: 15, y: 8 }
+            padding: { x: 12, y: 4 }
         })
             .setOrigin(0.5)
             .setInteractive({ useHandCursor: true })
-            .on("pointerover", () => resButton.setStyle({ backgroundColor: "#555555" }))
-            .on("pointerout", () => resButton.setStyle({ backgroundColor: "#444444" }))
+            .on("pointerover", () => minusButton.setStyle({ backgroundColor: "#555555" }))
+            .on("pointerout", () => minusButton.setStyle({ backgroundColor: "#444444" }))
             .on("pointerdown", () => {
                 playSound(sounds.click);
-
-                // Cycle durch Auflösungen
-                const currentIndex = resolutions.indexOf(this.settings.resolution);
-                const nextIndex = (currentIndex + 1) % resolutions.length;
-                this.settings.resolution = resolutions[nextIndex];
-                resButton.setText(this.settings.resolution);
-
-                this.saveSettings();
-
-                // Zeige Hinweis dass Neustart nötig ist
-                this.showRestartHint();
+                const currentIndex = zoomLevels.findIndex(z => z.value === this.settings.zoomLevel);
+                if (currentIndex > 0) {
+                    this.settings.zoomLevel = zoomLevels[currentIndex - 1].value;
+                    zoomText.setText(zoomLevels[currentIndex - 1].label);
+                    this.applyZoomToAllScenes(this.settings.zoomLevel);
+                    this.saveSettings();
+                }
             });
 
-        this.optionsContainer.add([labelText, resButton]);
+        // Zoom Anzeige
+        const zoomText = this.add.text(x + 150, y, currentLabel, {
+            fontFamily: "monospace",
+            fontSize: "24px",
+            color: "#ffffff",
+            backgroundColor: "#333333",
+            padding: { x: 20, y: 8 }
+        }).setOrigin(0.5);
+
+        // Plus Button
+        const plusButton = this.add.text(x + 220, y, "+", {
+            fontFamily: "sans-serif",
+            fontSize: "32px",
+            color: "#ffffff",
+            backgroundColor: "#444444",
+            padding: { x: 10, y: 4 }
+        })
+            .setOrigin(0.5)
+            .setInteractive({ useHandCursor: true })
+            .on("pointerover", () => plusButton.setStyle({ backgroundColor: "#555555" }))
+            .on("pointerout", () => plusButton.setStyle({ backgroundColor: "#444444" }))
+            .on("pointerdown", () => {
+                playSound(sounds.click);
+                const currentIndex = zoomLevels.findIndex(z => z.value === this.settings.zoomLevel);
+                if (currentIndex < zoomLevels.length - 1) {
+                    this.settings.zoomLevel = zoomLevels[currentIndex + 1].value;
+                    zoomText.setText(zoomLevels[currentIndex + 1].label);
+                    this.applyZoomToAllScenes(this.settings.zoomLevel);
+                    this.saveSettings();
+                }
+            });
+
+        this.optionsContainer.add([labelText, minusButton, zoomText, plusButton]);
     }
 
-    // 👇 NEUE METHODE
-    showRestartHint() {
-        // Entferne alten Hinweis falls vorhanden
-        if (this.restartHintText) {
-            this.restartHintText.destroy();
-        }
-
-        const { width, height } = this.scale;
-
-        this.restartHintText = this.add.text(width / 2, height - 120,
-            "⚠️ Neustart erforderlich um Auflösung zu übernehmen", {
-                fontFamily: "sans-serif",
-                fontSize: "20px",
-                color: "#ffaa00",
-                backgroundColor: "#000000",
-                padding: { x: 15, y: 10 }
-            }).setOrigin(0.5);
-
-        // Hinweis nach 5 Sekunden ausblenden
-        this.time.delayedCall(5000, () => {
-            if (this.restartHintText) {
-                this.restartHintText.destroy();
-                this.restartHintText = null;
+    applyZoomToAllScenes(zoom) {
+        this.game.scene.scenes.forEach(scene => {
+            if (scene.cameras && scene.cameras.main && scene.scene.key !== 'FPSDisplay') {
+                scene.cameras.main.setZoom(zoom);
             }
         });
     }
@@ -285,7 +286,6 @@ export default class Options extends Phaser.Scene {
             this.createKeybindButton(xPos, yPos, keyLabels[key], key);
         });
 
-        // Standard wiederherstellen Button
         const resetButton = this.add.text(width / 2, startY + spacing * 7, "Standard wiederherstellen", {
             fontFamily: "sans-serif",
             fontSize: "24px",
@@ -424,7 +424,6 @@ export default class Options extends Phaser.Scene {
 
             let keyName = event.key.toUpperCase();
 
-            // Spezielle Tasten
             if (keyName === 'ESCAPE') keyName = 'ESC';
             if (keyName === ' ') keyName = 'SPACE';
             if (keyName === 'ARROWUP') keyName = '↑';
@@ -489,12 +488,23 @@ export default class Options extends Phaser.Scene {
             padding: { x: 30, y: 10 }
         })
             .setOrigin(0.5)
+            .setScrollFactor(0)
             .setInteractive({ useHandCursor: true })
             .on("pointerover", () => backButton.setStyle({ backgroundColor: "#555555" }))
             .on("pointerout", () => backButton.setStyle({ backgroundColor: "#333333" }))
             .on("pointerdown", () => {
                 playSound(sounds.click);
-                this.scene.start(this.previousScene); // 👈 Geändert
+
+                // Prüfen ob vorherige Szene pausiert ist
+                const prevScene = this.scene.get(this.previousScene);
+                if (prevScene && prevScene.scene.isPaused()) {
+                    // Options stoppen und vorherige Szene fortsetzen
+                    this.scene.stop();
+                    this.scene.resume(this.previousScene);
+                } else {
+                    // Normal zurück zum Menü
+                    this.scene.start(this.previousScene);
+                }
             });
     }
 
