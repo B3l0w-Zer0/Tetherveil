@@ -2,8 +2,6 @@
   "villageMap": [
     {
       "id": "bob",
-      "x": 370,
-      "y": 250,
       "texture": "npc_male_1",
       "name": "Bob der Schmied",
       "dialog": [
@@ -17,8 +15,6 @@
     },
     {
       "id": "lisa",
-      "x": 500,
-      "y": 300,
       "texture": "npc_female_1",
       "name": "Lisa die Händlerin",
       "dialog": [
@@ -33,8 +29,6 @@
   "forestMap": [
     {
       "id": "oldman",
-      "x": 200,
-      "y": 400,
       "texture": "npc_old",
       "name": "Alter Einsiedler",
       "dialog": [

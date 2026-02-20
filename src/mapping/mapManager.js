@@ -7,15 +7,53 @@ export class MapManager {
         this.currentMapKey = null;
         this.layers = {};
         this.isTransitioning = false;
+        this.npcData = null; // Cache für NPC-Daten
+    }
+
+    /**
+     * Lädt NPC-Daten aus JSON (einmalig)
+     */
+    async loadNPCData() {
+        if (this.npcData) return this.npcData;
+
+        try {
+            const response = await fetch('src/data/npcs/npcData.json');
+            const rawData = await response.json();
+
+            // Konvertiere Map-basierte Struktur zu ID-basierter Struktur
+            this.npcData = {};
+
+            // Gehe durch alle Maps
+            Object.values(rawData).forEach(mapNPCs => {
+                if (Array.isArray(mapNPCs)) {
+                    mapNPCs.forEach(npc => {
+                        if (npc.id) {
+                            this.npcData[npc.id] = npc;
+                        }
+                    });
+                }
+            });
+
+            console.log('✅ NPC-Daten geladen:', Object.keys(this.npcData).length, 'NPCs');
+            console.log('📋 Verfügbare NPC-IDs:', Object.keys(this.npcData));
+            return this.npcData;
+        } catch (error) {
+            console.warn('⚠️ Konnte npcs.json nicht laden:', error);
+            this.npcData = {};
+            return this.npcData;
+        }
     }
 
     /**
      * Lädt eine Map mit dem angegebenen Key
      */
-    loadMap(mapKey, spawnX = null, spawnY = null, direction = 'down') {
+    async loadMap(mapKey, spawnX = null, spawnY = null, direction = 'down') {
         console.log('🚀 LOADMAP GESTARTET FÜR:', mapKey);
         if (this.isTransitioning) return;
         this.isTransitioning = true;
+
+        // NPC-Daten laden (falls noch nicht geladen)
+        await this.loadNPCData();
 
         // Alte Map aufräumen
         this.cleanupCurrentMap();
@@ -71,7 +109,7 @@ export class MapManager {
         // Warps parsen (Tür-Übergänge)
         this.parseWarps();
 
-        // NPCs spawnen
+        // NPCs spawnen (aus Tiled + JSON)
         this.spawnNPCs();
 
         // Encounter-Zonen parsen
@@ -100,12 +138,10 @@ export class MapManager {
             console.log(`🎨 Versuche Layer zu laden: ${layerName}`);
 
             // Versuche einfach den Layer zu erstellen
-            // Wenn es funktioniert = Tile-Layer, wenn nicht = Object-Layer
             try {
                 const layer = this.currentMap.createLayer(layerName, tileset, 0, 0);
 
                 if (layer) {
-                    // Layer erfolgreich erstellt!
                     layer.setVisible(true);
                     layer.setAlpha(1);
                     layer.setDepth(index);
@@ -125,26 +161,20 @@ export class MapManager {
         this.scene.player.setDepth(100);
     }
 
-
-
-
-
     /**
      * Richtet Kollisionen für Collision-Layer ein
      */
     setupCollisions() {
-        // Suche nach Layer mit "Collision", "Walls" oder "collides" Property
         Object.entries(this.layers).forEach(([name, layer]) => {
             if (name.toLowerCase().includes('collision') ||
                 name.toLowerCase().includes('wall')) {
 
-                // Kollision aktivieren
-                layer.setCollisionByProperty({ collides: true });
+                // ALLE nicht-leeren Tiles werden solid
+                layer.setCollisionByExclusion([-1]);
 
-                // Collider mit Spieler erstellen
                 this.scene.physics.add.collider(this.scene.player, layer);
 
-                console.log(`Kollision aktiviert für Layer: ${name}`);
+                console.log(`✅ Kollision aktiviert für Layer: ${name}`);
             }
         });
     }
@@ -163,7 +193,6 @@ export class MapManager {
         }
 
         warpLayer.objects.forEach(warpObj => {
-            // Sicherheitscheck für Objekt-Properties
             if (typeof warpObj.x === 'undefined' ||
                 typeof warpObj.y === 'undefined' ||
                 typeof warpObj.width === 'undefined' ||
@@ -172,7 +201,6 @@ export class MapManager {
                 return;
             }
 
-            // Trigger-Zone erstellen
             const warp = this.scene.add.zone(
                 warpObj.x + warpObj.width / 2,
                 warpObj.y + warpObj.height / 2,
@@ -184,7 +212,6 @@ export class MapManager {
             warp.body.setAllowGravity(false);
             warp.body.moves = false;
 
-            // Properties aus Tiled auslesen
             const props = {};
             if (warpObj.properties && Array.isArray(warpObj.properties)) {
                 warpObj.properties.forEach(prop => {
@@ -194,21 +221,18 @@ export class MapManager {
                 });
             }
 
-            // Nur Warp erstellen, wenn targetMap vorhanden
             if (!props.targetMap) {
                 console.warn('Warp hat keine targetMap Property!', warpObj);
                 warp.destroy();
                 return;
             }
 
-            // Warp-Daten speichern
             warp.setData('targetMap', props.targetMap);
             warp.setData('targetX', props.targetX || 0);
             warp.setData('targetY', props.targetY || 0);
             warp.setData('direction', props.direction || 'down');
             warp.setData('type', props.type || 'default');
 
-            // Overlap mit Spieler
             this.scene.physics.add.overlap(
                 this.scene.player,
                 warp,
@@ -238,7 +262,6 @@ export class MapManager {
             return;
         }
 
-        // Transition-Effekt
         this.playTransition(type, () => {
             this.loadMap(targetMap, targetX, targetY, direction);
         });
@@ -269,10 +292,14 @@ export class MapManager {
     }
 
     /**
-     * Spawnt NPCs aus Object-Layer
+     * Spawnt NPCs aus Tiled + JSON
+     * HAUPTÄNDERUNG: Lädt NPCs aus JSON basierend auf npcId
      */
     spawnNPCs() {
-        const npcLayer = this.currentMap.getObjectLayer('NPCs');
+        const npcLayer = this.currentMap.getObjectLayer('NPCs') ||
+            this.currentMap.getObjectLayer('NPC') ||
+            this.currentMap.getObjectLayer('Npcs');
+
         if (!npcLayer || !npcLayer.objects) {
             console.log('Keine NPC-Layer gefunden');
             return;
@@ -285,6 +312,7 @@ export class MapManager {
                 return;
             }
 
+            // Properties aus Tiled auslesen
             const props = {};
             if (npcObj.properties && Array.isArray(npcObj.properties)) {
                 npcObj.properties.forEach(prop => {
@@ -294,26 +322,49 @@ export class MapManager {
                 });
             }
 
-            // NPC über npcManager hinzufügen
-            if (this.scene.npcManager && this.scene.npcManager.addNPC) {
-                this.scene.npcManager.addNPC({
+            // NPC-ID aus Tiled holen (wichtigste Property!)
+            const npcId = props.npcId || props.id;
+
+            // Basis-Config (Fallback wenn JSON fehlt)
+            let npcConfig = {
+                x: npcObj.x,
+                y: npcObj.y,
+                texture: props.texture || "npc",
+                name: props.name || "NPC",
+                dialog: props.dialog ? props.dialog.split('|') : ["..."],
+                speed: props.speed || 35
+            };
+
+            // Wenn npcId vorhanden UND in JSON gefunden → JSON-Daten nutzen
+            if (npcId && this.npcData && this.npcData[npcId]) {
+                const jsonData = this.npcData[npcId];
+
+                // Position aus Tiled, Rest aus JSON
+                npcConfig = {
                     x: npcObj.x,
                     y: npcObj.y,
-                    texture: props.texture || "npc",
-                    name: props.name || "NPC",
-                    dialog: props.dialog ? props.dialog.split('|') : ["..."],
-                    speed: props.speed || 35
-                });
+                    ...jsonData  // Überschreibt mit JSON-Daten
+                };
 
-                console.log(`NPC erstellt: ${props.name} bei (${npcObj.x}, ${npcObj.y})`);
+                console.log(`✅ NPC "${npcId}" aus JSON geladen:`, npcConfig.name);
+            } else if (npcId) {
+                console.warn(`⚠️ NPC-ID "${npcId}" nicht in npcs.json gefunden, nutze Tiled-Properties`);
             } else {
-                console.warn('npcManager nicht verfügbar!');
+                console.log(`ℹ️ NPC ohne ID nutzt Tiled-Properties: ${npcConfig.name}`);
+            }
+
+            // NPC über npcManager spawnen
+            if (this.scene.npcManager && this.scene.npcManager.addNPC) {
+                this.scene.npcManager.addNPC(npcConfig);
+                console.log(`🎭 NPC spawned: ${npcConfig.name} bei (${npcObj.x}, ${npcObj.y})`);
+            } else {
+                console.error('❌ npcManager nicht verfügbar!');
             }
         });
     }
 
     /**
-     * Parst Encounter-Zonen für wilde Pokémon
+     * Parst Encounter-Zonen für wilde Pokémon/Gegner
      */
     parseEncounterZones() {
         const encounterLayer = this.currentMap.getObjectLayer('Encounters') ||
@@ -325,7 +376,6 @@ export class MapManager {
         }
 
         encounterLayer.objects.forEach(zone => {
-            // Sicherheitscheck
             if (typeof zone.x === 'undefined' ||
                 typeof zone.y === 'undefined' ||
                 typeof zone.width === 'undefined' ||
@@ -343,7 +393,6 @@ export class MapManager {
                 });
             }
 
-            // Encounter-Zone erstellen
             const encounterZone = this.scene.add.zone(
                 zone.x + zone.width / 2,
                 zone.y + zone.height / 2,
@@ -355,16 +404,16 @@ export class MapManager {
             encounterZone.body.setAllowGravity(false);
             encounterZone.body.moves = false;
 
-            // Encounter-Daten speichern
             encounterZone.setData('encounterRate', props.encounterRate || 0.1);
             encounterZone.setData('pokemon', props.pokemon || 'default');
 
-            // Hier Encounter-System implementieren
+            // Hier später Encounter-System implementieren
             // this.scene.physics.add.overlap(player, encounterZone, checkEncounter)
 
-            console.log(`Encounter-Zone: ${props.pokemon} (Rate: ${props.encounterRate})`);
+            console.log(`⚔️ Encounter-Zone: ${props.pokemon} (Rate: ${props.encounterRate})`);
         });
     }
+
     /**
      * Räumt die aktuelle Map auf
      */
@@ -376,15 +425,24 @@ export class MapManager {
             if (layer) layer.destroy();
         });
 
+        // Alle NPCs entfernen (wichtig bei Map-Wechsel!)
+        if (this.scene.npcManager && this.scene.npcManager.npcs) {
+            // Kopie erstellen da wir während Iteration löschen
+            const npcsToRemove = [...this.scene.npcManager.npcs];
+            npcsToRemove.forEach(npc => {
+                this.scene.npcManager.removeNPC(npc);
+            });
+        }
+
         // Map zerstören
         this.currentMap.destroy();
 
         this.layers = {};
         this.currentMap = null;
     }
+
     /**
      * Gibt den aktuellen Map-Key zurück
-     * yeeeeyyy yeeey
      */
     getCurrentMapKey() {
         return this.currentMapKey;

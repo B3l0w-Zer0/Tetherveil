@@ -11,17 +11,14 @@ export class StartMap extends Phaser.Scene {
     }
 
     preload() {
-        // Alle Tilesets laden
         mapConfig.tilesets.forEach(tileset => {
             this.load.image(tileset.key, tileset.path);
         });
 
-        // Alle Maps laden
         mapConfig.maps.forEach(map => {
             this.load.tilemapTiledJSON(map.key, map.tilemapPath);
         });
 
-        // Player Bilder laden
         this.load.spritesheet("player", "assets/sprites/player_spritesheet.png", {
             frameWidth: 32,
             frameHeight: 32
@@ -32,10 +29,10 @@ export class StartMap extends Phaser.Scene {
         // 1. Spieler erstellen
         this.player = this.physics.add.sprite(450, 300, "player", 0);
         this.player.setDisplaySize(32, 32);
-
         this.player.body.setCollideWorldBounds(true);
         this.player.body.pushable = true;
 
+        // Animationen
         this.anims.create({
             key: "walk-down",
             frames: this.anims.generateFrameNumbers("player", {start: 0, end: 2}),
@@ -64,35 +61,31 @@ export class StartMap extends Phaser.Scene {
             repeat: -1
         });
 
-        // 2. NPC-Manager erstellen
+        // 2. Dialog-System erstellen
+        this.dialogSystem = new DialogSystem(this);
+
+        // 3. NPC-Manager erstellen
         this.npcManager = new npcManager(this);
 
-        // 3. Map-Manager erstellen
+        // 4. Map-Manager erstellen
         this.mapManager = new MapManager(this);
 
-        // 4. Map laden
+        // 5. Map laden (lädt automatisch NPCs aus Tiled + JSON!)
         const startMapKey = mapConfig.maps[0].key;
         this.mapManager.loadMap(startMapKey);
 
-        // 5. Kamera Setup (NACH Map-Laden!)
+        // 6. Kamera Setup
         this.setupCamera();
 
-        // 6. Manuellen NPC hinzufügen
-        this.npcManager.addNPC({
-            x: 370,
-            y: 250,
-            texture: "npc",
-            name: "Bob",
-            dialog: ["Hallo!", "Wie geht's?"],
-            speed: 35
-        });
+        // 👇 KEIN manuelles addNPC() mehr nötig!
+        // NPCs werden automatisch aus Tiled + JSON geladen
 
-        // Steuerung Keys
+        // Steuerung
         this.cursors = this.input.keyboard.createCursorKeys();
         this.keys = this.input.keyboard.addKeys("W,A,S,D,ESC,SHIFT,TAB,E");
         this.menuOpen = false;
 
-        // ESC-Menü (HTML)
+        // Pause-Menü (HTML)
         this.menu = document.createElement("div");
         this.menu.style.position = "absolute";
         this.menu.style.top = "50%";
@@ -116,7 +109,6 @@ export class StartMap extends Phaser.Scene {
 
         document.getElementById("game-container").appendChild(this.menu);
 
-        // Button-Funktionen
         document.getElementById("resumeBtn").addEventListener("click", () => {
             this.menu.style.display = "none";
             this.menuOpen = false;
@@ -141,7 +133,6 @@ export class StartMap extends Phaser.Scene {
             this.scene.start("Menu");
         });
 
-        // General Menu
         this.genMenu = createGenMenu();
 
         // Vollbild
@@ -153,8 +144,6 @@ export class StartMap extends Phaser.Scene {
                 this.scale.startFullscreen();
             }
         });
-        // DialogSystem erstellen für NPC Dialog und Textboxen
-        this.dialogSystem = new DialogSystem(this);
     }
 
     setupCamera() {
@@ -168,62 +157,54 @@ export class StartMap extends Phaser.Scene {
         const mapWidth = currentMap.widthInPixels;
         const mapHeight = currentMap.heightInPixels;
 
-        // Kamera-Grenzen auf Map begrenzen
         this.cameras.main.setBounds(0, 0, mapWidth, mapHeight);
-
-        // World-Grenzen für Physics
         this.physics.world.setBounds(0, 0, mapWidth, mapHeight);
-
-        // Spieler folgen mit smooth camera
         this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
-
-        // Deadzone für smootheres Folgen
         this.cameras.main.setDeadzone(100, 100);
 
-        // Zoom aus Settings laden
         const settings = Options.getSettings();
         const zoom = settings?.zoomLevel || 1.0;
         this.cameras.main.setZoom(zoom);
 
-        // Pixel-Perfect Rendering
         this.cameras.main.roundPixels = true;
     }
 
     update() {
+        // Dialog-System update (WICHTIG: Zuerst!)
         this.dialogSystem.update();
 
+        // NPCs updaten
+        this.npcManager.update();
+
         // E-Taste für NPC-Interaktion
-        if (Phaser.Input.Keyboard.JustDown(this.keys.E) && !this.menuOpen) {
+        if (Phaser.Input.Keyboard.JustDown(this.keys.E) && !this.menuOpen && !this.dialogSystem.isActive) {
             const nearbyNPC = this.npcManager.getNearbyNPC(this.player, 60);
 
-            if (nearbyNPC && !this.dialogSystem.isActive) {
+            if (nearbyNPC) {
                 nearbyNPC.startDialog(this.dialogSystem);
             }
         }
 
-        // Wenn Dialog aktiv: keine Bewegung
+        // Dialog aktiv → keine Bewegung
         if (this.dialogSystem.isActive) {
             this.player.body.setVelocity(0);
             this.player.anims.stop();
             return;
         }
 
-        // === NPCs updaten ===
-        this.npcManager.update();
-
-        // === Menü-Handling ===
+        // ESC-Menü
         if (Phaser.Input.Keyboard.JustDown(this.keys.ESC)) {
             const visible = this.menu.style.display === "none";
             this.menu.style.display = visible ? "block" : "none";
             this.menuOpen = visible;
 
-            // Wenn Menü aufgeht: Player stoppen + Animation stoppen
             if (this.menuOpen) {
                 this.player.body.setVelocity(0);
                 this.player.anims.stop();
             }
         }
 
+        // TAB-Menü
         if (Phaser.Input.Keyboard.JustDown(this.keys.TAB)) {
             toggleGenMenu(this.genMenu);
             this.menuOpen = !this.menuOpen;
@@ -234,10 +215,10 @@ export class StartMap extends Phaser.Scene {
             }
         }
 
-        // Wenn Menü offen ist: keine Bewegung
+        // Menü offen → keine Bewegung
         if (this.menuOpen) return;
 
-        // === Movement ===
+        // Movement
         const speed = this.keys.SHIFT.isDown ? 400 : 200;
         const body = this.player.body;
 
@@ -250,7 +231,6 @@ export class StartMap extends Phaser.Scene {
         if (this.cursors.up.isDown || this.keys.W.isDown) vy -= 1;
         else if (this.cursors.down.isDown || this.keys.S.isDown) vy += 1;
 
-        // Diagonal normalisieren (sonst diagonal schneller)
         if (vx !== 0 && vy !== 0) {
             const inv = 1 / Math.sqrt(2);
             vx *= inv;
@@ -259,33 +239,22 @@ export class StartMap extends Phaser.Scene {
 
         body.setVelocity(vx * speed, vy * speed);
 
-        // === Animation + Idle Frames ===
-        // Merke letzte Richtung (für Idle)
+        // Animationen
         if (!this.lastDir) this.lastDir = "down";
 
         if (vx === 0 && vy === 0) {
-            // Idle: Frame je Richtung (0=down, 3=left, 6=right, 9=up)
             this.player.anims.stop();
 
             switch (this.lastDir) {
-                case "down":
-                    this.player.setFrame(0);
-                    break;
-                case "left":
-                    this.player.setFrame(3);
-                    break;
-                case "right":
-                    this.player.setFrame(6);
-                    break;
-                case "up":
-                    this.player.setFrame(9);
-                    break;
+                case "down": this.player.setFrame(0); break;
+                case "left": this.player.setFrame(3); break;
+                case "right": this.player.setFrame(6); break;
+                case "up": this.player.setFrame(9); break;
             }
 
             return;
         }
 
-        // Lauf-Animation je nach dominanter Achse
         if (Math.abs(vx) > Math.abs(vy)) {
             if (vx > 0) {
                 this.lastDir = "right";
