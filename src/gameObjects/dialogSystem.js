@@ -1,3 +1,4 @@
+import { NPC } from './npc.js';
 export class DialogSystem {
     constructor(scene) {
         this.scene = scene;
@@ -95,8 +96,9 @@ export class DialogSystem {
         });
     }
 
-    startDialog(dialogLines, npcName = "???") {
+    startDialog(dialogLines, npcName = "???", npc) {
         if (this.isActive) return;
+        this.activeNPC = npc;
 
         this.currentDialog = Array.isArray(dialogLines) ? dialogLines : [dialogLines];
         this.currentIndex = 0;
@@ -139,6 +141,13 @@ export class DialogSystem {
         this.container.setVisible(false);
         this.currentDialog = [];
         this.currentIndex = 0;
+
+        if (this.activeNPC) {
+            console.log("Slami");
+            this.activeNPC.isTalking = false;
+            this.activeNPC.randomMovement(true);
+            this.activeNPC = null;
+        }
     }
 
     update() {

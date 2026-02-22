@@ -5,6 +5,7 @@ export class NPC {
         this.dialog = config.dialog || [];
         this.items = config.items || [];
         this.speed = config.speed || 30;
+        this.isTalking = false;
 
         this.sprite = scene.physics.add.sprite(config.x, config.y, config.texture);
         this.sprite.setImmovable(true);
@@ -31,6 +32,7 @@ export class NPC {
     }
 
     update() {
+        if (this.isTalking) return;
         this.randomMovement();
         this.checkIfStuck();
     }
@@ -68,7 +70,9 @@ export class NPC {
     }
 
     startDialog(dialogSystem) {
-        dialogSystem.startDialog(this.dialog, this.name);
+        this.isTalking = true;
+        this.sprite.setVelocity(0, 0);
+        dialogSystem.startDialog(this.dialog, this.name,this);
     }
 
     giveItems(playerInventory) {

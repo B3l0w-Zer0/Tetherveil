@@ -10,7 +10,6 @@ export default class NPCManager {
     addNPC(config) {
         const npc = new NPC(this.scene, config);
 
-        // Kollision NPC <-> alle Collision/Wall-Layer
         if (this.scene.mapManager && this.scene.mapManager.layers) {
             Object.entries(this.scene.mapManager.layers).forEach(([name, layer]) => {
                 if (name.toLowerCase().includes('wall') || name.toLowerCase().includes('collision')) {
@@ -19,10 +18,18 @@ export default class NPCManager {
             });
         }
 
-        // Kollision NPC <-> Player
         if (this.scene.player) {
-            this.scene.physics.add.collider(npc.sprite, this.scene.player);
+            this.scene.physics.add.collider(npc.sprite, this.scene.player, () => {
+                // NPC stoppt sofort wenn er den Spieler berührt
+                npc.sprite.setVelocity(0, 0);
+                npc.moveTimer = this.scene.time.now + 1500; // kurze Pause vor nächster Bewegung
+            });
         }
+
+        // NPC <-> NPC Kollision
+        this.npcs.forEach(existingNPC => {
+            this.scene.physics.add.collider(npc.sprite, existingNPC.sprite);
+        });
 
         this.group.add(npc.sprite);
         this.npcs.push(npc);
