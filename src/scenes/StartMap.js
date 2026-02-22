@@ -4,6 +4,7 @@ import { MapManager } from '../mapping/mapManager.js';
 import { mapConfig } from '../mapping/mapConfig.js';
 import Options from './Options.js';
 import { DialogSystem } from '../gameObjects/dialogSystem.js';
+import { QuestManager } from '../gameObjects/questManager.js';
 
 export class StartMap extends Phaser.Scene {
     constructor() {
@@ -63,6 +64,21 @@ export class StartMap extends Phaser.Scene {
 
         // 2. Dialog-System erstellen
         this.dialogSystem = new DialogSystem(this);
+        this.questManager = new QuestManager(this);
+
+        //Events Quests
+        this.events.on('quest-accepted', (quest) => {
+            console.log(`📜 Quest gestartet: "${quest.title}"`);
+        });
+        this.events.on('quest-finished', (quest) => {
+            console.log(`🏆 Quest abgeschlossen: "${quest.title}"`);
+        });
+        this.events.on('item-received', (itemId) => {
+            console.log(`🎁 Item erhalten: ${itemId}`);
+        });
+        this.events.on('xp-gained', (xp) => {
+            console.log(`⭐ +${xp} XP`);
+        });
 
         // 3. NPC-Manager erstellen
         this.npcManager = new npcManager(this);

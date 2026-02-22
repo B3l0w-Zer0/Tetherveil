@@ -1,3 +1,4 @@
+
 export class NPC {
     constructor(scene, config) {
         this.scene = scene;
@@ -6,6 +7,7 @@ export class NPC {
         this.items = config.items || [];
         this.speed = config.speed || 30;
         this.isTalking = false;
+        this.npcId = config.id || null;
 
         this.sprite = scene.physics.add.sprite(config.x, config.y, config.texture);
         this.sprite.setImmovable(true);
@@ -72,7 +74,43 @@ export class NPC {
     startDialog(dialogSystem) {
         this.isTalking = true;
         this.sprite.setVelocity(0, 0);
-        dialogSystem.startDialog(this.dialog, this.name,this);
+
+        const questManager = this.scene.questManager;
+
+        if (!questManager || !this.npcId) {
+            dialogSystem.startDialog(this.dialog, this.name, this);
+            return;
+        }
+
+        const { type, quest, lines } = questManager.getQuestDialogForNPC(this.npcId, this.dialog);
+
+        switch (type) {
+            case 'offer':
+                dialogSystem.startQuestDialog(
+                    lines, this.name, this, quest,
+                    () => {
+                        questManager.acceptQuest(quest.id);
+                        dialogSystem.startDialog(quest.dialogOnAccept || ["Danke!"], this.name, this);
+                    },
+                    () => {
+                        questManager.declineQuest(quest.id);
+                        dialogSystem.startDialog(quest.dialogOnDecline || ["Schade..."], this.name, this);
+                    }
+                );
+                break;
+
+            case 'completable':
+                dialogSystem.startDialog(lines, this.name, this);
+                questManager.finishQuest(quest.id);
+                break;
+
+            case 'active':
+            case 'normal':
+            default:
+                dialogSystem.startDialog(lines, this.name, this);
+                if (this.npcId) questManager.updateProgress('talk', this.npcId);
+                break;
+        }
     }
 
     giveItems(playerInventory) {

@@ -1,0 +1,81 @@
+{
+  "quest_001": {
+    "id": "quest_001",
+    "title": "Das fehlende Schwert",
+    "description": "Bob der Schmied hat sein bestes Schwert verloren. Finde es im Wald.",
+    "giver": "bob",
+    "steps": [
+      {
+        "id": "find_sword",
+        "description": "Finde das Schwert im Wald",
+        "type": "collect",
+        "target": "item_sword",
+        "amount": 1
+      }
+    ],
+    "rewards": {
+      "items": [
+        "gold_coin"
+      ],
+      "xp": 50
+    },
+    "dialogOnOffer": [
+      "Held! Ich brauche deine Hilfe.",
+      "Jemand hat mein bestes Schwert gestohlen!",
+      "Es muss irgendwo im Wald sein. Kannst du es finden?"
+    ],
+    "dialogOnAccept": [
+      "Danke! Ich wusste, dass ich auf dich zählen kann.",
+      "Das Schwert hat eine rote Klinge, du erkennst es sofort."
+    ],
+    "dialogOnDecline": [
+      "Schade... vielleicht ein anderes Mal."
+    ],
+    "dialogOnComplete": [
+      "Du hast es gefunden! Unglaublich!",
+      "Hier, nimm diese Belohnung. Du hast sie verdient!"
+    ],
+    "dialogIfActive": [
+      "Hast du das Schwert schon gefunden?",
+      "Such im Wald, irgendwo dort muss es sein!"
+    ]
+  },
+  "quest_002": {
+    "id": "quest_002",
+    "title": "Lisas Lieferung",
+    "description": "Lisa braucht Hilfe mit einer Lieferung.",
+    "giver": "lisa",
+    "steps": [
+      {
+        "id": "talk_to_bob",
+        "description": "Sprich mit Bob dem Schmied",
+        "type": "talk",
+        "target": "bob"
+      }
+    ],
+    "rewards": {
+      "items": [
+        "health_potion"
+      ],
+      "xp": 30
+    },
+    "dialogOnOffer": [
+      "Oh, ich bin froh, dass du vorbeikommst!",
+      "Ich habe eine Lieferung für Bob den Schmied.",
+      "Könntest du sie für mich abgeben?"
+    ],
+    "dialogOnAccept": [
+      "Wunderbar! Geh einfach zu Bob und richte ihm meine Grüße aus."
+    ],
+    "dialogOnDecline": [
+      "Kein Problem, ich frage jemand anderen."
+    ],
+    "dialogOnComplete": [
+      "Danke für deine Hilfe! Hier ist deine Belohnung."
+    ],
+    "dialogIfActive": [
+      "Hast du Bob schon besucht?",
+      "Er wartet auf die Lieferung!"
+    ]
+  }
+}
