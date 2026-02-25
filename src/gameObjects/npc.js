@@ -87,15 +87,14 @@ export class NPC {
         switch (type) {
             case 'offer':
                 dialogSystem.startQuestDialog(
-                    lines, this.name, this, quest,
-                    () => {
-                        questManager.acceptQuest(quest.id);
-                        dialogSystem.startDialog(quest.dialogOnAccept || ["Danke!"], this.name, this);
-                    },
-                    () => {
-                        questManager.declineQuest(quest.id);
-                        dialogSystem.startDialog(quest.dialogOnDecline || ["Schade..."], this.name, this);
-                    }
+                    lines,
+                    this.name,
+                    this,
+                    quest,
+                    () => questManager.acceptQuest(quest.id),
+                    () => questManager.declineQuest(quest.id),
+                    quest.dialogOnAccept || ["Danke!"],
+                    quest.dialogOnDecline || ["Schade..."]
                 );
                 break;
 

@@ -212,23 +212,20 @@ export class DialogSystem {
      * @param {object}   quest       - Quest-Definition
      * @param {Function} onAccept    - Callback wenn angenommen
      * @param {Function} onDecline   - Callback wenn abgelehnt
+     * @param acceptLines
+     * @param declineLines
      */
-    startQuestDialog(lines, npcName, npc, quest, onAccept, onDecline) {
+    startQuestDialog(lines, npcName, npc, quest, onAccept, onDecline, acceptLines = [], declineLines = []) {
         if (this.isActive) return;
-
         this.startDialog(lines, npcName, npc);
-
-        // Choice wird nach dem letzten Dialog-Text gezeigt
-        this.pendingChoice = { quest, onAccept, onDecline };
+        this.pendingChoice = { quest, onAccept, onDecline, acceptLines, declineLines };
     }
 
-    showChoice({ quest, onAccept, onDecline }) {
+    showChoice({ quest, onAccept, onDecline, acceptLines, declineLines }) {
         this.isChoiceActive = true;
-        this.choiceCallback = { onAccept, onDecline };
+        this.choiceCallback = { onAccept, onDecline, acceptLines, declineLines };
         this.choiceContainer.setVisible(true);
         this.continueArrow.setVisible(false);
-
-        // Quest-Titel anzeigen
         this.dialogText.setText(`[Quest] ${quest.title}\n\n${quest.description}\n\nNimmst du die Quest an?`);
     }
 
@@ -241,13 +238,21 @@ export class DialogSystem {
         const cb = this.choiceCallback;
         this.choiceCallback = null;
 
-        if (accepted && cb?.onAccept) {
-            cb.onAccept();
-        } else if (!accepted && cb?.onDecline) {
-            cb.onDecline();
-        }
+        const followUpLines = accepted
+            ? (cb?.acceptLines || [])
+            : (cb?.declineLines || []);
 
-        // Kurzer Follow-up-Dialog (Accept/Decline Lines kommen von außen)
+        if (accepted) cb?.onAccept?.();
+        else cb?.onDecline?.();
+
+        if (followUpLines.length > 0) {
+            this.currentDialog = followUpLines;
+            this.currentIndex = 0;
+            this.continueArrow.setVisible(true);
+            this.showCurrentLine();
+        } else {
+            this.endDialog();
+        }
     }
 
     // ─────────────────────────────────────────
