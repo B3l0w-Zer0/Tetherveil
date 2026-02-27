@@ -49,6 +49,7 @@ export class WorldItem {
     createGlowEffect(x, y) {
         // Kleiner Leuchtkreis unter dem Item
         this.glow = this.scene.add.circle(x, y + 4, 10, 0xffffff, 0.2);
+        this.glow.setDepth(49);
         this.scene.tweens.add({
             targets: this.glow,
             alpha: 0.5,
