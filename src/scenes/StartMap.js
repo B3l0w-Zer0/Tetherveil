@@ -5,6 +5,7 @@ import { mapConfig } from '../mapping/mapConfig.js';
 import Options from './Options.js';
 import { DialogSystem } from '../gameObjects/dialogSystem.js';
 import { QuestManager } from '../gameObjects/questManager.js';
+import { ItemManager } from '../gameObjects/itemManager.js';
 
 export class StartMap extends Phaser.Scene {
     constructor() {
@@ -62,9 +63,10 @@ export class StartMap extends Phaser.Scene {
             repeat: -1
         });
 
-        // 2. Dialog-System erstellen
+        // 2. Alle Manager erstellen
         this.dialogSystem = new DialogSystem(this);
         this.questManager = new QuestManager(this);
+        this.itemManager = new ItemManager(this);
 
         //Events Quests
         this.events.on('quest-accepted', (quest) => {
@@ -73,24 +75,39 @@ export class StartMap extends Phaser.Scene {
         this.events.on('quest-finished', (quest) => {
             console.log(`🏆 Quest abgeschlossen: "${quest.title}"`);
         });
-        this.events.on('item-received', (itemId) => {
-            console.log(`🎁 Item erhalten: ${itemId}`);
+        this.events.on('item-received', (itemId, itemData) => {
+            console.log(`🎁 Item erhalten: ${itemId}`, itemData);
         });
+        //WICHTIG: Inventar System hier --->
         this.events.on('xp-gained', (xp) => {
             console.log(`⭐ +${xp} XP`);
         });
 
-        // 3. NPC-Manager erstellen
+        // NPC-Manager erstellen
         this.npcManager = new npcManager(this);
 
-        // 4. Map-Manager erstellen
+        // Map-Manager erstellen
         this.mapManager = new MapManager(this);
 
-        // 5. Map laden (lädt automatisch NPCs aus Tiled + JSON!)
+        // 3. Map laden (lädt automatisch NPCs aus Tiled + JSON!)
         const startMapKey = mapConfig.maps[0].key;
         this.mapManager.loadMap(startMapKey);
 
-        // 6. Kamera Setup
+
+        this.itemManager.loadItemData().then(() => {
+            this.itemManager.spawnItem(400, 300, 'potion');
+            this.itemManager.spawnItem(500, 350, 'wood');
+            this.itemManager.spawnItem(300, 400, 'old_coin');
+        });
+
+
+        /*this.time.delayedCall(100, () => {
+            if (this.mapManager.currentMap) {
+                this.itemManager.loadFromTilemap(this.mapManager.currentMap);
+            }
+        });*/
+
+        // 4. Kamera Setup
         this.setupCamera();
 
         // 👇 KEIN manuelles addNPC() mehr nötig!
@@ -191,6 +208,9 @@ export class StartMap extends Phaser.Scene {
 
         // NPCs updaten
         this.npcManager.update();
+
+        //Items updaten
+        this.itemManager.update(this.player);
 
         // E-Taste für NPC-Interaktion
         if (Phaser.Input.Keyboard.JustDown(this.keys.E) && !this.menuOpen && !this.dialogSystem.isActive) {
