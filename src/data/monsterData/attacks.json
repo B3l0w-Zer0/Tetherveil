@@ -3,7 +3,12 @@
     "id": "flammenwurf",
     "name": "Flammenwurf",
     "type": "fire",
-    "power": 90
+    "power": 90,
+    "effect": "burn",
+    "accuracy": 80,
+    "weight": 40,
+    "description": "throws a flame at the enemy",
+    "tier": 1
   },
   {
     "id": "aquaknarre",

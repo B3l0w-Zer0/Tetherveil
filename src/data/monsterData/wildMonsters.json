@@ -3,15 +3,16 @@
     "sortingID": "0001",
     "name": "Burnt Witch",
     "monsterID": "burntWitch",
-    "type": "fire",
+    "type": ["fire"],
 
-    "baseHealth": { "min": 60, "max": 80 },
+    "baseHealth": { "min": 60, "max": 80},
     "basePhysicalAttack": { "min": 20, "max": 40 },
     "basePhysicalDefense": { "min": 10, "max": 30 },
     "baseSoulAttack": { "min": 60, "max": 90 },
     "baseSoulDefense": { "min": 50, "max": 70 },
     "baseSpeed": { "min": 45, "max": 70 },
-
+    "baseMana": { "min":  30, "max": 50 },
+    "baseStamina": { "min":  10, "max": 20 },
 
     "increaseHealth": {"min":  4, "max":  7 },
     "increasePhysicalAttack": {"min":  2, "max":  4 },
@@ -19,15 +20,69 @@
     "increaseSoulAttack": { "min": 3, "max": 7 },
     "increaseSoulDefense": { "min": 1, "max": 3 },
     "increaseSpeed": { "min": 3, "max": 5 },
+    "increaseMana": { "min":  5, "max": 7 },
+    "increaseStamina": { "min":  1, "max": 4 },
 
+    "baseHealthStatic": 70,
+    "basePhysicalAttackStatic": 30,
+    "basePhysicalDefenseStatic": 20,
+    "baseSoulAttackStatic": 75,
+    "baseSoulDefenseStatic": 60,
+    "baseSpeedStatic": 60,
+    "baseManaStatic": 40,
+    "baseStaminaStatic": 15,
+
+    "increaseHealthStatic": 6,
+    "increasePhysicalAttackStatic": 3,
+    "increasePhysicalDefenseStatic": 7,
+    "increaseSoulAttackStatic": 5,
+    "increaseSoulDefenseStatic": 2,
+    "increaseSpeedStatic": 4,
+    "increaseManaStatic": 6,
+    "increaseStaminaStatic": 2,
+
+    "evolveIncreaseHealth": {"min": 10, "max":  14 },
+    "evolveIncreasePhysicalAttack": {"min": 5, "max":  13 },
+    "evolveIncreasePhysicalDefense": { "min": 5, "max": 12 },
+    "evolveIncreaseSoulAttack": { "min": 14, "max": 19 },
+    "evolveIncreaseSoulDefense": { "min": 1, "max": 3 },
+    "evolveIncreaseSpeed": { "min": 3, "max": 5 },
+    "evolveIncreaseMana": { "min": 5, "max": 10 },
+    "evolveIncreaseStamina": { "min":  4, "max": 8 },
+
+    "evolveIncreaseHealthStatic": 12,
+    "evolveIncreasePhysicalAttackStatic": 10,
+    "evolveIncreasePhysicalDefenseStatic": 14,
+    "evolveIncreaseSoulAttackStatic": 16,
+    "evolveIncreaseSoulDefenseStatic": 16,
+    "evolveIncreaseSpeedStatic": 17,
+    "evolveIncreaseManaStatic": 18,
+    "evolveIncreaseStaminaStatic": 6,
 
     "description": "The restless soul of a witch, burnt by townsfolk",
     "icon": "assets/images/monsters/fireWitch.jpg",
-    "inventory": [2],
-    "attacks": [4],
+    "inventory": [],
+    "attacks": [],
+    "statusEffects": [],
     "level": 1,
+    "maxLevel": 120,
+    "baseNecessaryLvlUpEp": 800,
+    "increaseNecessaryLvlUpEp": 1.3,
     "evolLevel": 15,
-    "nextEvol": "burntWitchEvolution"
+    "nextEvol": "burntWitchEvolution",
+    "elusivenessFleeingProb": 0.3,
+
+    "attackBaseSet": [ "bite", "scratch", "flamethrow" ],
+
+    "attackLearnSet": [
+      { "attackID":  "swordsDance", "minLevel": 2, "maxLevel": 14 }
+    ],
+
+    "attackStaticSet": [
+      { "level":  3, "attackID":  "dragonWrath" }
+    ],
+
+    "attackEvolutionSet": [ "hugeAttackEvolutionBoomPow" ]
   },
 
 
@@ -234,5 +289,39 @@
     "monsterID": "test4Evolution",
     "icon": "assets/images/monsters/fireWitchEvolved.jpg",
     "description": "Evolved test4"
-  }
+  },
+
+
+    {
+      "sortingID": "0013",
+      "name": "Burnt Witch Static",
+      "monsterID": "burntWitchStatic",
+      "type": "fire",
+
+      "baseHealth":  550,
+      "basePhysicalAttack": 80,
+      "basePhysicalDefense": 40,
+      "baseSoulAttack": 120,
+      "baseSoulDefense": 130,
+      "baseSpeed": 140,
+
+
+      "increaseHealth": {"min":  4, "max":  7 },
+      "increasePhysicalAttack": {"min":  2, "max":  4 },
+      "increasePhysicalDefense": { "min": 5, "max": 8 },
+      "increaseSoulAttack": { "min": 3, "max": 7 },
+      "increaseSoulDefense": { "min": 1, "max": 3 },
+      "increaseSpeed": { "min": 3, "max": 5 },
+
+
+      "description": "The restless soul of a witch, burnt by townsfolk but as a static boss monster",
+      "icon": "assets/images/monsters/fireWitch.jpg",
+      "inventory": [2],
+      "attacks": [4],
+      "level": 1,
+      "catchrate": 0,
+      "evolLevel": 15,
+      "nextEvol": "burntWitchEvolution"
+    }
 ]
+

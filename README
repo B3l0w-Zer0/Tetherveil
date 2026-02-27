@@ -4,7 +4,7 @@ To Do:
 Updates:
 ~~ 28.09.2025 ~~
 created monsters.json
-added damageCalc.js in fight
+added damageEffectCalc.js in fight
 added ownPlayerAttack.js in fight
 
 

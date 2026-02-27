@@ -60,6 +60,7 @@ export function catchMonster(monsterID) {
 
 export async function addMonstToCollection(monsterID) {
     const allMons = await getAllMonsters();
+    const wildMons = await getWildMonst();
     let collection = getCollection();
 
     const monDef = allMons.find(i => i.monsterID === monsterID);
@@ -473,5 +474,25 @@ export function removeMonstItem(itemID) {
 
 }
 
+/*Todo:
+1. scrap all of this
+2. rewrite to make it correct order of following:
+    - create Base monster
+    - create final monster
+    - !! very important: make it with a parameter to only randomize certain things
+        1. c -> completely random
+        2. s -> only stats random
+        3. l -> only level random
+        4. n -> not randomized for static monsters -> make another single json file where you put these monsters and write the catchrate as specific number or just also put this in final method
+    --> create new method for each one of these just like the spawn monster function to just call it and automatically generate the monster of choice with the wanted parameter
+        -> when level not randomized -> make another input value for that function so that the level gets called and put right in !! BUT BEFORE THE STATS ARE CALCULATED DEPENDING ON LEVEL !!
+    - put in catchrate and also implement catch monster for monsters in wild monster list.
+    - create new lists for each one of those parameters from which we can choose and divide the different monster types. Still look at only using unique and not yet used SurrogateIDs
+    - write method for automatically adding monster to collection -> look at eggs or such from pokemon that you can collect and get the monster. But put in a parameter that lets me decide,
+        if i want the option 1: let player decide if he wants to keep or leave monster or Option 2: force monster into player collection as part of a quest, story or such which he can not leave or let out of his team
+        -> create new boolean for that which is probably saved in story monsters.json or such or just add that if the parameter is on and then check for that boolean triggered by the parameter.
+        Tldr: add parameter which enables player decision -> keep it or leave it or just force him to have it -> triggers boolean which is checked if player wants to remove monster from team or collection -> important story monsters
+        also: add parameter for static monsters which can not be caught -> triggers another boolean and sets catchrate at 0 or even triggers text like "this monster is too mighty to be caught"
+         
 
-
+ */

@@ -1,4 +1,11 @@
-import {addMonstToCollection, addMonstToTeam, getTeam, loadMonstInfo, getCollection} from '/src/player/monsters.js'
+import {
+    addMonstToCollection,
+    addMonstToTeam,
+    getTeam,
+    loadMonstInfo,
+    getCollection,
+    createBaseMonst
+} from '/src/player/monsters.js'
 export async function createGenMonstMenu() {
     const genMonstWrapper = document.createElement('div');
     genMonstWrapper.classList.add('gen-menu-monsters-wrapper');
@@ -119,6 +126,8 @@ function createDetailedMonstCard(monsterID){
 }
 
 async function initMonInv() {
+    await createBaseMonst("burntWitch")
+    await create
     await addMonstToCollection("burntWitch");
     await addMonstToTeam("burntWitch#1");
     await addMonstToCollection("burntWitch");
