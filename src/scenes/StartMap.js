@@ -166,7 +166,7 @@ export class StartMap extends Phaser.Scene {
             this.scene.start("Menu");
         });
 
-        this.genMenu = createGenMenu();
+        this.genMenu = createGenMenu(this.questManager);
 
         // Vollbild
         this.input.keyboard.on("keydown-F11", (event) => {
