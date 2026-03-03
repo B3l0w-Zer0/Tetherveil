@@ -83,8 +83,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":263.931393980158,
-                 "y":694.938624516563
+                 "x":263.931,
+                 "y":694.939
                 }, 
                 {
                  "height":0,
@@ -100,8 +100,51 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":695.745754161762,
-                 "y":216.310744913402
+                 "x":695.746,
+                 "y":216.311
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":5,
+         "name":"Warps",
+         "objects":[
+                {
+                 "height":0,
+                 "id":3,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"direction",
+                         "type":"string",
+                         "value":"down"
+                        }, 
+                        {
+                         "name":"targetMap",
+                         "type":"string",
+                         "value":"Map 2"
+                        }, 
+                        {
+                         "name":"targetX",
+                         "type":"int",
+                         "value":0
+                        }, 
+                        {
+                         "name":"targetY",
+                         "type":"int",
+                         "value":500
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":949.992,
+                 "y":456.028
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -109,8 +152,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":5,
- "nextobjectid":3,
+ "nextlayerid":6,
+ "nextobjectid":5,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

@@ -9,6 +9,15 @@ export const mapConfig = {
             startX: 450,
             startY: 300
         },
+        {
+            key: "Map 2",
+            tilemapPath: "src/data/mapData/Map 2.tmj",
+            tilesetImage: "Fick dich",
+            tilesetKey: "tiles",
+            startX: 200,
+            startY: 150
+        }
+
 
         // Weitere Maps hier hinzufügen...
     ],

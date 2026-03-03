@@ -107,8 +107,6 @@ export class StartMap extends Phaser.Scene {
             }
         });*/
 
-        // 4. Kamera Setup
-        this.setupCamera();
 
         // 👇 KEIN manuelles addNPC() mehr nötig!
         // NPCs werden automatisch aus Tiled + JSON geladen

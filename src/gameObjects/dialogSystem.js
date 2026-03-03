@@ -116,10 +116,10 @@ export class DialogSystem {
         this.btnYesBg.on('pointerdown', () => this.resolveChoice(true));
         this.btnNoBg.on('pointerdown', () => this.resolveChoice(false));
 
-        this.choiceContainer.add([
-            this.btnYesBg, this.btnYesText,
-            this.btnNoBg, this.btnNoText
-        ]);
+        this.btnYesBg.setScrollFactor(0).setDepth(1001);
+        this.btnYesText.setScrollFactor(0).setDepth(1002);
+        this.btnNoBg.setScrollFactor(0).setDepth(1001);
+        this.btnNoText.setScrollFactor(0).setDepth(1002);
 
         // Keyboard-Auswahl (1 = Ja, 2 = Nein)
         this.scene.input.keyboard.on('keydown-ONE', () => {
@@ -137,6 +137,10 @@ export class DialogSystem {
             this.dialogText,
             this.continueArrow
         ]);
+        this.btnYesBg.setVisible(false);
+        this.btnYesText.setVisible(false);
+        this.btnNoBg.setVisible(false);
+        this.btnNoText.setVisible(false);
     }
 
     // ─────────────────────────────────────────
@@ -189,7 +193,10 @@ export class DialogSystem {
         this.isChoiceActive = false;
         this.pendingChoice = null;
         this.container.setVisible(false);
-        this.choiceContainer.setVisible(false);
+        this.btnYesBg.setVisible(false);
+        this.btnYesText.setVisible(false);
+        this.btnNoBg.setVisible(false);
+        this.btnNoText.setVisible(false);
         this.currentDialog = [];
         this.currentIndex = 0;
 
@@ -224,7 +231,10 @@ export class DialogSystem {
     showChoice({ quest, onAccept, onDecline, acceptLines, declineLines }) {
         this.isChoiceActive = true;
         this.choiceCallback = { onAccept, onDecline, acceptLines, declineLines };
-        this.choiceContainer.setVisible(true);
+        this.btnYesBg.setVisible(true);
+        this.btnYesText.setVisible(true);
+        this.btnNoBg.setVisible(true);
+        this.btnNoText.setVisible(true);
         this.continueArrow.setVisible(false);
         this.dialogText.setText(`[Quest] ${quest.title}\n\n${quest.description}\n\nNimmst du die Quest an?`);
     }
@@ -233,7 +243,10 @@ export class DialogSystem {
         if (!this.isChoiceActive) return;
 
         this.isChoiceActive = false;
-        this.choiceContainer.setVisible(false);
+        this.btnYesBg.setVisible(false);
+        this.btnYesText.setVisible(false);
+        this.btnNoBg.setVisible(false);
+        this.btnNoText.setVisible(false);
 
         const cb = this.choiceCallback;
         this.choiceCallback = null;

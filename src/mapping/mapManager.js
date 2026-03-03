@@ -115,6 +115,9 @@ export class MapManager {
         // Encounter-Zonen parsen
         this.parseEncounterZones();
 
+        //Kamera Setup
+        this.scene.setupCamera();
+
         // Transition beenden
         this.scene.cameras.main.fadeIn(300, 0, 0, 0);
         this.scene.time.delayedCall(300, () => {
@@ -250,6 +253,9 @@ export class MapManager {
      */
     onWarpTriggered(player, warp) {
         if (this.isTransitioning) return;
+        //Gegen mehrfach Triggern
+        if (warp.getData('used')) return;
+        warp.setData('used', true);
 
         const targetMap = warp.getData('targetMap');
         const targetX = warp.getData('targetX');
@@ -419,6 +425,8 @@ export class MapManager {
      */
     cleanupCurrentMap() {
         if (!this.currentMap) return;
+        // Alle Collider der Physics-World entfernen
+        this.scene.physics.world.colliders.destroy();
 
         // Alle Layer zerstören
         Object.values(this.layers).forEach(layer => {
