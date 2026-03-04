@@ -166,6 +166,7 @@ export class QuestManager {
 
         console.log(`🏆 Quest abgeschlossen: "${quest.title}"`);
         this.scene.events.emit('quest-finished', quest);
+        this.showQuestNotification(quest);
         return true;
     }
 
@@ -183,6 +184,84 @@ export class QuestManager {
                 this.scene.events.emit('item-received', itemId);
             });
         }
+    }
+
+    showQuestNotification(quest) {
+        const { width } = this.scene.scale;
+        const centerX = width / 2;
+        const startY = -100;
+        const targetY = 80;
+
+        const rewardParts = [];
+        if (quest.rewards?.xp) rewardParts.push(`⭐ ${quest.rewards.xp} XP`);
+        if (quest.rewards?.items?.length > 0) {
+            quest.rewards.items.forEach(item => rewardParts.push(`🎁 ${item}`));
+        }
+
+        const hasRewards = rewardParts.length > 0;
+        const bgHeight = hasRewards ? 95 : 80;
+
+        const bg = this.scene.add.rectangle(centerX, startY, 420, bgHeight, 0x0a0a1e, 0.95);
+        bg.setStrokeStyle(2, 0xffd700).setScrollFactor(0).setDepth(2000);
+
+        const shimmer = this.scene.add.rectangle(centerX, startY - bgHeight / 2 + 3, 420, 4, 0xffd700, 1);
+        shimmer.setScrollFactor(0).setDepth(2001);
+
+        const label = this.scene.add.text(centerX, startY - 14, '🏆 Quest abgeschlossen!', {
+            fontFamily: 'sans-serif',
+            fontSize: '13px',
+            color: '#ffd700',
+            fontStyle: 'bold'
+        }).setOrigin(0.5).setScrollFactor(0).setDepth(2001);
+
+        const title = this.scene.add.text(centerX, startY + 6, quest.title, {
+            fontFamily: 'sans-serif',
+            fontSize: '20px',
+            color: '#ffffff',
+            fontStyle: 'bold'
+        }).setOrigin(0.5).setScrollFactor(0).setDepth(2001);
+
+        const allObjects = [bg, shimmer, label, title];
+
+        if (hasRewards) {
+            const rewards = this.scene.add.text(centerX, startY + 26, rewardParts.join('   '), {
+                fontFamily: 'sans-serif',
+                fontSize: '13px',
+                color: '#aaaaff'
+            }).setOrigin(0.5).setScrollFactor(0).setDepth(2001);
+            allObjects.push(rewards);
+        }
+
+        // Einblenden
+        this.scene.tweens.add({
+            targets: allObjects,
+            y: `+=${targetY - startY}`,
+            duration: 500,
+            ease: 'Back.easeOut',
+            onComplete: () => {
+                // Pulsieren
+                this.scene.tweens.add({
+                    targets: bg,
+                    alpha: 0.85,
+                    duration: 600,
+                    yoyo: true,
+                    repeat: 2,
+                    onComplete: () => {
+                        // Ausblenden
+                        this.scene.tweens.add({
+                            targets: allObjects,
+                            y: `-=${targetY - startY}`,
+                            alpha: 0,
+                            duration: 400,
+                            ease: 'Cubic.easeIn',
+                            delay: 1500,
+                            onComplete: () => allObjects.forEach(obj => obj.destroy())
+                        });
+                    }
+                });
+            }
+        });
+        console.log(quest + "Abgeschlossen anzeigen")
     }
 
     // DIALOG-HELFER FÜR NPCs

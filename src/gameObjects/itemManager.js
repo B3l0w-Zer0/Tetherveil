@@ -81,14 +81,17 @@ export class ItemManager {
     // UPDATE - prüft Spieler-Nähe
     // ─────────────────────────────────────────
 
-    update(player) {
+    update(player, eKeyJustDown = false, interactX = null, interactY = null) {
         if (!player) return;
 
-        const px = player.x;
-        const py = player.y;
+        const checkX = interactX ?? player.x;
+        const checkY = interactY ?? player.y;
 
         this.items.forEach(item => {
             if (item.collected) return;
+
+            const px = player.x;
+            const py = player.y;
 
             const dx = px - item.x;
             const dy = py - item.y;
@@ -97,9 +100,12 @@ export class ItemManager {
             // Tooltip anzeigen wenn in der Nähe
             item.showTooltip(dist2 <= this.tooltipRadius * this.tooltipRadius);
 
-            // Automatisch aufsammeln wenn nah genug
-            if (dist2 <= this.pickupRadius * this.pickupRadius) {
-                this.pickupItem(item, player);
+            if (eKeyJustDown) {
+                const ix = checkX - item.x;
+                const iy = checkY - item.y;
+                if ((ix * ix + iy * iy) <= this.pickupRadius * this.pickupRadius) {
+                    this.pickupItem(item);
+                }
             }
         });
 

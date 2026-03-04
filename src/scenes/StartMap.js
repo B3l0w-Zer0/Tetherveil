@@ -210,13 +210,31 @@ export class StartMap extends Phaser.Scene {
         //Items updaten
         this.itemManager.update(this.player);
 
-        // E-Taste für NPC-Interaktion
+        //Interaktion des Spielers
         if (Phaser.Input.Keyboard.JustDown(this.keys.E) && !this.menuOpen && !this.dialogSystem.isActive) {
-            const nearbyNPC = this.npcManager.getNearbyNPC(this.player, 60);
 
+            // Interaktionspunkt vor dem Spieler berechnen
+            const range = 40; // Pixel vor dem Spieler
+            let ix = this.player.x;
+            let iy = this.player.y;
+
+            switch (this.lastDir) {
+                case 'up':    iy -= range; break;
+                case 'down':  iy += range; break;
+                case 'left':  ix -= range; break;
+                case 'right': ix += range; break;
+            }
+
+            // NPC an diesem Punkt?
+            const nearbyNPC = this.npcManager.getNearbyNPC({ x: ix, y: iy }, 24);
             if (nearbyNPC) {
                 nearbyNPC.startDialog(this.dialogSystem);
+                return;
             }
+
+            // Item an diesem Punkt?
+            const ePressedForItem = true;
+            this.itemManager.update(this.player, ePressedForItem, ix, iy);
         }
 
         // Dialog aktiv → keine Bewegung
