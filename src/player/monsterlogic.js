@@ -1,5 +1,5 @@
 import {MapManager} from '/src/mapping/mapManager.js';
-import { giveWildMonsterBaseAttack } from '/src/fight/generalAttackLogic.js'
+import {giveWildMonsterBaseAttack, checkWildIfLvlUpAttack} from '/src/fight/generalAttackLogic.js'
 
 const mapMan = new MapManager();
 
@@ -80,7 +80,7 @@ export async function createBaseMonst(monsterID, staticType, staticLevel) {
     const description = monst.description;
     const icon = monst.icon;
     const inventory = monst.inventory;
-    const attacks = giveWildMonsterBaseAttack(wildSurrogateID)
+    const attacks = [];
     const statusEffects = monst.statusEffects;
     const catchrate = monst.catchrate;
     const elusiveness = monst.elusivenessFleeingProb;
@@ -98,14 +98,12 @@ export async function createBaseMonst(monsterID, staticType, staticLevel) {
     const evolveAttacks = monst.attackEvolutionSet;
 
 
-
     switch (staticType) {
         case "completeStatic":
             console.log("Option for creation of completely Static Monster chosen.")
             unfinishedBaseMonster = await createStaticBaseMonst(monsterID);
             baseMonster = {
                 ...unfinishedBaseMonster,
-                level: staticLevel,
             }
             break;
 
@@ -114,7 +112,6 @@ export async function createBaseMonst(monsterID, staticType, staticLevel) {
             unfinishedBaseMonster = await createStaticBaseMonst(monsterID);
             baseMonster = {
                 ...unfinishedBaseMonster,
-                level: randomizeMonstBaseLevel(),
             }
             break;
 
@@ -123,7 +120,6 @@ export async function createBaseMonst(monsterID, staticType, staticLevel) {
             unfinishedBaseMonster = await createRandomBaseMonst(monsterID);
             baseMonster = {
                 ...unfinishedBaseMonster,
-                level: staticLevel,
             }
             break;
 
@@ -132,7 +128,6 @@ export async function createBaseMonst(monsterID, staticType, staticLevel) {
             unfinishedBaseMonster = await createRandomBaseMonst(monsterID);
             baseMonster = {
                 ...unfinishedBaseMonster,
-                level: randomizeMonstBaseLevel(),
             }
             break;
 
@@ -165,10 +160,10 @@ export async function createBaseMonst(monsterID, staticType, staticLevel) {
         lvlUpAttacks: lvlUpAttacks,
         staticLvlUpAttacks: staticLvlUpAttacks,
         evolveAttacks: evolveAttacks,
+        level: 1,
         ...baseMonster
 
     }
-
 
 
     wildMons.push(finalBaseMonster)
@@ -257,9 +252,8 @@ async function createRandomBaseMonst(monsterID) {
         const increaseSoulAttack = monst.increaseSoulAttack;
         const increaseSoulDefense = monst.increaseSoulDefense;
         const increaseSpeed = monst.increaseSpeed;
-        const increaseMana = monst.increaseManaStatic;
-        const increaseStamina = monst.increaseStaminaStatic;
-
+        const increaseMana = monst.increaseMana;
+        const increaseStamina = monst.increaseStamina;
 
         console.log("completely random or only stats random monster chosen")
 
@@ -286,14 +280,20 @@ async function createRandomBaseMonst(monsterID) {
     return baseRandomMonst;
 }
 
+
 export async function createFinalMonst(surrogateID) {
+    if (!surrogateID) {
+        console.log("SurrogateID was null", surrogateID);
+        return null
+    }
+
     const wildMons = getWildMonst();
     let wildMonst
     let wildMonstIndex
     let level
     let finalMonst
 
-    wildMonstIndex = wildMons.findIndex(i => i.surrogateID === surrogateID)
+    wildMonstIndex = wildMons.findIndex(i => i?.surrogateID === surrogateID)
     if (wildMonstIndex === -1) {
         console.error("monster could not be finalized")
         return null;
@@ -301,8 +301,9 @@ export async function createFinalMonst(surrogateID) {
         wildMonst = wildMons[wildMonstIndex];
         level = wildMonst.level;
 
-        for (let i = 1; i < level; i++) {
-            finalMonst = levelWildMonstUp(surrogateID)
+        for (let i = 1; i <= level; i++) {
+            finalMonst = levelWildMonstUp(surrogateID, i)
+            console.log("monster ", finalMonst, " has had its stats increased as level up once more now to level ", i)
         }
     }
 
@@ -313,35 +314,34 @@ export async function createFinalMonst(surrogateID) {
 }
 
 
-export function levelWildMonstUp(surrogateID) {
+export function levelWildMonstUp(surrogateID, tempNextLevel) {
     const wildMons = getWildMonst();
-    let level;
     let oldLevel
-    let nextLevel
     let evolLevel
     let maxLevel
     let levelUpMonst
 
+
     let wildMonst;
     console.log("About to level up Monster:")
 
-    const wildMonstIndex = wildMons.findIndex(i => i.surrogateID === surrogateID)
+    const wildMonstIndex = wildMons.findIndex(i => i?.surrogateID === surrogateID)
     if (wildMonstIndex === -1) {
         console.error("Monster does not exist in wild monsters!", surrogateID);
+        return null;
     } else {
         wildMonst = wildMons[wildMonstIndex];
-        level = wildMonst.level;
-        nextLevel = wildMonst.level + 1
         oldLevel = wildMonst.level;
         maxLevel = wildMonst.maxLevel;
-        if (nextLevel > maxLevel) {
+
+        if (tempNextLevel > maxLevel) {
             console.error("Monster can not be leveled up as it has reached its current maximum level.")
         } else {
             evolLevel = wildMonst.evolLevel;
             if (!evolLevel) {
                 console.log("evolution level can not be found. Normal Level up of Monster initiated!")
                 levelUpMonst = increaseNormalWildLvlUpStats(surrogateID)
-            } else if (nextLevel === evolLevel) {
+            } else if (tempNextLevel === evolLevel) {
                 console.log("evolution level was reached, thus initiating evolution of monster: ", surrogateID)
                 levelUpMonst = evolveWildMonst(surrogateID);
             } else {
@@ -352,10 +352,15 @@ export function levelWildMonstUp(surrogateID) {
 
     }
 
-    wildMons[wildMonstIndex] = levelUpMonst;
-    saveWildMonst(wildMons)
-    console.log("Leveled up Monster: ", wildMonst.surrogateID, " from level ", oldLevel, " to level ", level);
-    return levelUpMonst;
+    if (!levelUpMonst) {
+        console.error("monster was null, terminating now");
+        return null;
+    } else {
+        wildMons[wildMonstIndex] = levelUpMonst;
+        saveWildMonst(wildMons)
+        console.log("Leveled up Monster: ", wildMonst.surrogateID);
+        return levelUpMonst;
+    }
 }
 
 export function increaseNormalWildLvlUpStats(surrogateID) {
@@ -383,8 +388,17 @@ export function increaseNormalWildLvlUpStats(surrogateID) {
     let finalStamina
     let staticRandomType;
     let wildMonst;
+    let attacks
+    let increaseHealth
+    let increasePhysicalAttack
+    let increasePhysicalDefense
+    let increaseSoulAttack
+    let increaseSoulDefense
+    let increaseStamina
+    let increaseSpeed
+    let increaseMana
 
-    const wildMonstIndex = wildMons.findIndex(i => i.surrogateID === surrogateID)
+    const wildMonstIndex = wildMons.findIndex(i => i?.surrogateID === surrogateID)
     if (wildMonstIndex === -1) {
         console.error("Monster was not found in wild Monsters!")
         return null;
@@ -393,6 +407,9 @@ export function increaseNormalWildLvlUpStats(surrogateID) {
         level = wildMonst.level;
         nextLevel = wildMonst.level + 1
         staticRandomType = wildMonst.staticType;
+        attacks = checkWildIfLvlUpAttack(surrogateID, nextLevel)
+
+        console.log(wildMonst)
 
         switch (staticRandomType) {
             case "completeStatic":
@@ -421,8 +438,10 @@ export function increaseNormalWildLvlUpStats(surrogateID) {
 
             case "onlyStatsRandom":
                 console.log("Level Up for Monster with only randomized stats chosen.")
-                increasedHealth = randomizeMonstLevelUpStats(wildMonst.increaseHealth.min, wildMonst.increaseHealth.max);
-                increasedPhysicalAttack = randomizeMonstLevelUpStats(wildMonst.increasePhysicalAttack.min, wildMonst.increasePhysicalAttack.max);
+                increaseHealth = wildMonst.increaseHealth;
+                increasePhysicalAttack = wildMonst.increasePhysicalAttack
+                increasedHealth = randomizeMonstLevelUpStats(increaseHealth.min, increaseHealth.max);
+                increasedPhysicalAttack = randomizeMonstLevelUpStats(increasePhysicalAttack.min, increasePhysicalAttack.max);
                 increasedPhysicalDefense = randomizeMonstLevelUpStats(wildMonst.increasePhysicalDefense.min, wildMonst.increasePhysicalDefense.max);
                 increasedSoulAttack = randomizeMonstLevelUpStats(wildMonst.increaseSoulAttack.min, wildMonst.increaseSoulAttack.max);
                 increasedSoulDefense = randomizeMonstLevelUpStats(wildMonst.increaseSoulDefense.min, wildMonst.increaseSoulDefense.max);
@@ -433,7 +452,10 @@ export function increaseNormalWildLvlUpStats(surrogateID) {
 
             case "completeRandom":
                 console.log("Level Up for completely random Monster chosen.")
-                increasedHealth = randomizeMonstLevelUpStats(wildMonst.increaseHealth.min, wildMonst.increaseHealth.max);
+                increaseHealth = wildMonst.increaseHealth;
+                increasePhysicalAttack = wildMonst.increasePhysicalAttack
+                console.log(increasePhysicalAttack.min, "pa", increaseHealth.min, "health")
+                increasedHealth = randomizeMonstLevelUpStats(increaseHealth.min, increaseHealth.max);
                 increasedPhysicalAttack = randomizeMonstLevelUpStats(wildMonst.increasePhysicalAttack.min, wildMonst.increasePhysicalAttack.max);
                 increasedPhysicalDefense = randomizeMonstLevelUpStats(wildMonst.increasePhysicalDefense.min, wildMonst.increasePhysicalDefense.max);
                 increasedSoulAttack = randomizeMonstLevelUpStats(wildMonst.increaseSoulAttack.min, wildMonst.increaseSoulAttack.max);
@@ -447,6 +469,10 @@ export function increaseNormalWildLvlUpStats(surrogateID) {
                 console.error("Level Up failed as no Option was given or option for Level Up was invalid.")
         }
 
+        console.log("staticType:", wildMonst.staticType);
+        console.log("increaseHealthStatic:", wildMonst.increaseHealthStatic);
+        console.log("health:", wildMonst.health);
+
         finalHealth = increasedHealth + wildMonst.health;
         finalPhysicalAttack = increasedPhysicalAttack + wildMonst.physicalAttack;
         finalPhysicalDefense = increasedPhysicalDefense + wildMonst.physicalDefense;
@@ -459,6 +485,7 @@ export function increaseNormalWildLvlUpStats(surrogateID) {
         increaseNecessaryLvlUpEp = wildMonst.increaseNecessaryLvlUpEp;
         currentEp = 0;
         level = nextLevel;
+
     }
 
 
@@ -472,12 +499,12 @@ export function increaseNormalWildLvlUpStats(surrogateID) {
         speed: finalSpeed,
         mana: finalMana,
         stamina: finalStamina,
-        level: level,
         necessaryEp: necessaryEp,
         increaseNecessaryLvlUpEp: increaseNecessaryLvlUpEp,
-        currentEp: currentEp
+        currentEp: currentEp,
+        attacks: attacks
     }
-    console.log("Increased stats for Monster: ", surrogateID);
+    console.log("Increased stats for Monster: ", levelUpMonst);
     return levelUpMonst;
 }
 
@@ -501,6 +528,7 @@ export async function evolveWildMonst(previousWildSurrogateID) {
     let increasedStamina
     let staticRandomType;
     let wildMonst;
+    let attacks;
 
     const wildMonstIndex = wildMons.findIndex(i => i.surrogateID === previousWildSurrogateID);
     console.log("test evolution function");
@@ -564,6 +592,7 @@ export async function evolveWildMonst(previousWildSurrogateID) {
         nextLevel = wildMonst.level + 1
         oldLevel = wildMonst.level;
         staticRandomType = wildMonst.staticType;
+
         if (nextLevel === wildMonst.evolLevel) {
             switch (staticRandomType) {
                 case "completeStatic":
@@ -630,8 +659,10 @@ export async function evolveWildMonst(previousWildSurrogateID) {
             increaseNecessaryLvlUpEp = wildMonst.increaseNecessaryLvlUpEp;
             currentEp = 0;
             level = nextLevel;
-
-
+            const lvlUpAttacks = wildMonstEvol.attackLearnSet;
+            const staticLvlUpAttacks = wildMonstEvol.attackStaticSet;
+            const evolveAttacks = wildMonstEvol.attackEvolutionSet;
+            attacks = giveWildMonstEvolveAttack(wildMonst)
             const evolvedMonst = {
                 ...wildMonst,
 
@@ -647,6 +678,7 @@ export async function evolveWildMonst(previousWildSurrogateID) {
                 nextEvol: nextEvol,
                 icon: icon,
                 maxLevel: maxLevel,
+                attacks: attacks,
                 health: finalHealth,
                 physicalAttack: finalPhysicalAttack,
                 physicalDefense: finalPhysicalDefense,
@@ -658,7 +690,10 @@ export async function evolveWildMonst(previousWildSurrogateID) {
                 level: level,
                 necessaryEp: necessaryEp,
                 increaseNecessaryLvlUpEp: increaseNecessaryLvlUpEp,
-                currentEp: currentEp
+                currentEp: currentEp,
+                lvlUpAttacks: lvlUpAttacks,
+                staticLvlUpAttacks: staticLvlUpAttacks,
+                evolveAttacks: evolveAttacks,
             }
             wildMons[wildMonstIndex] = evolvedMonst;
             saveWildMonst(wildMons)
@@ -1246,38 +1281,86 @@ export function loadWildMonstInfo(surrogateID) {
     return monst;
 }
 
-export function createCompleteStaticMonster(monsterID, staticLevel) {
-    const baseMonst = createBaseMonst(monsterID, "completeStatic", staticLevel);
+export async function createCompleteStaticMonster(monsterID, staticLevel) {
+    const baseMonst = await createBaseMonst(monsterID, "completeStatic", staticLevel);
     const surrogateID = baseMonst.surrogateID;
-    const finalMonst = createFinalMonst(surrogateID)
+    console.log(surrogateID)
+    const attacks = giveWildMonsterBaseAttack(surrogateID)
+
+    const wildMons = getWildMonst();
+    const monstIndex = wildMons.findIndex(i => i.surrogateID === surrogateID);
+    wildMons[monstIndex].attacks = attacks;
+    wildMons[monstIndex].level = staticLevel;
+
+    saveWildMonst(wildMons);
+    console.log(wildMons)
+
+    const finalMonst = await createFinalMonst(surrogateID)
     return finalMonst;
 }
 
-export function createOnlyLevelRandomMonster(monsterID) {
-    const baseMonst = createBaseMonst(monsterID, "onlyLevelRandom", 0);
+export async function createOnlyLevelRandomMonster(monsterID) {
+    const baseMonst = await createBaseMonst(monsterID, "onlyLevelRandom", 0);
     const surrogateID = baseMonst.surrogateID;
-    const finalMonst = createFinalMonst(surrogateID)
+    const attacks = giveWildMonsterBaseAttack(surrogateID)
+
+    const wildMons = getWildMonst();
+    const monstIndex = wildMons.findIndex(i => i.surrogateID === surrogateID);
+    wildMons[monstIndex].attacks = attacks;
+    wildMons[monstIndex].level = randomizeMonstBaseLevel();
+
+    saveWildMonst(wildMons);
+    console.log(wildMons)
+
+    const finalMonst = await createFinalMonst(surrogateID)
     return finalMonst;
 }
 
-export function createOnlyStatsRandomMonster(monsterID, staticLevel) {
-    const baseMonst = createBaseMonst(monsterID, "onlyLevelRandom", staticLevel);
+export async function createOnlyStatsRandomMonster(monsterID, staticLevel) {
+    const baseMonst = await createBaseMonst(monsterID, "onlyStatsRandom", staticLevel);
     const surrogateID = baseMonst.surrogateID;
-    const finalMonst = createFinalMonst(surrogateID)
+    const attacks = giveWildMonsterBaseAttack(surrogateID)
+
+    const wildMons = getWildMonst();
+    const monstIndex = wildMons.findIndex(i => i.surrogateID === surrogateID);
+    wildMons[monstIndex].attacks = attacks;
+    wildMons[monstIndex].level = staticLevel;
+
+    saveWildMonst(wildMons);
+    console.log(wildMons)
+
+    const finalMonst = await createFinalMonst(surrogateID)
     return finalMonst;
 }
 
-export function createCompleteRandomMonster(monsterID) {
-    const baseMonst = createBaseMonst(monsterID, "onlyLevelRandom", 0);
+export async function createCompleteRandomMonster(monsterID) {
+    const baseMonst = await createBaseMonst(monsterID, "completeRandom", 0);
     const surrogateID = baseMonst.surrogateID;
-    const finalMonst = createFinalMonst(surrogateID)
-    return finalMonst;
+    console.log(surrogateID)
+    const attacks = giveWildMonsterBaseAttack(surrogateID)
+
+    const wildMons = getWildMonst();
+    const monstIndex = wildMons.findIndex(i => i && i.surrogateID === surrogateID);
+    if (monstIndex === -1) {
+        console.error("monster does not exist")
+        return null;
+    } else {
+        wildMons[monstIndex].attacks = attacks;
+        wildMons[monstIndex].level = randomizeMonstBaseLevel();
+
+        saveWildMonst(wildMons);
+        console.log(wildMons)
+
+        const finalMonst = await createFinalMonst(surrogateID)
+        console.log("monster ", finalMonst, " was created")
+        return finalMonst;
+    }
 }
 
 export function catchMonster(surrogateID) {
     const wildMons = getWildMonst();
     const monst = loadWildMonstInfo(surrogateID);
-    const wildMonstIndex = wildMons.findIndex(i => i.surrogateID === surrogateID)
+    const wildMonstIndex = wildMons.findIndex(i => i?.surrogateID === surrogateID)
     if (wildMonstIndex === -1) {
         console.log("Monster was not created in wild Monsters.")
         return null;
@@ -1299,7 +1382,7 @@ export function catchMonster(surrogateID) {
 
 //todo in fight scene after fight clear all wildMons. also when monster flees so that it can not be brought back
 
-
+/*
 export function addMonstToCollection(surrogateID) {
     console.log("test for adding Monster to collection");
     const wildMons = getWildMonst();
@@ -1393,7 +1476,7 @@ export async function addMonstToCollection(monsterID) {
 }
  */
 
-export function addMonstToTeam(surrogateID) {
+/*export function addMonstToTeam(surrogateID) {
     let collection = getCollection();
     let team = getTeam();
     const monst = collection.find(i => i.surrogateID === surrogateID)
@@ -1505,7 +1588,7 @@ export function randomizeMonstBaseStats(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-export function randomizeMonstLevelUpStats(monsterID, min, max) {
+export function randomizeMonstLevelUpStats(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
@@ -1559,7 +1642,6 @@ export function randomizeMonstBaseLevel() {
 }
 
 
-
 export async function spawnMonst(monsterID) {
     const wildSurrogateID = await createBaseMonst(monsterID);
 
@@ -1568,6 +1650,7 @@ export async function spawnMonst(monsterID) {
     }
 
     const finalMonster = createFinalMonst(wildSurrogateID);
+    console.log("monster ", finalMonster, " was just spawned")
     return finalMonster;
 
 }

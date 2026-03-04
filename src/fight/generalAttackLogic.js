@@ -33,32 +33,32 @@ export function getAttackInfo(attackID) {
     return attack;
 }
 
-export function getUsedAttacks(){
+export function getUsedAttacks() {
     return JSON.parse(localStorage.getItem("usedAttacks") || "[]")
 }
 
-export function saveUsedAttacks(usedAttacks){
+export function saveUsedAttacks(usedAttacks) {
     localStorage.setItem("usedAttacks", JSON.stringify(usedAttacks));
 }
 
-export function giveWildMonsterBaseAttack(surrogateID){
+export function giveWildMonsterBaseAttack(surrogateID) {
     const wildMons = getWildMonst();
     let monst
     let attacks
     let assignAttacks
     let randomAttackNumber
 
-    const wildMonstIndex = wildMons.findIndex(i => i.surrogateID === surrogateID);
-    if(wildMonstIndex === -1){
+    const wildMonstIndex = wildMons.findIndex(i => i?.surrogateID === surrogateID);
+    if (wildMonstIndex === -1) {
         console.error("Monster ", surrogateID, " was not found in wild Monsters.");
         return null;
     } else {
         monst = wildMons[wildMonstIndex]
         assignAttacks = monst.baseAttacks;
-        attacks = monst.attacks
+        attacks = monst.attacks || [];
         randomAttackNumber = Math.floor(Math.random() * 3) + 1; //because max 3 attacks min 1 attack
-        for (let i = 0; i < randomAttackNumber; i++){
-            if(attacks === null){
+        for (let i = 0; i < randomAttackNumber; i++) {
+            if (attacks[i] === null) {
                 attacks[i] = rollRandomBaseAttack(surrogateID);
             }
         }
@@ -68,7 +68,7 @@ export function giveWildMonsterBaseAttack(surrogateID){
     return attacks;
 }
 
-function rollRandomBaseAttack(surrogateID){
+function rollRandomBaseAttack(surrogateID) {
     const wildMons = getWildMonst();
     let monst
     let assignAttacks
@@ -78,8 +78,8 @@ function rollRandomBaseAttack(surrogateID){
     let finalAttack
     let usedAttacks
 
-    const wildMonstIndex = wildMons.findIndex(i => i.surrogateID === surrogateID);
-    if(wildMonstIndex === -1){
+    const wildMonstIndex = wildMons.findIndex(i => i?.surrogateID === surrogateID);
+    if (wildMonstIndex === -1) {
         console.error("Monster ", surrogateID, " was not found in wild Monsters.");
         return null;
     } else {
@@ -89,13 +89,13 @@ function rollRandomBaseAttack(surrogateID){
         randomAttackIndex = Math.floor(Math.random() * assignAttacks.length)
 
         attackID = assignAttacks[randomAttackIndex];
-        attackIndex = assignAttacks.findIndex(i => i.attackID = attackID)
+        //attackIndex = assignAttacks.findIndex(i => i.attackID === attackID) maybe not right. tests will show later
 
-        finalAttack = allAttacks.find(i => i.attackID = attackID)
-        if(!finalAttack){
-        console.error("Attack ", attackID, " can not be assigned to monster ", surrogateID)
+        finalAttack = allAttacks.find(i => i.attackID === attackID)
+        if (!finalAttack) {
+            console.error("Attack ", attackID, " can not be assigned to monster ", surrogateID)
             return null;
-        }else{
+        } else {
             console.log("about to assign attack ", attackID, " to monster ", surrogateID)
             usedAttacks.push(finalAttack);
             saveUsedAttacks(usedAttacks)
@@ -105,7 +105,7 @@ function rollRandomBaseAttack(surrogateID){
     }
 }
 
-export function checkWildIfLvlUpAttack(surrogateID, level){
+export function checkWildIfLvlUpAttack(surrogateID, level) {
     const wildMons = getWildMonst();
     let monst
     let attacks;
@@ -114,12 +114,12 @@ export function checkWildIfLvlUpAttack(surrogateID, level){
     let nextLvlUpAttackIndex
     let tier
 
-    monst = wildMons.find(i => i.surrogateID === surrogateID);
-    if(!monst){
+    monst = wildMons.find(i => i?.surrogateID === surrogateID);
+    if (!monst) {
         console.error("monster could not be found")
         return null;
     } else {
-        nextLvlUpAttack = monst.attackStaticSet.find(a =>
+        nextLvlUpAttack = monst.staticLvlUpAttacks.find(a =>
             a.level <= level && !monst.attacks.includes(a.attackID)
         );
         if (!nextLvlUpAttack) {
@@ -128,7 +128,7 @@ export function checkWildIfLvlUpAttack(surrogateID, level){
         } else {
 
             //5% wahrsch
-            const currentMinMaxAttacks = monst.attackLearnSet.filter(a =>
+            const currentMinMaxAttacks = monst.lvlUpAttacks.filter(a =>
                 level >= a.minLevel && level <= a.maxLevel &&
                 !monst.attacks.includes(a.attackID)
             );
@@ -146,55 +146,83 @@ export function checkWildIfLvlUpAttack(surrogateID, level){
             );
             if (level === nextLvlUpAttack.level) {
                 attacks = giveWildMonstAttack(monst, nextLvlUpAttack)
-            } else if (Math.random() < 0.05) {
-
-                nextLvlUpAttackIndex = Math.random
+            } else if (currentMinMaxAttacks.length > 0 && Math.random() < 0.05) {
+                const nextAttack = currentMinMaxAttacks[Math.floor(Math.random() * currentMinMaxAttacks.length)];
+                attacks = giveWildMonstAttack(monst, nextAttack);
+            } else if (currentTierAttacks.length > 0 && Math.random() < 0.01) {
+                const nextAttack = currentTierAttacks[Math.floor(Math.random() * currentTierAttacks.length)];
+                attacks = giveWildMonstAttack(monst, nextAttack);
+            } else {
+                attacks = monst.attacks
             }
         }
     }
 
-    return attacks
+    return attacks;
 }
 
 //also responsible for calculating the worst attack to be switched for the new one
-function giveWildMonstAttack(monst, attack){
-    let monstAttacks = monst.attacks
-    const currentAttack = allAttacks.find(i => i.attackID === attack.attackID )
-    if(monstAttacks.length < 4){
-        monstAttacks.push(currentAttack)
+function giveWildMonstAttack(monst, attack) {
+    if (!monst) {
+        console.error("Monster was not found!")
     } else {
-        let worstAttack = monstAttacks[0];
+        let monstAttacks = monst.attacks
+        const currentAttack = allAttacks.find(i => i?.attackID === attack.attackID)
+        if (monstAttacks.length < 4) {
+            monstAttacks.push(currentAttack)
+        } else {
+            let worstAttack = monstAttacks[0];
 
-        for (const attack of monstAttacks) {
-            if (attack.tier < worstAttack.tier) {
-                worstAttack = attack;
-            } else if (attack.tier === worstAttack.tier) {
-                const attackDmg = (attack.physicalDamage ?? 0) + (attack.soulDamage ?? 0);
-                const worstDmg = (worstAttack.physicalDamage ?? 0) + (worstAttack.soulDamage ?? 0);
-                if (attackDmg < worstDmg) {
+            for (const attack of monstAttacks) {
+                if (attack.tier < worstAttack.tier) {
                     worstAttack = attack;
+                } else if (attack.tier === worstAttack.tier) {
+                    const attackDmg = (attack.physicalDamage ?? 0) + (attack.soulDamage ?? 0);
+                    const worstDmg = (worstAttack.physicalDamage ?? 0) + (worstAttack.soulDamage ?? 0);
+                    if (attackDmg < worstDmg) {
+                        worstAttack = attack;
+                    }
                 }
             }
-        }
 
 // worstAttack ersetzen
-        const worstIndex = monstAttacks.indexOf(worstAttack);
-        monstAttacks[worstIndex] = currentAttack;
+            const worstIndex = monstAttacks.indexOf(worstAttack);
+            monstAttacks[worstIndex] = currentAttack;
+        }
+        return monstAttacks
     }
-    return monstAttacks
+}
+
+function giveWildMonstEvolveAttack(wildMonst) {
+    if (!wildMonst) {
+        console.error("Monster could not be found!")
+        return null;
+    } else {
+        let attacks
+        const availableEvolAttacks = wildMonst.attackEvolutionSet.filter(attackID =>
+            !wildMonst.attacks.includes(attackID)
+        );
+
+        if (availableEvolAttacks.length === 0) {
+            console.error("no evolution attacks left to learn");
+            return null;
+        } else {
+
+            const nextAttack = availableEvolAttacks[Math.floor(Math.random() * availableEvolAttacks.length)];
+
+            attacks = giveWildMonstAttack(wildMonst, nextAttack)
+
+        }
+        return attacks;
+    }
 }
 
 
-
-function rollRandomLvlUpAttack(){
-
-}
-
-function rollStaticLvlUpAttack(){
+function rollRandomLvlUpAttack() {
 
 }
 
-function giveWildMonstLvlUpAttack(surrogateID){
+function rollStaticLvlUpAttack() {
 
 }
 
@@ -227,9 +255,8 @@ function giveCollectionMonsterAttack(surrogateID, attackID, attackMonstIndex) {
                     console.log(attacks)
                     return null;
                 }
-            }
-            else {
-            console.log("Current Attacks are already full. Do you want to delete an attack for the new one to be assigned?")
+            } else {
+                console.log("Current Attacks are already full. Do you want to delete an attack for the new one to be assigned?")
                 //code hier:
             }
         }
@@ -284,7 +311,7 @@ function removeAttack(surrogateID, attackID) {
 
 
 /*
-todo: monster AI types: defensive, aggressive, balanced, smart, dumb
+todo: monster AI types: defensive, aggressive, balanced, smart, dumb, maybe risky
 todo: attack types: protection, damage, heal, buff, debuff, aoe (flächenangriff, schaden an allen) aoe friendly (nur schaden an allen gegnern)
 
  */

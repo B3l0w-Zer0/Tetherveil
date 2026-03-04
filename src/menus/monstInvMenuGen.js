@@ -1,11 +1,18 @@
 import {
-    addMonstToCollection,
+    /*addMonstToCollection,
     addMonstToTeam,
+
+     */
     getTeam,
     loadMonstInfo,
     getCollection,
-    createBaseMonst
-} from '/src/player/monsters.js'
+    createBaseMonst,
+    createCompleteRandomMonster,
+    createCompleteStaticMonster, createOnlyLevelRandomMonster, createOnlyStatsRandomMonster
+}
+    from '/src/player/monsterlogic.js';
+
+
 export async function createGenMonstMenu() {
     const genMonstWrapper = document.createElement('div');
     genMonstWrapper.classList.add('gen-menu-monsters-wrapper');
@@ -126,14 +133,10 @@ function createDetailedMonstCard(monsterID){
 }
 
 async function initMonInv() {
-    await createBaseMonst("burntWitch")
-    await create
-    await addMonstToCollection("burntWitch");
-    await addMonstToTeam("burntWitch#1");
-    await addMonstToCollection("burntWitch");
-    await addMonstToCollection("burntWitch");
-    await addMonstToTeam("burntWitch#3");
-    await addMonstToCollection("burntWitchEvolution");
-    await addMonstToTeam("burntWitchEvolution#1")
+    await createCompleteRandomMonster("burntWitch")
+    await createCompleteStaticMonster("burntWitch", 13)
+    await createOnlyLevelRandomMonster("burntWitch")
+    /*await createOnlyStatsRandomMonster("burntWitch", 17)
+*/
     console.log("collection: ", getCollection());
 }

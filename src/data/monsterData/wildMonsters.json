@@ -72,7 +72,11 @@
     "nextEvol": "burntWitchEvolution",
     "elusivenessFleeingProb": 0.3,
 
-    "attackBaseSet": [ "bite", "scratch", "flamethrow" ],
+    "height": 190,
+    "weight": 40,
+    "tier": 2,
+
+    "attackBaseSet": [ "bite", "scratch", "flamethrow", "test1", "test2", "test3" ],
 
     "attackLearnSet": [
       { "attackID":  "swordsDance", "minLevel": 2, "maxLevel": 14 }
@@ -82,7 +86,7 @@
       { "level":  3, "attackID":  "dragonWrath" }
     ],
 
-    "attackEvolutionSet": [ "hugeAttackEvolutionBoomPow" ]
+    "attackEvolutionSet": [ "hugeAttackEvolutionBoomPow", "hugeAttackSecond", "hugeTestAttack" ]
   },
 
 

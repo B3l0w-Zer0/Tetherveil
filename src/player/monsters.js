@@ -121,7 +121,7 @@ export async function addMonstToCollection(monsterID) {
     console.log("added to collection: ", monsterID);
     console.log("collection after adding: ", collection);
 }
-
+/*
 export async function addMonstToTeam(surrogateID) {
     let collection = await getCollection();
     let team = getTeam();
@@ -170,6 +170,8 @@ export async function addMonstToTeam(surrogateID) {
     console.log("added to Team: ", surrogateID);
     console.log("Team after adding: ", team);
 }
+
+ */
 
 export async function removeMonstFromTeam(surrogateID) {
     let team = getTeam();
