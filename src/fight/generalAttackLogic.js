@@ -295,7 +295,7 @@ export function giveWildMonstEvolveAttack(wildMonst) {
         }
         return attacks;
     }
-}
+} //todo teste ob attacken auch noch richtig zugewiesen werden nach evolution und ob stats auch richtig zugewiesen und erhöht werden
 
 
 function rollRandomLvlUpAttack() {
