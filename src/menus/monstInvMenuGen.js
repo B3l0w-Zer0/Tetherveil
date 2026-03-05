@@ -134,8 +134,9 @@ function createDetailedMonstCard(monsterID){
 
 async function initMonInv() {
     await createCompleteRandomMonster("burntWitch")
-    await createCompleteStaticMonster("burntWitch", 13)
+    await createCompleteStaticMonster("burntWitch", 16)
     await createOnlyLevelRandomMonster("burntWitch")
+    await createOnlyStatsRandomMonster("burntWitch", 15)
     /*await createOnlyStatsRandomMonster("burntWitch", 17)
 */
     console.log("collection: ", getCollection());

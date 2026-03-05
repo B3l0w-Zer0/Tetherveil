@@ -74,21 +74,110 @@
 
     "height": 190,
     "weight": 40,
-    "tier": 2,
+    "strengthTier": 2,
 
     "attackBaseSet": [ "bite", "scratch", "flamethrow", "test1", "test2", "test3" ],
 
     "attackLearnSet": [
-      { "attackID":  "swordsDance", "minLevel": 2, "maxLevel": 14 }
+      { "attackID":  "test4", "minLevel": 2, "maxLevel": 14 }
     ],
 
     "attackStaticSet": [
-      { "level":  3, "attackID":  "dragonWrath" }
+      {  "attackID":  "test5", "level":  3 }
     ],
 
-    "attackEvolutionSet": [ "hugeAttackEvolutionBoomPow", "hugeAttackSecond", "hugeTestAttack" ]
+    "attackEvolutionSet": [ "test6", "test7", "test8" ]
   },
 
+  {
+    "sortingID": "0002",
+    "name": "Burnt Witch Evolution",
+    "monsterID": "burntWitchEvolution",
+    "type": ["fire"],
+
+    "baseHealth": { "min": 60, "max": 80},
+    "basePhysicalAttack": { "min": 20, "max": 40 },
+    "basePhysicalDefense": { "min": 10, "max": 30 },
+    "baseSoulAttack": { "min": 60, "max": 90 },
+    "baseSoulDefense": { "min": 50, "max": 70 },
+    "baseSpeed": { "min": 45, "max": 70 },
+    "baseMana": { "min":  30, "max": 50 },
+    "baseStamina": { "min":  10, "max": 20 },
+
+    "increaseHealth": {"min":  4, "max":  7 },
+    "increasePhysicalAttack": {"min":  2, "max":  4 },
+    "increasePhysicalDefense": { "min": 5, "max": 8 },
+    "increaseSoulAttack": { "min": 3, "max": 7 },
+    "increaseSoulDefense": { "min": 1, "max": 3 },
+    "increaseSpeed": { "min": 3, "max": 5 },
+    "increaseMana": { "min":  5, "max": 7 },
+    "increaseStamina": { "min":  1, "max": 4 },
+
+    "baseHealthStatic": 70,
+    "basePhysicalAttackStatic": 30,
+    "basePhysicalDefenseStatic": 20,
+    "baseSoulAttackStatic": 75,
+    "baseSoulDefenseStatic": 60,
+    "baseSpeedStatic": 60,
+    "baseManaStatic": 40,
+    "baseStaminaStatic": 15,
+
+    "increaseHealthStatic": 6,
+    "increasePhysicalAttackStatic": 3,
+    "increasePhysicalDefenseStatic": 7,
+    "increaseSoulAttackStatic": 5,
+    "increaseSoulDefenseStatic": 2,
+    "increaseSpeedStatic": 4,
+    "increaseManaStatic": 6,
+    "increaseStaminaStatic": 2,
+
+    "evolveIncreaseHealth": {"min": 10, "max":  14 },
+    "evolveIncreasePhysicalAttack": {"min": 5, "max":  13 },
+    "evolveIncreasePhysicalDefense": { "min": 5, "max": 12 },
+    "evolveIncreaseSoulAttack": { "min": 14, "max": 19 },
+    "evolveIncreaseSoulDefense": { "min": 1, "max": 3 },
+    "evolveIncreaseSpeed": { "min": 3, "max": 5 },
+    "evolveIncreaseMana": { "min": 5, "max": 10 },
+    "evolveIncreaseStamina": { "min":  4, "max": 8 },
+
+    "evolveIncreaseHealthStatic": 12,
+    "evolveIncreasePhysicalAttackStatic": 10,
+    "evolveIncreasePhysicalDefenseStatic": 14,
+    "evolveIncreaseSoulAttackStatic": 16,
+    "evolveIncreaseSoulDefenseStatic": 16,
+    "evolveIncreaseSpeedStatic": 17,
+    "evolveIncreaseManaStatic": 18,
+    "evolveIncreaseStaminaStatic": 6,
+
+    "description": "The restless soul of a witch, burnt by townsfolk",
+    "icon": "assets/images/monsters/fireWitch.jpg",
+    "inventory": [],
+    "attacks": [],
+    "statusEffects": [],
+    "level": 1,
+    "maxLevel": 120,
+    "baseNecessaryLvlUpEp": 800,
+    "increaseNecessaryLvlUpEp": 1.3,
+    "evolLevel": 15,
+    "nextEvol": "burntWitchEvolution",
+    "elusivenessFleeingProb": 0.3,
+
+    "height": 190,
+    "weight": 40,
+    "strengthTier": 2,
+
+    "attackBaseSet": [ "bite", "scratch", "flamethrow", "test1", "test2", "test3" ],
+
+    "attackLearnSet": [
+      { "attackID":  "test4", "minLevel": 2, "maxLevel": 14 }
+    ],
+
+    "attackStaticSet": [
+      {  "attackID":  "test5", "level":  3 }
+    ],
+
+    "attackEvolutionSet": [ "test6", "test7", "test8" ]
+  },
 
   {
     "sortingID": "0002",

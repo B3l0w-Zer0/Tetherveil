@@ -1,6 +1,6 @@
 [
   {
-    "id": "flammenwurf",
+    "attackID": "bite",
     "name": "Flammenwurf",
     "type": "fire",
     "power": 90,
@@ -11,21 +11,124 @@
     "tier": 1
   },
   {
-    "id": "aquaknarre",
-    "name": "Aquaknarre",
-    "type": "water",
-    "power": 40
+    "attackID": "scratch",
+    "name": "Flammenwurf",
+    "type": "fire",
+    "power": 90,
+    "effect": "burn",
+    "accuracy": 80,
+    "weight": 40,
+    "description": "throws a flame at the enemy",
+    "tier": 1
   },
   {
-    "id": "rasierblatt",
-    "name": "Rasierblatt",
-    "type": "grass",
-    "power": 55
+    "attackID": "flamethrow",
+    "name": "Flammenwurf",
+    "type": "fire",
+    "power": 90,
+    "effect": "burn",
+    "accuracy": 80,
+    "weight": 40,
+    "description": "throws a flame at the enemy",
+    "tier": 1
   },
   {
-    "id": "tackle",
-    "name": "Tackle",
-    "type": "normal",
-    "power": 35
+  "attackID": "test1",
+  "name": "Flammenwurf",
+  "type": "fire",
+  "power": 90,
+  "effect": "burn",
+  "accuracy": 80,
+  "weight": 40,
+  "description": "throws a flame at the enemy",
+  "tier": 1
+  },
+  {
+  "attackID": "test2",
+  "name": "Flammenwurf",
+  "type": "fire",
+  "power": 90,
+  "effect": "burn",
+  "accuracy": 80,
+  "weight": 40,
+  "description": "throws a flame at the enemy",
+  "tier": 1
+  },
+  {
+  "attackID": "test3",
+  "name": "Flammenwurf",
+  "type": "fire",
+  "power": 90,
+  "effect": "burn",
+  "accuracy": 80,
+  "weight": 40,
+  "description": "throws a flame at the enemy",
+  "tier": 1
+  },
+  {
+    "attackID": "test4",
+    "name": "Flammenwurf",
+    "type": "fire",
+    "power": 90,
+    "effect": "burn",
+    "accuracy": 80,
+    "weight": 40,
+    "description": "throws a flame at the enemy",
+    "tier": 1
+  },
+  {
+    "attackID": "test5",
+    "name": "Flammenwurf",
+    "type": "fire",
+    "power": 90,
+    "effect": "burn",
+    "accuracy": 80,
+    "weight": 40,
+    "description": "throws a flame at the enemy",
+    "tier": 1
+  },
+  {
+    "attackID": "test6",
+    "name": "Flammenwurf",
+    "type": "fire",
+    "power": 90,
+    "effect": "burn",
+    "accuracy": 80,
+    "weight": 40,
+    "description": "throws a flame at the enemy",
+    "tier": 1
+  },
+  {
+    "attackID": "test7",
+    "name": "Flammenwurf",
+    "type": "fire",
+    "power": 90,
+    "effect": "burn",
+    "accuracy": 80,
+    "weight": 40,
+    "description": "throws a flame at the enemy",
+    "tier": 1
+  },
+  {
+    "attackID": "test8",
+    "name": "Flammenwurf",
+    "type": "fire",
+    "power": 90,
+    "effect": "burn",
+    "accuracy": 80,
+    "weight": 40,
+    "description": "throws a flame at the enemy",
+    "tier": 1
+  },
+  {
+    "attackID": "test9",
+    "name": "Flammenwurf",
+    "type": "fire",
+    "power": 90,
+    "effect": "burn",
+    "accuracy": 80,
+    "weight": 40,
+    "description": "throws a flame at the enemy",
+    "tier": 1
   }
 ]
