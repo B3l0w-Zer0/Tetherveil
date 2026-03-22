@@ -392,6 +392,8 @@ function removeAttack(surrogateID, attackID) {
 
 /*
 todo: monster AI types: defensive, aggressive, balanced, smart, dumb, maybe risky
+todo: damage types: meelee, range, slash, pierce, blunt (like warframe) do these with special stats mgh
+todo: personality: think of a way to put in personality or some kind like that to give buffs or effects depending of personality. Like greed monsters have the chance to be one of three personalities and one for example boosts status effects by 3 percent
 todo: attack types: protection, damage, heal, buff, debuff, aoe (flächenangriff, schaden an allen) aoe friendly (nur schaden an allen gegnern)
 
  */

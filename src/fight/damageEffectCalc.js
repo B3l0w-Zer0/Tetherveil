@@ -25,7 +25,7 @@ function switchAttackFromWildMonst(surrogateID, attackID, switchedAttackID){
 
 }
 
-    addAttackCollectionMonst(surrogateID, attackID), removeAttackFromCollectionMonst(surrogateID, attackID), switchAttackFromMmonst(surrogateID, attackID, switchedAttackID)
+    addAttackToCollectionMonst(surrogateID, attackID), removeAttackFromCollectionMonst(surrogateID, attackID), switchAttackFromMmonst(surrogateID, attackID, switchedAttackID)
 
 
 
