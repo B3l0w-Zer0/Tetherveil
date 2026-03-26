@@ -1,5 +1,34 @@
-[
-    {
-        
-    }
-]
+{
+  "potion": {
+    "id": "potion",
+    "name": "Trank",
+    "description": "Stellt 20 HP wieder her.",
+    "texture": "item_potion",
+    "stackable": true,
+    "type": "consumable"
+  },
+  "wood": {
+    "id": "wood",
+    "name": "Holz",
+    "description": "Ein Stück Holz. Wird für Quests benötigt.",
+    "texture": "item_wood",
+    "stackable": true,
+    "type": "material"
+  },
+  "old_coin": {
+    "id": "old_coin",
+    "name": "Alte Münze",
+    "description": "Eine verwitterte Münze. Wer weiß was sie wert ist.",
+    "texture": "item_coin",
+    "stackable": true,
+    "type": "material"
+  },
+  "sword": {
+    "id": "sword",
+    "name": "Holzschwert",
+    "description": "Ein einfaches Holzschwert.",
+    "texture": "item_sword",
+    "stackable": false,
+    "type": "weapon"
+  }
+}

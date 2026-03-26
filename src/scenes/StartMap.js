@@ -2,6 +2,10 @@ import {createGenMenu, toggleGenMenu} from '../menus/mapMenuGeneral.js';
 import npcManager from '../gameObjects/npcManager.js';
 import { MapManager } from '../mapping/mapManager.js';
 import { mapConfig } from '../mapping/mapConfig.js';
+import Options from './Options.js';
+import { DialogSystem } from '../gameObjects/dialogSystem.js';
+import { QuestManager } from '../gameObjects/questManager.js';
+import { ItemManager } from '../gameObjects/itemManager.js';
 
 export class StartMap extends Phaser.Scene {
     constructor() {
@@ -9,32 +13,28 @@ export class StartMap extends Phaser.Scene {
     }
 
     preload() {
-        // Alle Tilesets laden
         mapConfig.tilesets.forEach(tileset => {
             this.load.image(tileset.key, tileset.path);
         });
 
-        // Alle Maps laden
         mapConfig.maps.forEach(map => {
             this.load.tilemapTiledJSON(map.key, map.tilemapPath);
         });
 
-        // Player Bilder laden
         this.load.spritesheet("player", "assets/sprites/player_spritesheet.png", {
             frameWidth: 32,
             frameHeight: 32
         });
-
     }
 
     create() {
         // 1. Spieler erstellen
         this.player = this.physics.add.sprite(450, 300, "player", 0);
         this.player.setDisplaySize(32, 32);
-
         this.player.body.setCollideWorldBounds(true);
         this.player.body.pushable = true;
 
+        // Animationen
         this.anims.create({
             key: "walk-down",
             frames: this.anims.generateFrameNumbers("player", {start: 0, end: 2}),
@@ -63,35 +63,60 @@ export class StartMap extends Phaser.Scene {
             repeat: -1
         });
 
-        // 2. Kamera folgt dem Spieler
-        this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
+        // 2. Alle Manager erstellen
+        this.dialogSystem = new DialogSystem(this);
+        this.questManager = new QuestManager(this);
+        this.itemManager = new ItemManager(this);
 
-        // 3. NPC-Manager erstellen
+        //Events Quests
+        this.events.on('quest-accepted', (quest) => {
+            console.log(`📜 Quest gestartet: "${quest.title}"`);
+        });
+        this.events.on('quest-finished', (quest) => {
+            console.log(`🏆 Quest abgeschlossen: "${quest.title}"`);
+        });
+        this.events.on('item-received', (itemId, itemData) => {
+            console.log(`🎁 Item erhalten: ${itemId}`, itemData);
+        });
+        //WICHTIG: Inventar System hier --->
+        this.events.on('xp-gained', (xp) => {
+            console.log(`⭐ +${xp} XP`);
+        });
+
+        // NPC-Manager erstellen
         this.npcManager = new npcManager(this);
 
-        // 4. Map-Manager erstellen
+        // Map-Manager erstellen
         this.mapManager = new MapManager(this);
 
-        // 5. Map laden
+        // 3. Map laden (lädt automatisch NPCs aus Tiled + JSON!)
         const startMapKey = mapConfig.maps[0].key;
         this.mapManager.loadMap(startMapKey);
 
-        // 6. Manuellen NPC hinzufügen
-        this.npcManager.addNPC({
-            x: 370,
-            y: 250,
-            texture: "npc",
-            name: "Bob",
-            dialog: ["Hallo!", "Wie geht's?"],
-            speed: 35
+
+        this.itemManager.loadItemData().then(() => {
+            this.itemManager.spawnItem(400, 300, 'potion');
+            this.itemManager.spawnItem(500, 350, 'wood');
+            this.itemManager.spawnItem(300, 400, 'old_coin');
         });
 
-        // Steuerung Keys
+
+        /*this.time.delayedCall(100, () => {
+            if (this.mapManager.currentMap) {
+                this.itemManager.loadFromTilemap(this.mapManager.currentMap);
+            }
+        });*/
+
+
+        // 👇 KEIN manuelles addNPC() mehr nötig!
+        // NPCs werden automatisch aus Tiled + JSON geladen
+
+        // Steuerung
         this.cursors = this.input.keyboard.createCursorKeys();
         this.keys = this.input.keyboard.addKeys("W,A,S,D,ESC,SHIFT,TAB,E");
         this.menuOpen = false;
 
-        // ESC-Menü (HTML)
+        // Pause-Menü (HTML)
         this.menu = document.createElement("div");
         this.menu.style.position = "absolute";
         this.menu.style.top = "50%";
@@ -115,15 +140,18 @@ export class StartMap extends Phaser.Scene {
 
         document.getElementById("game-container").appendChild(this.menu);
 
-        // Button-Funktionen
         document.getElementById("resumeBtn").addEventListener("click", () => {
             this.menu.style.display = "none";
             this.menuOpen = false;
         });
 
         document.getElementById("optionsBtn").addEventListener("click", () => {
-            this.scene.start("Options");
-            alert("Optionsmenü (noch nicht implementiert)");
+            this.scene.pause();
+            this.scene.launch("options", { previousScene: this.scene.key });
+            this.scene.bringToTop("options");
+            this.menu.style.display = "none";
+            this.menuOpen = false;
+            this.input.enabled = false;
         });
 
         document.getElementById("fightBtn").addEventListener("click", () => {
@@ -138,8 +166,7 @@ export class StartMap extends Phaser.Scene {
             this.scene.start("Menu");
         });
 
-        // General Menu
-        this.genMenu = createGenMenu();
+        this.genMenu = createGenMenu(this.questManager);
 
         // Vollbild
         this.input.keyboard.on("keydown-F11", (event) => {
@@ -152,23 +179,86 @@ export class StartMap extends Phaser.Scene {
         });
     }
 
+    setupCamera() {
+        const currentMap = this.mapManager.currentMap;
+
+        if (!currentMap) {
+            console.warn("Keine Map geladen - Kamera-Setup übersprungen");
+            return;
+        }
+
+        const mapWidth = currentMap.widthInPixels;
+        const mapHeight = currentMap.heightInPixels;
+
+        this.cameras.main.setBounds(0, 0, mapWidth, mapHeight);
+        this.physics.world.setBounds(0, 0, mapWidth, mapHeight);
+        this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
+        this.cameras.main.setDeadzone(100, 100);
+
+        const settings = Options.getSettings();
+        const zoom = settings?.zoomLevel || 1.0;
+        this.cameras.main.setZoom(zoom);
+
+        this.cameras.main.roundPixels = true;
+    }
+
     update() {
-        // === NPCs updaten ===
+        // Dialog-System update (WICHTIG: Zuerst!)
+        this.dialogSystem.update();
+
+        // NPCs updaten
         this.npcManager.update();
 
-        // === Menü-Handling ===
+        //Items updaten
+        this.itemManager.update(this.player);
+
+        //Interaktion des Spielers
+        if (Phaser.Input.Keyboard.JustDown(this.keys.E) && !this.menuOpen && !this.dialogSystem.isActive) {
+
+            // Interaktionspunkt vor dem Spieler berechnen
+            const range = 40; // Pixel vor dem Spieler
+            let ix = this.player.x;
+            let iy = this.player.y;
+
+            switch (this.lastDir) {
+                case 'up':    iy -= range; break;
+                case 'down':  iy += range; break;
+                case 'left':  ix -= range; break;
+                case 'right': ix += range; break;
+            }
+
+            // NPC an diesem Punkt?
+            const nearbyNPC = this.npcManager.getNearbyNPC({ x: ix, y: iy }, 24);
+            if (nearbyNPC) {
+                nearbyNPC.startDialog(this.dialogSystem);
+                return;
+            }
+
+            // Item an diesem Punkt?
+            const ePressedForItem = true;
+            this.itemManager.update(this.player, ePressedForItem, ix, iy);
+        }
+
+        // Dialog aktiv → keine Bewegung
+        if (this.dialogSystem.isActive) {
+            this.player.body.setVelocity(0);
+            this.player.anims.stop();
+            return;
+        }
+
+        // ESC-Menü
         if (Phaser.Input.Keyboard.JustDown(this.keys.ESC)) {
             const visible = this.menu.style.display === "none";
             this.menu.style.display = visible ? "block" : "none";
             this.menuOpen = visible;
 
-            // Wenn Menü aufgeht: Player stoppen + Animation stoppen
             if (this.menuOpen) {
                 this.player.body.setVelocity(0);
                 this.player.anims.stop();
             }
         }
 
+        // TAB-Menü
         if (Phaser.Input.Keyboard.JustDown(this.keys.TAB)) {
             toggleGenMenu(this.genMenu);
             this.menuOpen = !this.menuOpen;
@@ -179,10 +269,10 @@ export class StartMap extends Phaser.Scene {
             }
         }
 
-        // Wenn Menü offen ist: keine Bewegung
+        // Menü offen → keine Bewegung
         if (this.menuOpen) return;
 
-        // === Movement ===
+        // Movement
         const speed = this.keys.SHIFT.isDown ? 400 : 200;
         const body = this.player.body;
 
@@ -195,7 +285,6 @@ export class StartMap extends Phaser.Scene {
         if (this.cursors.up.isDown || this.keys.W.isDown) vy -= 1;
         else if (this.cursors.down.isDown || this.keys.S.isDown) vy += 1;
 
-        // Diagonal normalisieren (sonst diagonal schneller)
         if (vx !== 0 && vy !== 0) {
             const inv = 1 / Math.sqrt(2);
             vx *= inv;
@@ -204,33 +293,22 @@ export class StartMap extends Phaser.Scene {
 
         body.setVelocity(vx * speed, vy * speed);
 
-        // === Animation + Idle Frames ===
-        // Merke letzte Richtung (für Idle)
+        // Animationen
         if (!this.lastDir) this.lastDir = "down";
 
         if (vx === 0 && vy === 0) {
-            // Idle: Frame je Richtung (0=down, 3=left, 6=right, 9=up)
             this.player.anims.stop();
 
             switch (this.lastDir) {
-                case "down":
-                    this.player.setFrame(0);
-                    break;
-                case "left":
-                    this.player.setFrame(3);
-                    break;
-                case "right":
-                    this.player.setFrame(6);
-                    break;
-                case "up":
-                    this.player.setFrame(9);
-                    break;
+                case "down": this.player.setFrame(0); break;
+                case "left": this.player.setFrame(3); break;
+                case "right": this.player.setFrame(6); break;
+                case "up": this.player.setFrame(9); break;
             }
 
             return;
         }
 
-        // Lauf-Animation je nach dominanter Achse
         if (Math.abs(vx) > Math.abs(vy)) {
             if (vx > 0) {
                 this.lastDir = "right";
