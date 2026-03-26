@@ -148,8 +148,10 @@ export class StartMap extends Phaser.Scene {
         document.getElementById("optionsBtn").addEventListener("click", () => {
             this.scene.pause();
             this.scene.launch("options", { previousScene: this.scene.key });
+            this.scene.bringToTop("options");
             this.menu.style.display = "none";
             this.menuOpen = false;
+            this.input.enabled = false;
         });
 
         document.getElementById("fightBtn").addEventListener("click", () => {

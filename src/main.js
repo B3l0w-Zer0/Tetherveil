@@ -37,6 +37,8 @@ const config = {
 };
 
 const game = new Phaser.Game(config);
+const canvas = document.querySelector('canvas');
+if (canvas) canvas.style.pointerEvents = 'none';
 game.scene.start("Menu");
 
 // Resize Handler
