@@ -1,17 +1,21 @@
 import {
-    /*addMonstToCollection,
+    addMonstToCollection,
     addMonstToTeam,
-
-     */
+    removeMonstFromTeam,
+    removeMonstFromCollection,
     getTeam,
     loadMonstInfo,
     getCollection,
-    createBaseMonst,
     createCompleteRandomMonster,
     createCompleteStaticMonster, createOnlyLevelRandomMonster, createOnlyStatsRandomMonster
 }
     from '/src/player/monsterlogic.js';
 
+import {
+    createHealthBar,
+
+}
+from '/src/fight/fightLogic.js'
 
 export async function createGenMonstMenu() {
     const genMonstWrapper = document.createElement('div');
@@ -21,7 +25,7 @@ export async function createGenMonstMenu() {
     const team = getTeam();
     console.log("your current team: ", team)
 
-    const monstGrid = createMonstGrid();
+    const monstGrid = await createMonstGrid();
 
     genMonstWrapper.style.display = 'flex';
     //genMonstWrapper.style.display = genMonstWrapper.style.display === 'none' ? 'flex' : 'none';
@@ -35,7 +39,7 @@ export async function createGenMonstMenu() {
     return genMonstWrapper;
 }
 
-function createMonstGrid(){
+async function createMonstGrid(){
     const monstGrid = document.createElement('div');
     monstGrid.classList.add("gen-menu-monsters-grid")
 
@@ -44,9 +48,9 @@ function createMonstGrid(){
     for (let i = 0; i < 5; i++){
         let currentMonst = team[i];
         if(currentMonst === undefined){
-            currentMonstCard = createMonstCard(null)
+            currentMonstCard = await createMonstCard(null)
         } else{
-            currentMonstCard = createMonstCard(currentMonst.surrogateID)
+            currentMonstCard = await createMonstCard(currentMonst.surrogateID)
         }
         console.log("loop läuft", i)
     monstGrid.appendChild(currentMonstCard)
@@ -55,7 +59,7 @@ function createMonstGrid(){
 }
 
 
-function createMonstCard(surrogateID){
+async function createMonstCard(surrogateID){
     const monstCard = document.createElement('div');
     monstCard.classList.add('gen-menu-monsters-card')
 
@@ -70,11 +74,12 @@ function createMonstCard(surrogateID){
         console.log("monster card for empty slot created");
         return monstCard;
     } else {
-        let currentMonst = loadMonstInfo(surrogateID);
+        let currentMonst = await loadMonstInfo(surrogateID);
         let currentMonstSurrogateID = currentMonst.surrogateID;
-        let currentMonstName = currentMonst.monsterName;
+        let currentMonstName = currentMonst.name;
         let currentMonstHealth = currentMonst.health;
         let currentMonstLevel = currentMonst.level;
+        let currentMonstMaxHealth = currentMonst.maxHealth
 
         monstNameField = document.createElement('div');
         monstNameField.classList.add('monster-name-field');
@@ -85,7 +90,7 @@ function createMonstCard(surrogateID){
         monstBasicInfo = document.createElement('div');
         monstBasicInfo.classList.add('monster-basic-info-field');
         monstBasicInfo.textContent = "Level: " + currentMonstLevel;
-        const monstHealthBar = createHealthBar(currentMonstHealth, currentMonst);
+        const monstHealthBar = createHealthBar(currentMonstHealth, currentMonstMaxHealth);
         monstCard.appendChild(monstHealthBar);
 
         monstShowInfoBtn = document.createElement('button');
@@ -101,28 +106,6 @@ function createMonstCard(surrogateID){
     return monstCard;
 }
 
-function createHealthBar(currentHP, maxHP){
-    const healthWrapper = document.createElement("div");
-    healthWrapper.classList.add("health-wrapper");
-
-    const healthFill = document.createElement("div");
-    healthFill.classList.add("health-fill");
-
-    const healthPercentage = (currentHP / maxHP) * 100;
-    if (healthPercentage > 60) {
-        healthFill.style.backgroundColor = "limegreen";
-    } else if (healthPercentage > 30) {
-        healthFill.style.backgroundColor = "orange";
-    } else {
-        healthFill.style.backgroundColor = "red";
-    }
-
-    healthFill.style.width = healthPercentage + "%";
-
-    healthWrapper.appendChild(healthFill);
-
-    return healthWrapper;
-}
 
 function createDetailedMonstCard(monsterID){
     const detailedMonstCard = document.createElement('div');
@@ -137,7 +120,21 @@ async function initMonInv() {
     await createCompleteStaticMonster("burntWitch", 16)
     await createOnlyLevelRandomMonster("burntWitch")
     await createOnlyStatsRandomMonster("burntWitch", 15)
-    /*await createOnlyStatsRandomMonster("burntWitch", 17)
+    addMonstToCollection("burntWitch#1")
+    addMonstToCollection("burntWitchEvolution#1")
+    addMonstToCollection("hello")
+    addMonstToTeam("burntWitch#1")
+    addMonstToTeam("hello")
+    addMonstToTeam("burntWitchEvolution#1")
+    removeMonstFromTeam("burntWitch#1")
+    removeMonstFromTeam("burntWitch")
+    removeMonstFromTeam("burntWitch#3")
+    removeMonstFromCollection("burntWitchEvolution#1")
+    addMonstToCollection("burntWitchEvolution#2")
+    addMonstToTeam("burntWitchEvolution#2")
+
+    /*
+    await createOnlyStatsRandomMonster("burntWitch", 17)
 */
     console.log("collection: ", getCollection());
 }

@@ -1,5 +1,9 @@
 import {MapManager} from '/src/mapping/mapManager.js';
-import {giveWildMonsterBaseAttack, checkWildIfLvlUpAttack, giveWildMonstEvolveAttack} from '/src/fight/generalAttackLogic.js'
+import {
+    giveWildMonsterBaseAttack,
+    checkWildIfLvlUpAttack,
+    giveWildMonstEvolveAttack
+} from '/src/fight/generalAttackLogic.js'
 
 const mapMan = new MapManager();
 
@@ -99,6 +103,7 @@ export async function createBaseMonst(monsterID, staticType, staticLevel) {
     const weight = monst.weight;
     const height = monst.height;
     const strengthTier = monst.strengthTier
+    const items = [];
 
 
     switch (staticType) {
@@ -166,10 +171,13 @@ export async function createBaseMonst(monsterID, staticType, staticLevel) {
         weight: weight,
         height: height,
         level: 1,
+        strengthTier: strengthTier,
+        beatenEP: randomizeMonstBaseStats(monst.baseBeatenEP.min, monst.baseBeatenEP.max),
+        beatenEPMultiplier: monst.beatenEPMultiplier,
+        items: items,
         ...baseMonster
 //todo hier noch den rest der stats durch evolution zuweisen. Die müssen in Die static function noch rein, weil ich sie hier abstrahiert habe und in der funktion hier nicht mehr drin. einfach wie in random monster auch :)
     }
-
 
     wildMons.push(finalBaseMonster)
     saveWildMonst(wildMons);
@@ -208,10 +216,24 @@ async function createStaticBaseMonst(monsterID) {
 
         let baseSoulMeeleeAttack = monst.baseSoulMeeleeAttackStatic
         let baseSoulRangeAttack = monst.baseSoulRangeAttackStatic
-        let baseSoulSpecialAttack  = monst.baseSoulSpecialAttackStatic
+        let baseSoulSpecialAttack = monst.baseSoulSpecialAttackStatic
         let baseSoulBluntAttack = monst.baseSoulBluntAttackStatic
         let baseSoulSlashingAttack = monst.baseSoulSlashingAttackStatic
         let baseSoulPierceAttack = monst.baseSoulPierceAttackStatic
+
+        let basePhysicalMeeleeDefense = monst.basePhysicalMeeleeDefenseStatic
+        let basePhysicalRangeDefense = monst.basePhysicalRangeDefenseStatic
+        let basePhysicalSpecialDefense = monst.basePhysicalSpecialDefenseStatic
+        let basePhysicalBluntDefense = monst.basePhysicalBluntDefenseStatic
+        let basePhysicalSlashingDefense = monst.basePhysicalSlashingDefenseStatic
+        let basePhysicalPierceDefense = monst.basePhysicalPierceDefenseStatic
+
+        let baseSoulMeeleeDefense = monst.baseSoulMeeleeDefenseStatic
+        let baseSoulRangeDefense = monst.baseSoulRangeDefenseStatic
+        let baseSoulSpecialDefense = monst.baseSoulSpecialDefenseStatic
+        let baseSoulBluntDefense = monst.baseSoulBluntDefenseStatic
+        let baseSoulSlashingDefense = monst.baseSoulSlashingDefenseStatic
+        let baseSoulPierceDefense = monst.baseSoulPierceDefenseStatic
 
         const increaseHealth = monst.increaseHealthStatic;
         const increasePhysicalAttack = monst.increasePhysicalAttackStatic;
@@ -236,11 +258,75 @@ async function createStaticBaseMonst(monsterID) {
         const increaseSoulSlashingAttack = monst.increaseSoulSlashingAttackStatic
         const increaseSoulPierceAttack = monst.increaseSoulPierceAttackStatic
 
+        const increasePhysicalMeeleeDefense = monst.increasePhysicalMeeleeDefenseStatic
+        const increasePhysicalRangeDefense = monst.increasePhysicalRangeDefenseStatic
+        const increasePhysicalSpecialDefense = monst.increasePhysicalSpecialDefenseStatic
+        const increasePhysicalBluntDefense = monst.increasePhysicalBluntDefenseStatic
+        const increasePhysicalSlashingDefense = monst.increasePhysicalSlashingDefenseStatic
+        const increasePhysicalPierceDefense = monst.increasePhysicalPierceDefenseStatic
+
+        const increaseSoulMeeleeDefense = monst.increaseSoulMeeleeDefenseStatic
+        const increaseSoulRangeDefense = monst.increaseSoulRangeDefenseStatic
+        const increaseSoulSpecialDefense = monst.increaseSoulSpecialDefenseStatic
+        const increaseSoulBluntDefense = monst.increaseSoulBluntDefenseStatic
+        const increaseSoulSlashingDefense = monst.increaseSoulSlashingDefenseStatic
+        const increaseSoulPierceDefense = monst.increaseSoulPierceDefenseStatic
+
         console.log("completely static or only level random monster chosen")
 
+        console.log("all assigned base stats: ", basePhysicalMeeleeAttack,
+            basePhysicalRangeAttack,
+            basePhysicalSpecialAttack,
+            basePhysicalBluntAttack,
+            basePhysicalSlashingAttack,
+            basePhysicalPierceAttack,
+            baseSoulMeeleeAttack,
+            baseSoulRangeAttack,
+            baseSoulSpecialAttack,
+            baseSoulBluntAttack,
+            baseSoulSlashingAttack,
+            baseSoulPierceAttack,
+            basePhysicalMeeleeDefense,
+            basePhysicalRangeDefense,
+            basePhysicalSpecialDefense,
+            basePhysicalBluntDefense,
+            basePhysicalSlashingDefense,
+            basePhysicalPierceDefense,
+            baseSoulMeeleeDefense,
+            baseSoulRangeDefense,
+            baseSoulSpecialDefense,
+            baseSoulBluntDefense,
+            baseSoulSlashingDefense,
+            baseSoulPierceDefense,
+            increasePhysicalMeeleeAttack,
+        increasePhysicalRangeAttack,
+        increasePhysicalSpecialAttack,
+        increasePhysicalBluntAttack,
+        increasePhysicalSlashingAttack,
+        increasePhysicalPierceAttack,
+        increaseSoulMeeleeAttack,
+        increaseSoulRangeAttack,
+            increaseSoulSpecialAttack,
+        increaseSoulBluntAttack,
+            increaseSoulSlashingAttack,
+        increaseSoulPierceAttack,
+        increasePhysicalMeeleeDefense,
+        increasePhysicalRangeDefense,
+        increasePhysicalSpecialDefense,
+        increasePhysicalBluntDefense,
+        increasePhysicalSlashingDefense,
+        increasePhysicalPierceDefense,
+        increaseSoulMeeleeDefense,
+        increaseSoulRangeDefense,
+        increaseSoulSpecialDefense,
+        increaseSoulBluntDefense,
+        increaseSoulSlashingDefense,
+        increaseSoulPierceDefense,
+        )
 
         baseStaticMonst = {
             health: baseHealth,
+            maxHealth: baseHealth,
             physicalAttack: basePhysicalAttack,
             physicalDefense: basePhysicalDefense,
             soulAttack: baseSoulAttack,
@@ -262,6 +348,20 @@ async function createStaticBaseMonst(monsterID) {
             soulBluntAttack: baseSoulBluntAttack,
             soulSlashingAttack: baseSoulSlashingAttack,
             soulPierceAttack: baseSoulPierceAttack,
+
+            physicalMeeleeDefense: basePhysicalMeeleeDefense,
+            physicalRangeDefense: basePhysicalRangeDefense,
+            physicalSpecialDefense: basePhysicalSpecialDefense,
+            physicalBluntDefense: basePhysicalBluntDefense,
+            physicalSlashingDefense: basePhysicalSlashingDefense,
+            physicalPierceDefense: basePhysicalPierceDefense,
+
+            soulMeeleeDefense: baseSoulMeeleeDefense,
+            soulRangeDefense: baseSoulRangeDefense,
+            soulSpecialDefense: baseSoulSpecialDefense,
+            soulBluntDefense: baseSoulBluntDefense,
+            soulSlashingDefense: baseSoulSlashingDefense,
+            soulPierceDefense: baseSoulPierceDefense,
 
             increaseHealthStatic: increaseHealth,
             increasePhysicalAttackStatic: increasePhysicalAttack,
@@ -286,6 +386,20 @@ async function createStaticBaseMonst(monsterID) {
             increaseSoulSlashingAttackStatic: increaseSoulSlashingAttack,
             increaseSoulPierceAttackStatic: increaseSoulPierceAttack,
 
+            increasePhysicalMeeleeDefenseStatic: increasePhysicalMeeleeDefense,
+            increasePhysicalRangeDefenseStatic: increasePhysicalRangeDefense,
+            increasePhysicalSpecialDefenseStatic: increasePhysicalSpecialDefense,
+            increasePhysicalBluntDefenseStatic: increasePhysicalBluntDefense,
+            increasePhysicalSlashingDefenseStatic: increasePhysicalSlashingDefense,
+            increasePhysicalPierceDefenseStatic: increasePhysicalPierceDefense,
+
+            increaseSoulMeeleeDefenseStatic: increaseSoulMeeleeDefense,
+            increaseSoulRangeDefenseStatic: increaseSoulRangeDefense,
+            increaseSoulSpecialDefenseStatic: increaseSoulSpecialDefense,
+            increaseSoulBluntDefenseStatic: increaseSoulBluntDefense,
+            increaseSoulSlashingDefenseStatic: increaseSoulSlashingDefense,
+            increaseSoulPierceDefenseStatic: increaseSoulPierceDefense,
+
             evolveIncreaseHealthStatic: monst.evolveIncreaseHealthStatic,
             evolveIncreasePhysicalAttackStatic: monst.evolveIncreasePhysicalAttackStatic,
             evolveIncreasePhysicalDefenseStatic: monst.evolveIncreasePhysicalDefenseStatic,
@@ -308,6 +422,20 @@ async function createStaticBaseMonst(monsterID) {
             evolveIncreaseSoulBluntAttackStatic: monst.evolveIncreaseSoulBluntAttackStatic,
             evolveIncreaseSoulSlashingAttackStatic: monst.evolveIncreaseSoulSlashingAttackStatic,
             evolveIncreaseSoulPierceAttackStatic: monst.evolveIncreaseSoulPierceAttackStatic,
+
+            evolveIncreasePhysicalMeeleeDefenseStatic: monst.evolveIncreasePhysicalMeeleeDefenseStatic,
+            evolveIncreasePhysicalRangeDefenseStatic: monst.evolveIncreasePhysicalRangeDefenseStatic,
+            evolveIncreasePhysicalSpecialDefenseStatic: monst.evolveIncreasePhysicalSpecialDefenseStatic,
+            evolveIncreasePhysicalBluntDefenseStatic: monst.evolveIncreasePhysicalBluntDefenseStatic,
+            evolveIncreasePhysicalSlashingDefenseStatic: monst.evolveIncreasePhysicalSlashingDefenseStatic,
+            evolveIncreasePhysicalPierceDefenseStatic: monst.evolveIncreasePhysicalPierceDefenseStatic,
+
+            evolveIncreaseSoulMeeleeDefenseStatic: monst.evolveIncreaseSoulMeeleeDefenseStatic,
+            evolveIncreaseSoulRangeDefenseStatic: monst.evolveIncreaseSoulRangeDefenseStatic,
+            evolveIncreaseSoulSpecialDefenseStatic: monst.evolveIncreaseSoulSpecialDefenseStatic,
+            evolveIncreaseSoulBluntDefenseStatic: monst.evolveIncreaseSoulBluntDefenseStatic,
+            evolveIncreaseSoulSlashingDefenseStatic: monst.evolveIncreaseSoulSlashingDefenseStatic,
+            evolveIncreaseSoulPierceDefenseStatic: monst.evolveIncreaseSoulPierceDefenseStatic,
         }
     }
     return baseStaticMonst;
@@ -333,19 +461,33 @@ async function createRandomBaseMonst(monsterID) {
         let baseMana = randomizeMonstBaseStats(monst.baseMana.min, monst.baseMana.max)
         let baseStamina = randomizeMonstBaseStats(monst.baseStamina.min, monst.baseStamina.max)
 
-        let basePhysicalMeeleeAttack= randomizeMonstBaseStats(monst.basePhysicalMeeleeAttack.min, monst.basePhysicalMeeleeAttack.max)
+        let basePhysicalMeeleeAttack = randomizeMonstBaseStats(monst.basePhysicalMeeleeAttack.min, monst.basePhysicalMeeleeAttack.max)
         let basePhysicalRangeAttack = randomizeMonstBaseStats(monst.basePhysicalRangeAttack.min, monst.basePhysicalRangeAttack.max)
         let basePhysicalSpecialAttack = randomizeMonstBaseStats(monst.basePhysicalSpecialAttack.min, monst.basePhysicalSpecialAttack.max)
         let basePhysicalBluntAttack = randomizeMonstBaseStats(monst.basePhysicalBluntAttack.min, monst.basePhysicalBluntAttack.max)
         let basePhysicalSlashingAttack = randomizeMonstBaseStats(monst.basePhysicalSlashingAttack.min, monst.basePhysicalSlashingAttack.max)
         let basePhysicalPierceAttack = randomizeMonstBaseStats(monst.basePhysicalPierceAttack.min, monst.basePhysicalPierceAttack.max)
 
-        let baseSoulMeeleeAttack= randomizeMonstBaseStats(monst.baseSoulMeeleeAttack.min, monst.baseSoulMeeleeAttack.max)
+        let baseSoulMeeleeAttack = randomizeMonstBaseStats(monst.baseSoulMeeleeAttack.min, monst.baseSoulMeeleeAttack.max)
         let baseSoulRangeAttack = randomizeMonstBaseStats(monst.baseSoulRangeAttack.min, monst.baseSoulRangeAttack.max)
         let baseSoulSpecialAttack = randomizeMonstBaseStats(monst.baseSoulSpecialAttack.min, monst.baseSoulSpecialAttack.max)
         let baseSoulBluntAttack = randomizeMonstBaseStats(monst.baseSoulBluntAttack.min, monst.baseSoulBluntAttack.max)
         let baseSoulSlashingAttack = randomizeMonstBaseStats(monst.baseSoulSlashingAttack.min, monst.baseSoulSlashingAttack.max)
         let baseSoulPierceAttack = randomizeMonstBaseStats(monst.baseSoulPierceAttack.min, monst.baseSoulPierceAttack.max)
+
+        let basePhysicalMeeleeDefense = randomizeMonstBaseStats(monst.basePhysicalMeeleeDefense.min, monst.basePhysicalMeeleeDefense.max)
+        let basePhysicalRangeDefense = randomizeMonstBaseStats(monst.basePhysicalRangeDefense.min, monst.basePhysicalRangeDefense.max)
+        let basePhysicalSpecialDefense = randomizeMonstBaseStats(monst.basePhysicalSpecialDefense.min, monst.basePhysicalSpecialDefense.max)
+        let basePhysicalBluntDefense = randomizeMonstBaseStats(monst.basePhysicalBluntDefense.min, monst.basePhysicalBluntDefense.max)
+        let basePhysicalSlashingDefense = randomizeMonstBaseStats(monst.basePhysicalSlashingDefense.min, monst.basePhysicalSlashingAttack.max)
+        let basePhysicalPierceDefense = randomizeMonstBaseStats(monst.basePhysicalPierceDefense.min, monst.basePhysicalPierceDefense.max)
+
+        let baseSoulMeeleeDefense = randomizeMonstBaseStats(monst.baseSoulMeeleeDefense.min, monst.baseSoulMeeleeDefense.max)
+        let baseSoulRangeDefense = randomizeMonstBaseStats(monst.baseSoulRangeDefense.min, monst.baseSoulRangeDefense.max)
+        let baseSoulSpecialDefense = randomizeMonstBaseStats(monst.baseSoulSpecialDefense.min, monst.baseSoulSpecialDefense.max)
+        let baseSoulBluntDefense = randomizeMonstBaseStats(monst.baseSoulBluntDefense.min, monst.baseSoulBluntDefense.max)
+        let baseSoulSlashingDefense = randomizeMonstBaseStats(monst.baseSoulSlashingDefense.min, monst.baseSoulSlashingDefense.max)
+        let baseSoulPierceDefense = randomizeMonstBaseStats(monst.baseSoulPierceDefense.min, monst.baseSoulPierceDefense.max)
 
         const increaseHealth = monst.increaseHealth;
         const increasePhysicalAttack = monst.increasePhysicalAttack;
@@ -356,24 +498,39 @@ async function createRandomBaseMonst(monsterID) {
         const increaseMana = monst.increaseMana;
         const increaseStamina = monst.increaseStamina;
 
-        const increasePhysicalMeeleeAttack= monst.increasePhysicalMeeleeAttack
+        const increasePhysicalMeeleeAttack = monst.increasePhysicalMeeleeAttack
         const increasePhysicalRangeAttack = monst.increasePhysicalRangeAttack
         const increasePhysicalSpecialAttack = monst.increasePhysicalSpecialAttack
         const increasePhysicalBluntAttack = monst.increasePhysicalBluntAttack
         const increasePhysicalSlashingAttack = monst.increasePhysicalSlashingAttack
         const increasePhysicalPierceAttack = monst.increasePhysicalPierceAttack
 
-        const increaseSoulMeeleeAttack= monst.increaseSoulMeeleeAttack
+        const increaseSoulMeeleeAttack = monst.increaseSoulMeeleeAttack
         const increaseSoulRangeAttack = monst.increaseSoulRangeAttack
         const increaseSoulSpecialAttack = monst.increaseSoulSpecialAttack
         const increaseSoulBluntAttack = monst.increaseSoulBluntAttack
         const increaseSoulSlashingAttack = monst.increaseSoulSlashingAttack
         const increaseSoulPierceAttack = monst.increaseSoulPierceAttack
 
+        const increasePhysicalMeeleeDefense = monst.increasePhysicalMeeleeDefense
+        const increasePhysicalRangeDefense = monst.increasePhysicalRangeDefense
+        const increasePhysicalSpecialDefense = monst.increasePhysicalSpecialDefense
+        const increasePhysicalBluntDefense = monst.increasePhysicalBluntDefense
+        const increasePhysicalSlashingDefense = monst.increasePhysicalSlashingDefense
+        const increasePhysicalPierceDefense = monst.increasePhysicalPierceDefense
+
+        const increaseSoulMeeleeDefense = monst.increaseSoulMeeleeDefense
+        const increaseSoulRangeDefense = monst.increaseSoulRangeDefense
+        const increaseSoulSpecialDefense = monst.increaseSoulSpecialDefense
+        const increaseSoulBluntDefense = monst.increaseSoulBluntDefense
+        const increaseSoulSlashingDefense = monst.increaseSoulSlashingDefense
+        const increaseSoulPierceDefense = monst.increaseSoulPierceDefense
+
         console.log("completely random or only stats random monster chosen")
 
         baseRandomMonst = {
             health: baseHealth,
+            maxHealth: baseHealth,
             physicalAttack: basePhysicalAttack,
             physicalDefense: basePhysicalDefense,
             soulAttack: baseSoulAttack,
@@ -395,6 +552,20 @@ async function createRandomBaseMonst(monsterID) {
             soulBluntAttack: baseSoulBluntAttack,
             soulSlashingAttack: baseSoulSlashingAttack,
             soulPierceAttack: baseSoulPierceAttack,
+
+            physicalMeeleeDefense: basePhysicalMeeleeDefense,
+            physicalRangeDefense: basePhysicalRangeDefense,
+            physicalSpecialDefense: basePhysicalSpecialDefense,
+            physicalBluntDefense: basePhysicalBluntDefense,
+            physicalSlashingDefense: basePhysicalSlashingDefense,
+            physicalPierceDefense: basePhysicalPierceDefense,
+
+            soulMeeleeDefense: baseSoulMeeleeDefense,
+            soulRangeDefense: baseSoulRangeDefense,
+            soulSpecialDefense: baseSoulSpecialDefense,
+            soulBluntDefense: baseSoulBluntDefense,
+            soulSlashingDefense: baseSoulSlashingDefense,
+            soulPierceDefense: baseSoulPierceDefense,
 
             increaseHealth: increaseHealth,
             increasePhysicalAttack: increasePhysicalAttack,
@@ -419,6 +590,20 @@ async function createRandomBaseMonst(monsterID) {
             increaseSoulSlashingAttack: increaseSoulSlashingAttack,
             increaseSoulPierceAttack: increaseSoulPierceAttack,
 
+            increasePhysicalMeeleeDefense: increasePhysicalMeeleeDefense,
+            increasePhysicalRangeDefense: increasePhysicalRangeDefense,
+            increasePhysicalSpecialDefense: increasePhysicalSpecialDefense,
+            increasePhysicalBluntDefense: increasePhysicalBluntDefense,
+            increasePhysicalSlashingDefense: increasePhysicalSlashingDefense,
+            increasePhysicalPierceDefense: increasePhysicalPierceDefense,
+
+            increaseSoulMeeleeDefense: increaseSoulMeeleeDefense,
+            increaseSoulRangeDefense: increaseSoulRangeDefense,
+            increaseSoulSpecialDefense: increaseSoulSpecialDefense,
+            increaseSoulBluntDefense: increaseSoulBluntDefense,
+            increaseSoulSlashingDefense: increaseSoulSlashingDefense,
+            increaseSoulPierceDefense: increaseSoulPierceDefense,
+
             evolveIncreaseHealth: monst.evolveIncreaseHealth,
             evolveIncreasePhysicalAttack: monst.evolveIncreasePhysicalAttack,
             evolveIncreasePhysicalDefense: monst.evolveIncreasePhysicalDefense,
@@ -441,6 +626,20 @@ async function createRandomBaseMonst(monsterID) {
             evolveIncreaseSoulBluntAttack: monst.evolveIncreaseSoulBluntAttack,
             evolveIncreaseSoulSlashingAttack: monst.evolveIncreaseSoulSlashingAttack,
             evolveIncreaseSoulPierceAttack: monst.evolveIncreaseSoulPierceAttack,
+
+            evolveIncreasePhysicalMeeleeDefense: monst.evolveIncreasePhysicalMeeleeDefense,
+            evolveIncreasePhysicalRangeDefense: monst.evolveIncreasePhysicalRangeAttack,
+            evolveIncreasePhysicalSpecialDefense: monst.evolveIncreasePhysicalSpecialAttack,
+            evolveIncreasePhysicalBluntDefense: monst.evolveIncreasePhysicalBluntAttack,
+            evolveIncreasePhysicalSlashingDefense: monst.evolveIncreasePhysicalSlashingAttack,
+            evolveIncreasePhysicalPierceDefense: monst.evolveIncreasePhysicalPierceAttack,
+
+            evolveIncreaseSoulMeeleeDefense: monst.evolveIncreaseSoulMeeleeDefense,
+            evolveIncreaseSoulRangeDefense: monst.evolveIncreaseSoulRangeDefense,
+            evolveIncreaseSoulSpecialDefense: monst.evolveIncreaseSoulSpecialDefense,
+            evolveIncreaseSoulBluntDefense: monst.evolveIncreaseSoulBluntDefense,
+            evolveIncreaseSoulSlashingDefense: monst.evolveIncreaseSoulSlashingDefense,
+            evolveIncreaseSoulPierceDefense: monst.evolveIncreaseSoulPierceDefense,
 
         }
     }
@@ -472,7 +671,7 @@ export async function createFinalMonst(surrogateID, finalLevel) {
 
         for (let i = 1; i < level; i++) {
             currentSurrogateID = wildMons[wildMonstIndex].surrogateID
-            finalMonst = await levelWildMonstUp(currentSurrogateID, i+1)
+            finalMonst = await levelWildMonstUp(currentSurrogateID, i + 1)
             if (!finalMonst) return null;
             // nach Evolution hat das Monster eine neue ID
             currentSurrogateID = finalMonst.surrogateID;
@@ -481,7 +680,6 @@ export async function createFinalMonst(surrogateID, finalLevel) {
             saveWildMonst(wildMons);
         }
     }
-
 
 
     console.log("monster: ", surrogateID, " has been successfully finalized and now has the surrogateID: ", finalMonst.surrogateID, " with level: ", finalMonst.level);
@@ -544,6 +742,7 @@ export function increaseNormalWildLvlUpStats(surrogateID) {
     let nextLevel
     let necessaryEp
     let increaseNecessaryLvlUpEp;
+    let beatenEP
     let currentEp;
 
     let staticRandomType;
@@ -591,6 +790,20 @@ export function increaseNormalWildLvlUpStats(surrogateID) {
     let increasedSoulSlashingAttack
     let increasedSoulPierceAttack
 
+    let increasedPhysicalMeeleeDefense
+    let increasedPhysicalRangeDefense
+    let increasedPhysicalSpecialDefense
+    let increasedPhysicalBluntDefense
+    let increasedPhysicalSlashingDefense
+    let increasedPhysicalPierceDefense
+
+    let increasedSoulMeeleeDefense
+    let increasedSoulRangeDefense
+    let increasedSoulSpecialDefense
+    let increasedSoulBluntDefense
+    let increasedSoulSlashingDefense
+    let increasedSoulPierceDefense
+
     let finalPhysicalMeeleeAttack
     let finalPhysicalRangeAttack
     let finalPhysicalSpecialAttack
@@ -604,6 +817,20 @@ export function increaseNormalWildLvlUpStats(surrogateID) {
     let finalSoulBluntAttack
     let finalSoulSlashingAttack
     let finalSoulPierceAttack
+
+    let finalPhysicalMeeleeDefense
+    let finalPhysicalRangeDefense
+    let finalPhysicalSpecialDefense
+    let finalPhysicalBluntDefense
+    let finalPhysicalSlashingDefense
+    let finalPhysicalPierceDefense
+
+    let finalSoulMeeleeDefense
+    let finalSoulRangeDefense
+    let finalSoulSpecialDefense
+    let finalSoulBluntDefense
+    let finalSoulSlashingDefense
+    let finalSoulPierceDefense
 
     const wildMonstIndex = wildMons.findIndex(i => i?.surrogateID === surrogateID)
     if (wildMonstIndex === -1) {
@@ -644,6 +871,20 @@ export function increaseNormalWildLvlUpStats(surrogateID) {
                 increasedSoulBluntAttack = wildMonst.increaseSoulBluntAttackStatic
                 increasedSoulSlashingAttack = wildMonst.increaseSoulSlashingAttackStatic
                 increasedSoulPierceAttack = wildMonst.increaseSoulPierceAttackStatic
+
+                increasedPhysicalMeeleeDefense = wildMonst.increasePhysicalMeeleeDefenseStatic
+                increasedPhysicalRangeDefense = wildMonst.increasePhysicalRangeDefenseStatic
+                increasedPhysicalSpecialDefense = wildMonst.increasePhysicalSpecialDefenseStatic
+                increasedPhysicalBluntDefense = wildMonst.increasePhysicalBluntDefenseStatic
+                increasedPhysicalSlashingDefense = wildMonst.increasePhysicalSlashingDefenseStatic
+                increasedPhysicalPierceDefense = wildMonst.increasePhysicalPierceDefenseStatic
+
+                increasedSoulMeeleeDefense = wildMonst.increaseSoulMeeleeDefenseStatic
+                increasedSoulRangeDefense = wildMonst.increaseSoulRangeDefenseStatic
+                increasedSoulSpecialDefense = wildMonst.increaseSoulSpecialDefenseStatic
+                increasedSoulBluntDefense = wildMonst.increaseSoulBluntDefenseStatic
+                increasedSoulSlashingDefense = wildMonst.increaseSoulSlashingDefenseStatic
+                increasedSoulPierceDefense = wildMonst.increaseSoulPierceDefenseStatic
                 break;
 
             case "onlyLevelRandom":
@@ -659,8 +900,8 @@ export function increaseNormalWildLvlUpStats(surrogateID) {
 
                 increasedPhysicalMeeleeAttack = wildMonst.increasePhysicalMeeleeAttackStatic
                 increasedPhysicalRangeAttack = wildMonst.increasePhysicalRangeAttackStatic
-                increasedPhysicalSpecialAttack = wildMonst.increasePhysicalSpecialAttackStatic
-                increasedPhysicalBluntAttack = wildMonst.increasePhysicalBluntAttackStatic
+                increasedPhysicalSpecialAttack = wildMonst.increasePhysicalSpecialAttackStatic;
+                increasedPhysicalBluntAttack = wildMonst.increasePhysicalBluntAttackStatic;
                 increasedPhysicalSlashingAttack = wildMonst.increasePhysicalSlashingAttackStatic
                 increasedPhysicalPierceAttack = wildMonst.increasePhysicalPierceAttackStatic
 
@@ -670,6 +911,20 @@ export function increaseNormalWildLvlUpStats(surrogateID) {
                 increasedSoulBluntAttack = wildMonst.increaseSoulBluntAttackStatic
                 increasedSoulSlashingAttack = wildMonst.increaseSoulSlashingAttackStatic
                 increasedSoulPierceAttack = wildMonst.increaseSoulPierceAttackStatic
+
+                increasedPhysicalMeeleeDefense = wildMonst.increasePhysicalMeeleeDefenseStatic
+                increasedPhysicalRangeDefense = wildMonst.increasePhysicalRangeDefenseStatic
+                increasedPhysicalSpecialDefense = wildMonst.increasePhysicalSpecialDefenseStatic
+                increasedPhysicalBluntDefense = wildMonst.increasePhysicalBluntDefenseStatic
+                increasedPhysicalSlashingDefense = wildMonst.increasePhysicalSlashingDefenseStatic
+                increasedPhysicalPierceDefense = wildMonst.increasePhysicalPierceDefenseStatic
+
+                increasedSoulMeeleeDefense = wildMonst.increaseSoulMeeleeDefenseStatic
+                increasedSoulRangeDefense = wildMonst.increaseSoulRangeDefenseStatic
+                increasedSoulSpecialDefense = wildMonst.increaseSoulSpecialDefenseStatic
+                increasedSoulBluntDefense = wildMonst.increaseSoulBluntDefenseStatic
+                increasedSoulSlashingDefense = wildMonst.increaseSoulSlashingDefenseStatic
+                increasedSoulPierceDefense = wildMonst.increaseSoulPierceDefenseStatic
                 break;
 
             case "onlyStatsRandom":
@@ -690,14 +945,28 @@ export function increaseNormalWildLvlUpStats(surrogateID) {
                 increasedPhysicalSpecialAttack = randomizeMonstLevelUpStats(wildMonst.increasePhysicalSpecialAttack.min, wildMonst.increasePhysicalSpecialAttack.max);
                 increasedPhysicalBluntAttack = randomizeMonstLevelUpStats(wildMonst.increasePhysicalBluntAttack.min, wildMonst.increasePhysicalBluntAttack.max);
                 increasedPhysicalSlashingAttack = randomizeMonstLevelUpStats(wildMonst.increasePhysicalSlashingAttack.min, wildMonst.increasePhysicalSlashingAttack.max);
-                increasedPhysicalPierceAttack  = randomizeMonstLevelUpStats(wildMonst.increasePhysicalPierceAttack.min, wildMonst.increasePhysicalPierceAttack.max);
+                increasedPhysicalPierceAttack = randomizeMonstLevelUpStats(wildMonst.increasePhysicalPierceAttack.min, wildMonst.increasePhysicalPierceAttack.max);
 
-                increasedSoulMeeleeAttack = randomizeMonstLevelUpStats(wildMonst.increasePhysicalMeeleeAttack.min, wildMonst.increasePhysicalMeeleeAttack.max);
-                increasedSoulRangeAttack = randomizeMonstLevelUpStats(wildMonst.increasePhysicalRangeAttack.min, wildMonst.increasePhysicalRangeAttack.max);
-                increasedSoulSpecialAttack = randomizeMonstLevelUpStats(wildMonst.increasePhysicalSpecialAttack.min, wildMonst.increasePhysicalSpecialAttack.max);
-                increasedSoulBluntAttack = randomizeMonstLevelUpStats(wildMonst.increasePhysicalBluntAttack.min, wildMonst.increasePhysicalBluntAttack.max);
-                increasedSoulSlashingAttack = randomizeMonstLevelUpStats(wildMonst.increasePhysicalSlashingAttack.min, wildMonst.increasePhysicalSlashingAttack.max);
-                increasedSoulPierceAttack  = randomizeMonstLevelUpStats(wildMonst.increasePhysicalPierceAttack.min, wildMonst.increasePhysicalPierceAttack.max);
+                increasedSoulMeeleeAttack = randomizeMonstLevelUpStats(wildMonst.increaseSoulMeeleeAttack.min, wildMonst.increaseSoulMeeleeAttack.max);
+                increasedSoulRangeAttack = randomizeMonstLevelUpStats(wildMonst.increaseSoulRangeAttack.min, wildMonst.increaseSoulRangeAttack.max);
+                increasedSoulSpecialAttack = randomizeMonstLevelUpStats(wildMonst.increaseSoulSpecialAttack.min, wildMonst.increaseSoulSpecialAttack.max);
+                increasedSoulBluntAttack = randomizeMonstLevelUpStats(wildMonst.increaseSoulBluntAttack.min, wildMonst.increaseSoulBluntAttack.max);
+                increasedSoulSlashingAttack = randomizeMonstLevelUpStats(wildMonst.increaseSoulSlashingAttack.min, wildMonst.increaseSoulSlashingAttack.max);
+                increasedSoulPierceAttack = randomizeMonstLevelUpStats(wildMonst.increaseSoulPierceAttack.min, wildMonst.increaseSoulPierceAttack.max);
+
+                increasedPhysicalMeeleeDefense = randomizeMonstLevelUpStats(wildMonst.increasePhysicalMeeleeDefense.min, wildMonst.increasePhysicalMeeleeDefense.max);
+                increasedPhysicalRangeDefense = randomizeMonstLevelUpStats(wildMonst.increasePhysicalRangeDefense.min, wildMonst.increasePhysicalRangeDefense.max);
+                increasedPhysicalSpecialDefense = randomizeMonstLevelUpStats(wildMonst.increasePhysicalSpecialDefense.min, wildMonst.increasePhysicalSpecialDefense.max);
+                increasedPhysicalBluntDefense = randomizeMonstLevelUpStats(wildMonst.increasePhysicalBluntDefense.min, wildMonst.increasePhysicalBluntDefense.max);
+                increasedPhysicalSlashingDefense = randomizeMonstLevelUpStats(wildMonst.increasePhysicalSlashingDefense.min, wildMonst.increasePhysicalSlashingDefense.max);
+                increasedPhysicalPierceDefense = randomizeMonstLevelUpStats(wildMonst.increasePhysicalPierceDefense.min, wildMonst.increasePhysicalPierceDefense.max);
+
+                increasedSoulMeeleeDefense = randomizeMonstLevelUpStats(wildMonst.increaseSoulMeeleeDefense.min, wildMonst.increaseSoulMeeleeDefense.max);
+                increasedSoulRangeDefense = randomizeMonstLevelUpStats(wildMonst.increaseSoulRangeDefense.min, wildMonst.increaseSoulRangeDefense.max);
+                increasedSoulSpecialDefense = randomizeMonstLevelUpStats(wildMonst.increaseSoulSpecialDefense.min, wildMonst.increaseSoulSpecialDefense.max);
+                increasedSoulBluntDefense = randomizeMonstLevelUpStats(wildMonst.increaseSoulBluntDefense.min, wildMonst.increaseSoulBluntDefense.max);
+                increasedSoulSlashingDefense = randomizeMonstLevelUpStats(wildMonst.increaseSoulSlashingDefense.min, wildMonst.increaseSoulSlashingDefense.max);
+                increasedSoulPierceDefense = randomizeMonstLevelUpStats(wildMonst.increaseSoulPierceDefense.min, wildMonst.increaseSoulPierceDefense.max);
                 break;
 
             case "completeRandom":
@@ -718,25 +987,45 @@ export function increaseNormalWildLvlUpStats(surrogateID) {
                 increasedPhysicalSpecialAttack = randomizeMonstLevelUpStats(wildMonst.increasePhysicalSpecialAttack.min, wildMonst.increasePhysicalSpecialAttack.max);
                 increasedPhysicalBluntAttack = randomizeMonstLevelUpStats(wildMonst.increasePhysicalBluntAttack.min, wildMonst.increasePhysicalBluntAttack.max);
                 increasedPhysicalSlashingAttack = randomizeMonstLevelUpStats(wildMonst.increasePhysicalSlashingAttack.min, wildMonst.increasePhysicalSlashingAttack.max);
-                increasedPhysicalPierceAttack  = randomizeMonstLevelUpStats(wildMonst.increasePhysicalPierceAttack.min, wildMonst.increasePhysicalPierceAttack.max);
+                increasedPhysicalPierceAttack = randomizeMonstLevelUpStats(wildMonst.increasePhysicalPierceAttack.min, wildMonst.increasePhysicalPierceAttack.max);
 
-                increasedSoulMeeleeAttack = randomizeMonstLevelUpStats(wildMonst.increasePhysicalMeeleeAttack.min, wildMonst.increasePhysicalMeeleeAttack.max);
-                increasedSoulRangeAttack = randomizeMonstLevelUpStats(wildMonst.increasePhysicalRangeAttack.min, wildMonst.increasePhysicalRangeAttack.max);
-                increasedSoulSpecialAttack = randomizeMonstLevelUpStats(wildMonst.increasePhysicalSpecialAttack.min, wildMonst.increasePhysicalSpecialAttack.max);
-                increasedSoulBluntAttack = randomizeMonstLevelUpStats(wildMonst.increasePhysicalBluntAttack.min, wildMonst.increasePhysicalBluntAttack.max);
-                increasedSoulSlashingAttack = randomizeMonstLevelUpStats(wildMonst.increasePhysicalSlashingAttack.min, wildMonst.increasePhysicalSlashingAttack.max);
-                increasedSoulPierceAttack  = randomizeMonstLevelUpStats(wildMonst.increasePhysicalPierceAttack.min, wildMonst.increasePhysicalPierceAttack.max);
+                increasedSoulMeeleeAttack = randomizeMonstLevelUpStats(wildMonst.increaseSoulMeeleeAttack.min, wildMonst.increaseSoulMeeleeAttack.max);
+                increasedSoulRangeAttack = randomizeMonstLevelUpStats(wildMonst.increaseSoulRangeAttack.min, wildMonst.increaseSoulRangeAttack.max);
+                increasedSoulSpecialAttack = randomizeMonstLevelUpStats(wildMonst.increaseSoulSpecialAttack.min, wildMonst.increaseSoulSpecialAttack.max);
+                increasedSoulBluntAttack = randomizeMonstLevelUpStats(wildMonst.increaseSoulBluntAttack.min, wildMonst.increaseSoulBluntAttack.max);
+                increasedSoulSlashingAttack = randomizeMonstLevelUpStats(wildMonst.increaseSoulSlashingAttack.min, wildMonst.increaseSoulSlashingAttack.max);
+                increasedSoulPierceAttack = randomizeMonstLevelUpStats(wildMonst.increaseSoulPierceAttack.min, wildMonst.increaseSoulPierceAttack.max);
+
+                increasedPhysicalMeeleeDefense = randomizeMonstLevelUpStats(wildMonst.increasePhysicalMeeleeDefense.min, wildMonst.increasePhysicalMeeleeDefense.max);
+                increasedPhysicalRangeDefense = randomizeMonstLevelUpStats(wildMonst.increasePhysicalRangeDefense.min, wildMonst.increasePhysicalRangeDefense.max);
+                increasedPhysicalSpecialDefense = randomizeMonstLevelUpStats(wildMonst.increasePhysicalSpecialDefense.min, wildMonst.increasePhysicalSpecialDefense.max);
+                increasedPhysicalBluntDefense = randomizeMonstLevelUpStats(wildMonst.increasePhysicalBluntDefense.min, wildMonst.increasePhysicalBluntDefense.max);
+                increasedPhysicalSlashingDefense = randomizeMonstLevelUpStats(wildMonst.increasePhysicalSlashingDefense.min, wildMonst.increasePhysicalSlashingDefense.max);
+                increasedPhysicalPierceDefense = randomizeMonstLevelUpStats(wildMonst.increasePhysicalPierceDefense.min, wildMonst.increasePhysicalPierceDefense.max);
+
+                increasedSoulMeeleeDefense = randomizeMonstLevelUpStats(wildMonst.increaseSoulMeeleeDefense.min, wildMonst.increaseSoulMeeleeDefense.max);
+                increasedSoulRangeDefense = randomizeMonstLevelUpStats(wildMonst.increaseSoulRangeDefense.min, wildMonst.increaseSoulRangeDefense.max);
+                increasedSoulSpecialDefense = randomizeMonstLevelUpStats(wildMonst.increaseSoulSpecialDefense.min, wildMonst.increaseSoulSpecialDefense.max);
+                increasedSoulBluntDefense = randomizeMonstLevelUpStats(wildMonst.increaseSoulBluntDefense.min, wildMonst.increaseSoulBluntDefense.max);
+                increasedSoulSlashingDefense = randomizeMonstLevelUpStats(wildMonst.increaseSoulSlashingDefense.min, wildMonst.increaseSoulSlashingDefense.max);
+                increasedSoulPierceDefense = randomizeMonstLevelUpStats(wildMonst.increaseSoulPierceDefense.min, wildMonst.increaseSoulPierceDefense.max);
                 break;
 
             default:
                 console.error("Level Up failed as no Option was given or option for Level Up was invalid.")
         }
-/*
-        console.log("staticType:", wildMonst.staticType);
-        console.log("increaseHealthStatic:", wildMonst.increaseHealthStatic);
-        console.log("health:", wildMonst.health);
+        /*
+                console.log("staticType:", wildMonst.staticType);
+                console.log("increaseHealthStatic:", wildMonst.increaseHealthStatic);
+                console.log("health:", wildMonst.health);
 
- */
+         */
+        console.log("increasedStats:", increasedSoulMeeleeDefense,
+            increasedSoulRangeDefense,
+            increasedSoulSpecialDefense,
+            increasedSoulBluntDefense,
+            increasedSoulSlashingDefense,
+            increasedSoulPierceDefense)
 
         finalHealth = increasedHealth + wildMonst.health;
         finalPhysicalAttack = increasedPhysicalAttack + wildMonst.physicalAttack;
@@ -755,23 +1044,64 @@ export function increaseNormalWildLvlUpStats(surrogateID) {
         finalPhysicalPierceAttack = increasedPhysicalPierceAttack + wildMonst.physicalPierceAttack
 
         finalSoulMeeleeAttack = increasedSoulMeeleeAttack + wildMonst.soulMeeleeAttack
-        finalSoulRangeAttack = increasedSoulRangeAttack+ wildMonst.soulRangeAttack
+        finalSoulRangeAttack = increasedSoulRangeAttack + wildMonst.soulRangeAttack
         finalSoulSpecialAttack = increasedSoulSpecialAttack + wildMonst.soulSpecialAttack
         finalSoulBluntAttack = increasedSoulBluntAttack + wildMonst.soulBluntAttack
         finalSoulSlashingAttack = increasedSoulSlashingAttack + wildMonst.soulSlashingAttack
         finalSoulPierceAttack = increasedSoulPierceAttack + wildMonst.soulPierceAttack
 
+        finalPhysicalMeeleeDefense = increasedPhysicalMeeleeDefense + wildMonst.physicalMeeleeDefense
+        finalPhysicalRangeDefense = increasedPhysicalRangeDefense + wildMonst.physicalRangeDefense
+        finalPhysicalSpecialDefense = increasedPhysicalSpecialDefense + wildMonst.physicalSpecialDefense
+        finalPhysicalBluntDefense = increasedPhysicalBluntDefense + wildMonst.physicalBluntDefense
+        finalPhysicalSlashingDefense = increasedPhysicalSlashingDefense + wildMonst.physicalSlashingDefense
+        finalPhysicalPierceDefense = increasedPhysicalPierceDefense + wildMonst.physicalPierceDefense
+
+        finalSoulMeeleeDefense = increasedSoulMeeleeDefense + wildMonst.soulMeeleeDefense
+        finalSoulRangeDefense = increasedSoulRangeDefense + wildMonst.soulRangeDefense
+        finalSoulSpecialDefense = increasedSoulSpecialDefense + wildMonst.soulSpecialDefense
+        finalSoulBluntDefense = increasedSoulBluntDefense + wildMonst.soulBluntDefense
+        finalSoulSlashingDefense = increasedSoulSlashingDefense + wildMonst.soulSlashingDefense
+        finalSoulPierceDefense = increasedSoulPierceDefense + wildMonst.soulPierceDefense
+
         necessaryEp = wildMonst.necessaryEp * wildMonst.increaseNecessaryLvlUpEp;
+        beatenEP = wildMonst.beatenEP * wildMonst.beatenEPMultiplier;
         increaseNecessaryLvlUpEp = wildMonst.increaseNecessaryLvlUpEp;
         currentEp = 0;
         level = nextLevel;
 
+        console.log("all increased stats: ", finalPhysicalMeeleeAttack,
+            finalPhysicalRangeAttack,
+            finalPhysicalSpecialAttack,
+            finalPhysicalBluntAttack,
+            finalPhysicalSlashingAttack,
+            finalPhysicalPierceAttack,
+            finalSoulMeeleeAttack,
+            finalSoulRangeAttack,
+            finalSoulSpecialAttack,
+            finalSoulBluntAttack,
+            finalSoulSlashingAttack,
+            finalSoulPierceAttack,
+            finalPhysicalMeeleeDefense,
+            finalPhysicalRangeDefense,
+            finalPhysicalSpecialDefense,
+            finalPhysicalBluntDefense,
+            finalPhysicalSlashingDefense,
+            finalPhysicalPierceDefense,
+            finalSoulMeeleeDefense,
+            finalSoulRangeDefense,
+            finalSoulSpecialDefense,
+            finalSoulBluntDefense,
+            finalSoulSlashingDefense,
+            finalSoulPierceDefense,
+        )
     }
 
 
     const levelUpMonst = {
         ...wildMonst,
         health: finalHealth,
+        maxHealth: finalHealth,
         physicalAttack: finalPhysicalAttack,
         physicalDefense: finalPhysicalDefense,
         soulAttack: finalSoulAttack,
@@ -780,7 +1110,7 @@ export function increaseNormalWildLvlUpStats(surrogateID) {
         mana: finalMana,
         stamina: finalStamina,
 
-        physicalMeeleeAttack: finalPhysicalMeeleeAttack ,
+        physicalMeeleeAttack: finalPhysicalMeeleeAttack,
         physicalRangeAttack: finalPhysicalRangeAttack,
         physicalSpecialAttack: finalPhysicalSpecialAttack,
         physicalBluntAttack: finalPhysicalBluntAttack,
@@ -794,9 +1124,24 @@ export function increaseNormalWildLvlUpStats(surrogateID) {
         soulSlashingAttack: finalSoulSlashingAttack,
         soulPierceAttack: finalSoulPierceAttack,
 
+        physicalMeeleeDefense: finalPhysicalMeeleeDefense,
+        physicalRangeDefense: finalPhysicalRangeDefense,
+        physicalSpecialDefense: finalPhysicalSpecialDefense,
+        physicalBluntDefense: finalPhysicalBluntDefense,
+        physicalSlashingDefense: finalPhysicalSlashingDefense,
+        physicalPierceDefense: finalPhysicalPierceDefense,
+
+        soulMeeleeDefense: finalSoulMeeleeDefense,
+        soulRangeDefense: finalSoulRangeDefense,
+        soulSpecialDefense: finalSoulSpecialDefense,
+        soulBluntDefense: finalSoulBluntDefense,
+        soulSlashingDefense: finalSoulSlashingDefense,
+        soulPierceDefense: finalSoulPierceDefense,
+
         necessaryEp: necessaryEp,
         increaseNecessaryLvlUpEp: increaseNecessaryLvlUpEp,
         currentEp: currentEp,
+        beatenEP: beatenEP,
         attacks: attacks,
         level: level
     }
@@ -814,6 +1159,8 @@ export async function evolveWildMonst(previousWildSurrogateID) {
     let necessaryEp
     let increaseNecessaryLvlUpEp;
     let currentEp;
+    let beatenEP;
+    let beatenEPMultiplier;
 
     let staticRandomType;
     let wildMonst;
@@ -841,6 +1188,20 @@ export async function evolveWildMonst(previousWildSurrogateID) {
     let increasedSoulBluntAttack
     let increasedSoulSlashingAttack
     let increasedSoulPierceAttack
+
+    let increasedPhysicalMeeleeDefense
+    let increasedPhysicalRangeDefense
+    let increasedPhysicalSpecialDefense
+    let increasedPhysicalBluntDefense
+    let increasedPhysicalSlashingDefense
+    let increasedPhysicalPierceDefense
+
+    let increasedSoulMeeleeDefense
+    let increasedSoulRangeDefense
+    let increasedSoulSpecialDefense
+    let increasedSoulBluntDefense
+    let increasedSoulSlashingDefense
+    let increasedSoulPierceDefense
 
     const wildMonstIndex = wildMons.findIndex(i => i.surrogateID === previousWildSurrogateID);
     console.log("test evolution function");
@@ -884,7 +1245,8 @@ export async function evolveWildMonst(previousWildSurrogateID) {
         const nextEvol = wildMonstEvol.nextEvol;
         const maxLevel = wildMonstEvol.maxLevel;
 
-
+        beatenEPMultiplier = wildMonstEvol.beatenEPMultiplier
+        beatenEP = wildMonst.beatenEP * beatenEPMultiplier
         level = wildMonst.level;
         nextLevel = wildMonst.level + 1
         oldLevel = wildMonst.level;
@@ -918,6 +1280,20 @@ export async function evolveWildMonst(previousWildSurrogateID) {
                     increasedSoulBluntAttack = wildMonst.evolveIncreaseSoulBluntAttackStatic
                     increasedSoulSlashingAttack = wildMonst.evolveIncreaseSoulSlashingAttackStatic
                     increasedSoulPierceAttack = wildMonst.evolveIncreaseSoulPierceAttackStatic
+
+                    increasedPhysicalMeeleeDefense = wildMonst.evolveIncreasePhysicalMeeleeDefenseStatic
+                    increasedPhysicalRangeDefense = wildMonst.evolveIncreasePhysicalRangeDefenseStatic
+                    increasedPhysicalSpecialDefense = wildMonst.evolveIncreasePhysicalSpecialDefenseStatic
+                    increasedPhysicalBluntDefense = wildMonst.evolveIncreasePhysicalBluntDefenseStatic
+                    increasedPhysicalSlashingDefense = wildMonst.evolveIncreasePhysicalSlashingDefenseStatic
+                    increasedPhysicalPierceDefense = wildMonst.evolveIncreasePhysicalPierceDefenseStatic
+
+                    increasedSoulMeeleeDefense = wildMonst.evolveIncreaseSoulMeeleeDefenseStatic
+                    increasedSoulRangeDefense = wildMonst.evolveIncreaseSoulRangeDefenseStatic
+                    increasedSoulSpecialDefense = wildMonst.evolveIncreaseSoulSpecialDefenseStatic
+                    increasedSoulBluntDefense = wildMonst.evolveIncreaseSoulBluntDefenseStatic
+                    increasedSoulSlashingDefense = wildMonst.evolveIncreaseSoulSlashingDefenseStatic
+                    increasedSoulPierceDefense = wildMonst.evolveIncreaseSoulPierceDefenseStatic
                     break;
 
                 case "onlyLevelRandom":
@@ -944,6 +1320,20 @@ export async function evolveWildMonst(previousWildSurrogateID) {
                     increasedSoulBluntAttack = wildMonst.evolveIncreaseSoulBluntAttackStatic
                     increasedSoulSlashingAttack = wildMonst.evolveIncreaseSoulSlashingAttackStatic
                     increasedSoulPierceAttack = wildMonst.evolveIncreaseSoulPierceAttackStatic
+
+                    increasedPhysicalMeeleeDefense = wildMonst.evolveIncreasePhysicalMeeleeDefenseStatic
+                    increasedPhysicalRangeDefense = wildMonst.evolveIncreasePhysicalRangeDefenseStatic
+                    increasedPhysicalSpecialDefense = wildMonst.evolveIncreasePhysicalSpecialDefenseStatic
+                    increasedPhysicalBluntDefense = wildMonst.evolveIncreasePhysicalBluntDefenseStatic
+                    increasedPhysicalSlashingDefense = wildMonst.evolveIncreasePhysicalSlashingDefenseStatic
+                    increasedPhysicalPierceDefense = wildMonst.evolveIncreasePhysicalPierceDefenseStatic
+
+                    increasedSoulMeeleeDefense = wildMonst.evolveIncreaseSoulMeeleeDefenseStatic
+                    increasedSoulRangeDefense = wildMonst.evolveIncreaseSoulRangeDefenseStatic
+                    increasedSoulSpecialDefense = wildMonst.evolveIncreaseSoulSpecialDefenseStatic
+                    increasedSoulBluntDefense = wildMonst.evolveIncreaseSoulBluntDefenseStatic
+                    increasedSoulSlashingDefense = wildMonst.evolveIncreaseSoulSlashingDefenseStatic
+                    increasedSoulPierceDefense = wildMonst.evolveIncreaseSoulPierceDefenseStatic
                     break;
 
                 case "onlyStatsRandom":
@@ -962,14 +1352,28 @@ export async function evolveWildMonst(previousWildSurrogateID) {
                     increasedPhysicalSpecialAttack = randomizeMonstLevelUpStats(wildMonst.evolveIncreasePhysicalSpecialAttack.min, wildMonst.evolveIncreasePhysicalSpecialAttack.max);
                     increasedPhysicalBluntAttack = randomizeMonstLevelUpStats(wildMonst.evolveIncreasePhysicalBluntAttack.min, wildMonst.evolveIncreasePhysicalBluntAttack.max);
                     increasedPhysicalSlashingAttack = randomizeMonstLevelUpStats(wildMonst.evolveIncreasePhysicalSlashingAttack.min, wildMonst.evolveIncreasePhysicalSlashingAttack.max);
-                    increasedPhysicalPierceAttack  = randomizeMonstLevelUpStats(wildMonst.evolveIncreasePhysicalPierceAttack.min, wildMonst.evolveIncreasePhysicalPierceAttack.max);
+                    increasedPhysicalPierceAttack = randomizeMonstLevelUpStats(wildMonst.evolveIncreasePhysicalPierceAttack.min, wildMonst.evolveIncreasePhysicalPierceAttack.max);
 
                     increasedSoulMeeleeAttack = randomizeMonstLevelUpStats(wildMonst.evolveIncreaseSoulMeeleeAttack.min, wildMonst.evolveIncreaseSoulMeeleeAttack.max);
                     increasedSoulRangeAttack = randomizeMonstLevelUpStats(wildMonst.evolveIncreaseSoulRangeAttack.min, wildMonst.evolveIncreaseSoulRangeAttack.max);
                     increasedSoulSpecialAttack = randomizeMonstLevelUpStats(wildMonst.evolveIncreaseSoulSpecialAttack.min, wildMonst.evolveIncreaseSoulSpecialAttack.max);
                     increasedSoulBluntAttack = randomizeMonstLevelUpStats(wildMonst.evolveIncreaseSoulBluntAttack.min, wildMonst.evolveIncreaseSoulBluntAttack.max);
                     increasedSoulSlashingAttack = randomizeMonstLevelUpStats(wildMonst.evolveIncreaseSoulSlashingAttack.min, wildMonst.evolveIncreaseSoulSlashingAttack.max);
-                    increasedSoulPierceAttack  = randomizeMonstLevelUpStats(wildMonst.evolveIncreaseSoulPierceAttack.min, wildMonst.evolveIncreaseSoulPierceAttack.max);
+                    increasedSoulPierceAttack = randomizeMonstLevelUpStats(wildMonst.evolveIncreaseSoulPierceAttack.min, wildMonst.evolveIncreaseSoulPierceAttack.max);
+
+                    increasedPhysicalMeeleeDefense = randomizeMonstLevelUpStats(wildMonst.evolveIncreasePhysicalMeeleeDefense.min, wildMonst.evolveIncreasePhysicalMeeleeDefense.max);
+                    increasedPhysicalRangeDefense = randomizeMonstLevelUpStats(wildMonst.evolveIncreasePhysicalRangeDefense.min, wildMonst.evolveIncreasePhysicalRangeDefense.max);
+                    increasedPhysicalSpecialDefense = randomizeMonstLevelUpStats(wildMonst.evolveIncreasePhysicalSpecialDefense.min, wildMonst.evolveIncreasePhysicalSpecialDefense.max);
+                    increasedPhysicalBluntDefense = randomizeMonstLevelUpStats(wildMonst.evolveIncreasePhysicalBluntDefense.min, wildMonst.evolveIncreasePhysicalBluntDefense.max);
+                    increasedPhysicalSlashingDefense = randomizeMonstLevelUpStats(wildMonst.evolveIncreasePhysicalSlashingDefense.min, wildMonst.evolveIncreasePhysicalSlashingDefense.max);
+                    increasedPhysicalPierceDefense = randomizeMonstLevelUpStats(wildMonst.evolveIncreasePhysicalPierceDefense.min, wildMonst.evolveIncreasePhysicalPierceDefense.max);
+
+                    increasedSoulMeeleeDefense = randomizeMonstLevelUpStats(wildMonst.evolveIncreaseSoulMeeleeDefense.min, wildMonst.evolveIncreaseSoulMeeleeDefense.max);
+                    increasedSoulRangeDefense = randomizeMonstLevelUpStats(wildMonst.evolveIncreaseSoulRangeDefense.min, wildMonst.evolveIncreaseSoulRangeDefense.max);
+                    increasedSoulSpecialDefense = randomizeMonstLevelUpStats(wildMonst.evolveIncreaseSoulSpecialDefense.min, wildMonst.evolveIncreaseSoulSpecialDefense.max);
+                    increasedSoulBluntDefense = randomizeMonstLevelUpStats(wildMonst.evolveIncreaseSoulBluntDefense.min, wildMonst.evolveIncreaseSoulBluntDefense.max);
+                    increasedSoulSlashingDefense = randomizeMonstLevelUpStats(wildMonst.evolveIncreaseSoulSlashingDefense.min, wildMonst.evolveIncreaseSoulSlashingDefense.max);
+                    increasedSoulPierceDefense = randomizeMonstLevelUpStats(wildMonst.evolveIncreaseSoulPierceDefense.min, wildMonst.evolveIncreaseSoulPierceDefense.max);
                     break;
 
                 case "completeRandom":
@@ -982,6 +1386,34 @@ export async function evolveWildMonst(previousWildSurrogateID) {
                     increasedSpeed = randomizeMonstLevelUpStats(wildMonst.evolveIncreaseSpeed.min, wildMonst.evolveIncreaseSpeed.max);
                     increasedMana = randomizeMonstLevelUpStats(wildMonst.evolveIncreaseMana.min, wildMonst.evolveIncreaseMana.max);
                     increasedStamina = randomizeMonstLevelUpStats(wildMonst.evolveIncreaseStamina.min, wildMonst.evolveIncreaseStamina.max);
+
+                    increasedPhysicalMeeleeAttack = randomizeMonstLevelUpStats(wildMonst.evolveIncreasePhysicalMeeleeAttack.min, wildMonst.evolveIncreasePhysicalMeeleeAttack.max);
+                    increasedPhysicalRangeAttack = randomizeMonstLevelUpStats(wildMonst.evolveIncreasePhysicalRangeAttack.min, wildMonst.evolveIncreasePhysicalRangeAttack.max);
+                    increasedPhysicalSpecialAttack = randomizeMonstLevelUpStats(wildMonst.evolveIncreasePhysicalSpecialAttack.min, wildMonst.evolveIncreasePhysicalSpecialAttack.max);
+                    increasedPhysicalBluntAttack = randomizeMonstLevelUpStats(wildMonst.evolveIncreasePhysicalBluntAttack.min, wildMonst.evolveIncreasePhysicalBluntAttack.max);
+                    increasedPhysicalSlashingAttack = randomizeMonstLevelUpStats(wildMonst.evolveIncreasePhysicalSlashingAttack.min, wildMonst.evolveIncreasePhysicalSlashingAttack.max);
+                    increasedPhysicalPierceAttack = randomizeMonstLevelUpStats(wildMonst.evolveIncreasePhysicalPierceAttack.min, wildMonst.evolveIncreasePhysicalPierceAttack.max);
+
+                    increasedSoulMeeleeAttack = randomizeMonstLevelUpStats(wildMonst.evolveIncreaseSoulMeeleeAttack.min, wildMonst.evolveIncreaseSoulMeeleeAttack.max);
+                    increasedSoulRangeAttack = randomizeMonstLevelUpStats(wildMonst.evolveIncreaseSoulRangeAttack.min, wildMonst.evolveIncreaseSoulRangeAttack.max);
+                    increasedSoulSpecialAttack = randomizeMonstLevelUpStats(wildMonst.evolveIncreaseSoulSpecialAttack.min, wildMonst.evolveIncreaseSoulSpecialAttack.max);
+                    increasedSoulBluntAttack = randomizeMonstLevelUpStats(wildMonst.evolveIncreaseSoulBluntAttack.min, wildMonst.evolveIncreaseSoulBluntAttack.max);
+                    increasedSoulSlashingAttack = randomizeMonstLevelUpStats(wildMonst.evolveIncreaseSoulSlashingAttack.min, wildMonst.evolveIncreaseSoulSlashingAttack.max);
+                    increasedSoulPierceAttack = randomizeMonstLevelUpStats(wildMonst.evolveIncreaseSoulPierceAttack.min, wildMonst.evolveIncreaseSoulPierceAttack.max);
+
+                    increasedPhysicalMeeleeDefense = randomizeMonstLevelUpStats(wildMonst.evolveIncreasePhysicalMeeleeDefense.min, wildMonst.evolveIncreasePhysicalMeeleeDefense.max);
+                    increasedPhysicalRangeDefense = randomizeMonstLevelUpStats(wildMonst.evolveIncreasePhysicalRangeDefense.min, wildMonst.evolveIncreasePhysicalRangeDefense.max);
+                    increasedPhysicalSpecialDefense = randomizeMonstLevelUpStats(wildMonst.evolveIncreasePhysicalSpecialDefense.min, wildMonst.evolveIncreasePhysicalSpecialDefense.max);
+                    increasedPhysicalBluntDefense = randomizeMonstLevelUpStats(wildMonst.evolveIncreasePhysicalBluntDefense.min, wildMonst.evolveIncreasePhysicalBluntDefense.max);
+                    increasedPhysicalSlashingDefense = randomizeMonstLevelUpStats(wildMonst.evolveIncreasePhysicalSlashingDefense.min, wildMonst.evolveIncreasePhysicalSlashingDefense.max);
+                    increasedPhysicalPierceDefense = randomizeMonstLevelUpStats(wildMonst.evolveIncreasePhysicalPierceDefense.min, wildMonst.evolveIncreasePhysicalPierceDefense.max);
+
+                    increasedSoulMeeleeDefense = randomizeMonstLevelUpStats(wildMonst.evolveIncreaseSoulMeeleeDefense.min, wildMonst.evolveIncreaseSoulMeeleeDefense.max);
+                    increasedSoulRangeDefense = randomizeMonstLevelUpStats(wildMonst.evolveIncreaseSoulRangeDefense.min, wildMonst.evolveIncreaseSoulRangeDefense.max);
+                    increasedSoulSpecialDefense = randomizeMonstLevelUpStats(wildMonst.evolveIncreaseSoulSpecialDefense.min, wildMonst.evolveIncreaseSoulSpecialDefense.max);
+                    increasedSoulBluntDefense = randomizeMonstLevelUpStats(wildMonst.evolveIncreaseSoulBluntDefense.min, wildMonst.evolveIncreaseSoulBluntDefense.max);
+                    increasedSoulSlashingDefense = randomizeMonstLevelUpStats(wildMonst.evolveIncreaseSoulSlashingDefense.min, wildMonst.evolveIncreaseSoulSlashingDefense.max);
+                    increasedSoulPierceDefense = randomizeMonstLevelUpStats(wildMonst.evolveIncreaseSoulPierceDefense.min, wildMonst.evolveIncreaseSoulPierceDefense.max);
                     break;
 
                 default:
@@ -1005,11 +1437,25 @@ export async function evolveWildMonst(previousWildSurrogateID) {
             const finalPhysicalPierceAttack = increasedPhysicalPierceAttack + wildMonst.physicalPierceAttack
 
             const finalSoulMeeleeAttack = increasedSoulMeeleeAttack + wildMonst.soulMeeleeAttack
-            const finalSoulRangeAttack = increasedSoulRangeAttack+ wildMonst.soulRangeAttack
+            const finalSoulRangeAttack = increasedSoulRangeAttack + wildMonst.soulRangeAttack
             const finalSoulSpecialAttack = increasedSoulSpecialAttack + wildMonst.soulSpecialAttack
             const finalSoulBluntAttack = increasedSoulBluntAttack + wildMonst.soulBluntAttack
             const finalSoulSlashingAttack = increasedSoulSlashingAttack + wildMonst.soulSlashingAttack
             const finalSoulPierceAttack = increasedSoulPierceAttack + wildMonst.soulPierceAttack
+
+            const finalPhysicalMeeleeDefense = increasedPhysicalMeeleeDefense + wildMonst.physicalMeeleeDefense
+            const finalPhysicalRangeDefense = increasedPhysicalRangeDefense + wildMonst.physicalRangeDefense
+            const finalPhysicalSpecialDefense = increasedPhysicalSpecialDefense + wildMonst.physicalSpecialDefense
+            const finalPhysicalBluntDefense = increasedPhysicalBluntDefense + wildMonst.physicalBluntDefense
+            const finalPhysicalSlashingDefense = increasedPhysicalSlashingDefense + wildMonst.physicalSlashingDefense
+            const finalPhysicalPierceDefense = increasedPhysicalPierceDefense + wildMonst.physicalPierceDefense
+
+            const finalSoulMeeleeDefense = increasedSoulMeeleeDefense + wildMonst.soulMeeleeDefense
+            const finalSoulRangeDefense = increasedSoulRangeDefense + wildMonst.soulRangeDefense
+            const finalSoulSpecialDefense = increasedSoulSpecialDefense + wildMonst.soulSpecialDefense
+            const finalSoulBluntDefense = increasedSoulBluntDefense + wildMonst.soulBluntDefense
+            const finalSoulSlashingDefense = increasedSoulSlashingDefense + wildMonst.soulSlashingDefense
+            const finalSoulPierceDefense = increasedSoulPierceDefense + wildMonst.soulPierceDefense
 
             necessaryEp = wildMonst.necessaryEp * wildMonst.increaseNecessaryLvlUpEp;
             increaseNecessaryLvlUpEp = wildMonst.increaseNecessaryLvlUpEp;
@@ -1039,6 +1485,7 @@ export async function evolveWildMonst(previousWildSurrogateID) {
                 attacks: attacks,
 
                 health: finalHealth,
+                maxHealth: finalHealth,
                 physicalAttack: finalPhysicalAttack,
                 physicalDefense: finalPhysicalDefense,
                 soulAttack: finalSoulAttack,
@@ -1047,7 +1494,7 @@ export async function evolveWildMonst(previousWildSurrogateID) {
                 mana: finalMana,
                 stamina: finalStamina,
 
-                physicalMeeleeAttack: finalPhysicalMeeleeAttack ,
+                physicalMeeleeAttack: finalPhysicalMeeleeAttack,
                 physicalRangeAttack: finalPhysicalRangeAttack,
                 physicalSpecialAttack: finalPhysicalSpecialAttack,
                 physicalBluntAttack: finalPhysicalBluntAttack,
@@ -1061,10 +1508,26 @@ export async function evolveWildMonst(previousWildSurrogateID) {
                 soulSlashingAttack: finalSoulSlashingAttack,
                 soulPierceAttack: finalSoulPierceAttack,
 
+                physicalMeeleeDefense: finalPhysicalMeeleeDefense,
+                physicalRangeDefense: finalPhysicalRangeDefense,
+                physicalSpecialDefense: finalPhysicalSpecialDefense,
+                physicalBluntDefense: finalPhysicalBluntDefense,
+                physicalSlashingDefense: finalPhysicalSlashingDefense,
+                physicalPierceDefense: finalPhysicalPierceDefense,
+
+                soulMeeleeDefense: finalSoulMeeleeDefense,
+                soulRangeDefense: finalSoulRangeDefense,
+                soulSpecialDefense: finalSoulSpecialDefense,
+                soulBluntDefense: finalSoulBluntDefense,
+                soulSlashingDefense: finalSoulSlashingDefense,
+                soulPierceDefense: finalSoulPierceDefense,
+
                 level: level,
                 necessaryEp: necessaryEp,
                 increaseNecessaryLvlUpEp: increaseNecessaryLvlUpEp,
                 currentEp: currentEp,
+                beatenEP: beatenEP,
+                beatenEPMultiplier: beatenEPMultiplier,
                 lvlUpAttacks: lvlUpAttacks,
                 staticLvlUpAttacks: staticLvlUpAttacks,
                 evolveAttacks: evolveAttacks,
@@ -1132,6 +1595,11 @@ export function increaseNormalCollectionAndTeamLvlUpStats(surrogateID) {
     let necessaryEp
     let increaseNecessaryLvlUpEp;
     let currentEp;
+
+    let staticRandomType;
+    let collectionMonst;
+    let attacks
+
     let increasedHealth
     let increasedPhysicalAttack
     let increasedPhysicalDefense
@@ -1140,6 +1608,7 @@ export function increaseNormalCollectionAndTeamLvlUpStats(surrogateID) {
     let increasedSpeed
     let increasedMana
     let increasedStamina
+
     let finalHealth
     let finalPhysicalAttack
     let finalPhysicalDefense
@@ -1148,18 +1617,85 @@ export function increaseNormalCollectionAndTeamLvlUpStats(surrogateID) {
     let finalSpeed
     let finalMana
     let finalStamina
-    let staticRandomType;
-    let collectionMonst;
 
-    const collectionMonstIndex = collection.findIndex(i => i.surrogateID === surrogateID)
+    let increaseHealth
+    let increasePhysicalAttack
+    let increasePhysicalDefense
+    let increaseSoulAttack
+    let increaseSoulDefense
+    let increaseStamina
+    let increaseSpeed
+    let increaseMana
+
+    let increasedPhysicalMeeleeAttack
+    let increasedPhysicalRangeAttack
+    let increasedPhysicalSpecialAttack
+    let increasedPhysicalBluntAttack
+    let increasedPhysicalSlashingAttack
+    let increasedPhysicalPierceAttack
+
+    let increasedSoulMeeleeAttack
+    let increasedSoulRangeAttack
+    let increasedSoulSpecialAttack
+    let increasedSoulBluntAttack
+    let increasedSoulSlashingAttack
+    let increasedSoulPierceAttack
+
+    let increasedPhysicalMeeleeDefense
+    let increasedPhysicalRangeDefense
+    let increasedPhysicalSpecialDefense
+    let increasedPhysicalBluntDefense
+    let increasedPhysicalSlashingDefense
+    let increasedPhysicalPierceDefense
+
+    let increasedSoulMeeleeDefense
+    let increasedSoulRangeDefense
+    let increasedSoulSpecialDefense
+    let increasedSoulBluntDefense
+    let increasedSoulSlashingDefense
+    let increasedSoulPierceDefense
+
+    let finalPhysicalMeeleeAttack
+    let finalPhysicalRangeAttack
+    let finalPhysicalSpecialAttack
+    let finalPhysicalBluntAttack
+    let finalPhysicalSlashingAttack
+    let finalPhysicalPierceAttack
+
+    let finalSoulMeeleeAttack
+    let finalSoulRangeAttack
+    let finalSoulSpecialAttack
+    let finalSoulBluntAttack
+    let finalSoulSlashingAttack
+    let finalSoulPierceAttack
+
+    let finalPhysicalMeeleeDefense
+    let finalPhysicalRangeDefense
+    let finalPhysicalSpecialDefense
+    let finalPhysicalBluntDefense
+    let finalPhysicalSlashingDefense
+    let finalPhysicalPierceDefense
+
+    let finalSoulMeeleeDefense
+    let finalSoulRangeDefense
+    let finalSoulSpecialDefense
+    let finalSoulBluntDefense
+    let finalSoulSlashingDefense
+    let finalSoulPierceDefense
+
+    const collectionMonstIndex = collection.findIndex(i => i?.surrogateID === surrogateID)
     if (collectionMonstIndex === -1) {
         console.error("Monster was not found in wild Monsters!")
         return null;
     } else {
         collectionMonst = collection[collectionMonstIndex];
         level = collectionMonst.level;
-        nextLevel = collectionMonst.level + 1
+        nextLevel = level + 1
         staticRandomType = collectionMonst.staticType;
+        attacks = checkWildIfLvlUpAttack(collectionMonst, nextLevel)
+        console.warn("current attacks: ", attacks)
+
+        console.log(collectionMonst)
 
         switch (staticRandomType) {
             case "completeStatic":
@@ -1172,6 +1708,34 @@ export function increaseNormalCollectionAndTeamLvlUpStats(surrogateID) {
                 increasedSpeed = collectionMonst.increaseSpeedStatic;
                 increasedMana = collectionMonst.increaseManaStatic;
                 increasedStamina = collectionMonst.increaseStaminaStatic;
+
+                increasedPhysicalMeeleeAttack = collectionMonst.increasePhysicalMeeleeAttackStatic
+                increasedPhysicalRangeAttack = collectionMonst.increasePhysicalRangeAttackStatic
+                increasedPhysicalSpecialAttack = collectionMonst.increasePhysicalSpecialAttackStatic
+                increasedPhysicalBluntAttack = collectionMonst.increasePhysicalBluntAttackStatic
+                increasedPhysicalSlashingAttack = collectionMonst.increasePhysicalSlashingAttackStatic
+                increasedPhysicalPierceAttack = collectionMonst.increasePhysicalPierceAttackStatic
+
+                increasedSoulMeeleeAttack = collectionMonst.increaseSoulMeeleeAttackStatic
+                increasedSoulRangeAttack = collectionMonst.increaseSoulRangeAttackStatic
+                increasedSoulSpecialAttack = collectionMonst.increaseSoulSpecialAttackStatic
+                increasedSoulBluntAttack = collectionMonst.increaseSoulBluntAttackStatic
+                increasedSoulSlashingAttack = collectionMonst.increaseSoulSlashingAttackStatic
+                increasedSoulPierceAttack = collectionMonst.increaseSoulPierceAttackStatic
+
+                increasedPhysicalMeeleeDefense = collectionMonst.increasePhysicalMeeleeDefenseStatic
+                increasedPhysicalRangeDefense = collectionMonst.increasePhysicalRangeDefenseStatic
+                increasedPhysicalSpecialDefense = collectionMonst.increasePhysicalSpecialDefenseStatic
+                increasedPhysicalBluntDefense = collectionMonst.increasePhysicalBluntDefenseStatic
+                increasedPhysicalSlashingDefense = collectionMonst.increasePhysicalSlashingDefenseStatic
+                increasedPhysicalPierceDefense = collectionMonst.increasePhysicalPierceDefenseStatic
+
+                increasedSoulMeeleeDefense = collectionMonst.increaseSoulMeeleeDefenseStatic
+                increasedSoulRangeDefense = collectionMonst.increaseSoulRangeDefenseStatic
+                increasedSoulSpecialDefense = collectionMonst.increaseSoulSpecialDefenseStatic
+                increasedSoulBluntDefense = collectionMonst.increaseSoulBluntDefenseStatic
+                increasedSoulSlashingDefense = collectionMonst.increaseSoulSlashingDefenseStatic
+                increasedSoulPierceDefense = collectionMonst.increaseSoulPierceDefenseStatic
                 break;
 
             case "onlyLevelRandom":
@@ -1184,23 +1748,83 @@ export function increaseNormalCollectionAndTeamLvlUpStats(surrogateID) {
                 increasedSpeed = collectionMonst.increaseSpeedStatic;
                 increasedMana = collectionMonst.increaseManaStatic;
                 increasedStamina = collectionMonst.increaseStaminaStatic;
+
+                increasedPhysicalMeeleeAttack = collectionMonst.increasePhysicalMeeleeAttackStatic
+                increasedPhysicalRangeAttack = collectionMonst.increasePhysicalRangeAttackStatic
+                increasedPhysicalSpecialAttack = collectionMonst.increasePhysicalSpecialAttackStatic
+                increasedPhysicalBluntAttack = collectionMonst.increasePhysicalBluntAttackStatic
+                increasedPhysicalSlashingAttack = collectionMonst.increasePhysicalSlashingAttackStatic
+                increasedPhysicalPierceAttack = collectionMonst.increasePhysicalPierceAttackStatic
+
+                increasedSoulMeeleeAttack = collectionMonst.increaseSoulMeeleeAttackStatic
+                increasedSoulRangeAttack = collectionMonst.increaseSoulRangeAttackStatic
+                increasedSoulSpecialAttack = collectionMonst.increaseSoulSpecialAttackStatic
+                increasedSoulBluntAttack = collectionMonst.increaseSoulBluntAttackStatic
+                increasedSoulSlashingAttack = collectionMonst.increaseSoulSlashingAttackStatic
+                increasedSoulPierceAttack = collectionMonst.increaseSoulPierceAttackStatic
+
+                increasedPhysicalMeeleeDefense = collectionMonst.increasePhysicalMeeleeDefenseStatic
+                increasedPhysicalRangeDefense = collectionMonst.increasePhysicalRangeDefenseStatic
+                increasedPhysicalSpecialDefense = collectionMonst.increasePhysicalSpecialDefenseStatic
+                increasedPhysicalBluntDefense = collectionMonst.increasePhysicalBluntDefenseStatic
+                increasedPhysicalSlashingDefense = collectionMonst.increasePhysicalSlashingDefenseStatic
+                increasedPhysicalPierceDefense = collectionMonst.increasePhysicalPierceDefenseStatic
+
+                increasedSoulMeeleeDefense = collectionMonst.increaseSoulMeeleeDefenseStatic
+                increasedSoulRangeDefense = collectionMonst.increaseSoulRangeDefenseStatic
+                increasedSoulSpecialDefense = collectionMonst.increaseSoulSpecialDefenseStatic
+                increasedSoulBluntDefense = collectionMonst.increaseSoulBluntDefenseStatic
+                increasedSoulSlashingDefense = collectionMonst.increaseSoulSlashingDefenseStatic
+                increasedSoulPierceDefense = collectionMonst.increaseSoulPierceDefenseStatic
                 break;
 
             case "onlyStatsRandom":
                 console.log("Level Up for Monster with only randomized stats chosen.")
-                increasedHealth = randomizeMonstLevelUpStats(collectionMonst.increaseHealth.min, collectionMonst.increaseHealth.max);
-                increasedPhysicalAttack = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalAttack.min, collectionMonst.increasePhysicalAttack.max);
+                increaseHealth = collectionMonst.increaseHealth;
+                increasePhysicalAttack = collectionMonst.increasePhysicalAttack
+                increasedHealth = randomizeMonstLevelUpStats(increaseHealth.min, increaseHealth.max);
+                increasedPhysicalAttack = randomizeMonstLevelUpStats(increasePhysicalAttack.min, increasePhysicalAttack.max);
                 increasedPhysicalDefense = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalDefense.min, collectionMonst.increasePhysicalDefense.max);
                 increasedSoulAttack = randomizeMonstLevelUpStats(collectionMonst.increaseSoulAttack.min, collectionMonst.increaseSoulAttack.max);
                 increasedSoulDefense = randomizeMonstLevelUpStats(collectionMonst.increaseSoulDefense.min, collectionMonst.increaseSoulDefense.max);
                 increasedSpeed = randomizeMonstLevelUpStats(collectionMonst.increaseSpeed.min, collectionMonst.increaseSpeed.max);
                 increasedMana = randomizeMonstLevelUpStats(collectionMonst.increaseMana.min, collectionMonst.increaseMana.max);
                 increasedStamina = randomizeMonstLevelUpStats(collectionMonst.increaseStamina.min, collectionMonst.increaseStamina.max);
+
+                increasedPhysicalMeeleeAttack = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalMeeleeAttack.min, collectionMonst.increasePhysicalMeeleeAttack.max);
+                increasedPhysicalRangeAttack = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalRangeAttack.min, collectionMonst.increasePhysicalRangeAttack.max);
+                increasedPhysicalSpecialAttack = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalSpecialAttack.min, collectionMonst.increasePhysicalSpecialAttack.max);
+                increasedPhysicalBluntAttack = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalBluntAttack.min, collectionMonst.increasePhysicalBluntAttack.max);
+                increasedPhysicalSlashingAttack = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalSlashingAttack.min, collectionMonst.increasePhysicalSlashingAttack.max);
+                increasedPhysicalPierceAttack = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalPierceAttack.min, collectionMonst.increasePhysicalPierceAttack.max);
+
+                increasedSoulMeeleeAttack = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalMeeleeAttack.min, collectionMonst.increasePhysicalMeeleeAttack.max);
+                increasedSoulRangeAttack = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalRangeAttack.min, collectionMonst.increasePhysicalRangeAttack.max);
+                increasedSoulSpecialAttack = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalSpecialAttack.min, collectionMonst.increasePhysicalSpecialAttack.max);
+                increasedSoulBluntAttack = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalBluntAttack.min, collectionMonst.increasePhysicalBluntAttack.max);
+                increasedSoulSlashingAttack = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalSlashingAttack.min, collectionMonst.increasePhysicalSlashingAttack.max);
+                increasedSoulPierceAttack = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalPierceAttack.min, collectionMonst.increasePhysicalPierceAttack.max);
+
+                increasedPhysicalMeeleeDefense = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalMeeleeDefense.min, collectionMonst.increasePhysicalMeeleeDefense.max);
+                increasedPhysicalRangeDefense = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalRangeDefense.min, collectionMonst.increasePhysicalRangeDefense.max);
+                increasedPhysicalSpecialDefense = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalSpecialDefense.min, collectionMonst.increasePhysicalSpecialDefense.max);
+                increasedPhysicalBluntDefense = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalBluntDefense.min, collectionMonst.increasePhysicalBluntDefense.max);
+                increasedPhysicalSlashingDefense = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalSlashingDefense.min, collectionMonst.increasePhysicalSlashingDefense.max);
+                increasedPhysicalPierceDefense = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalPierceDefense.min, collectionMonst.increasePhysicalPierceDefense.max);
+
+                increasedSoulMeeleeDefense = randomizeMonstLevelUpStats(collectionMonst.increaseSoulMeeleeDefense.min, collectionMonst.increaseSoulMeeleeDefense.max);
+                increasedSoulRangeDefense = randomizeMonstLevelUpStats(collectionMonst.increaseSoulRangeDefense.min, collectionMonst.increaseSoulRangeDefense.max);
+                increasedSoulSpecialDefense = randomizeMonstLevelUpStats(collectionMonst.increaseSoulSpecialDefense.min, collectionMonst.increaseSoulSpecialDefense.max);
+                increasedSoulBluntDefense = randomizeMonstLevelUpStats(collectionMonst.increaseSoulBluntDefense.min, collectionMonst.increaseSoulBluntDefense.max);
+                increasedSoulSlashingDefense = randomizeMonstLevelUpStats(collectionMonst.increaseSoulSlashingDefense.min, collectionMonst.increaseSoulSlashingDefense.max);
+                increasedSoulPierceDefense = randomizeMonstLevelUpStats(collectionMonst.increaseSoulPierceDefense.min, collectionMonst.increaseSoulPierceDefense.max);
                 break;
 
             case "completeRandom":
                 console.log("Level Up for completely random Monster chosen.")
-                increasedHealth = randomizeMonstLevelUpStats(collectionMonst.increaseHealth.min, collectionMonst.increaseHealth.max);
+                increaseHealth = collectionMonst.increaseHealth;
+                increasePhysicalAttack = collectionMonst.increasePhysicalAttack
+                increasedHealth = randomizeMonstLevelUpStats(increaseHealth.min, increaseHealth.max);
                 increasedPhysicalAttack = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalAttack.min, collectionMonst.increasePhysicalAttack.max);
                 increasedPhysicalDefense = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalDefense.min, collectionMonst.increasePhysicalDefense.max);
                 increasedSoulAttack = randomizeMonstLevelUpStats(collectionMonst.increaseSoulAttack.min, collectionMonst.increaseSoulAttack.max);
@@ -1208,11 +1832,45 @@ export function increaseNormalCollectionAndTeamLvlUpStats(surrogateID) {
                 increasedSpeed = randomizeMonstLevelUpStats(collectionMonst.increaseSpeed.min, collectionMonst.increaseSpeed.max);
                 increasedMana = randomizeMonstLevelUpStats(collectionMonst.increaseMana.min, collectionMonst.increaseMana.max);
                 increasedStamina = randomizeMonstLevelUpStats(collectionMonst.increaseStamina.min, collectionMonst.increaseStamina.max);
+
+                increasedPhysicalMeeleeAttack = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalMeeleeAttack.min, collectionMonst.increasePhysicalMeeleeAttack.max);
+                increasedPhysicalRangeAttack = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalRangeAttack.min, collectionMonst.increasePhysicalRangeAttack.max);
+                increasedPhysicalSpecialAttack = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalSpecialAttack.min, collectionMonst.increasePhysicalSpecialAttack.max);
+                increasedPhysicalBluntAttack = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalBluntAttack.min, collectionMonst.increasePhysicalBluntAttack.max);
+                increasedPhysicalSlashingAttack = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalSlashingAttack.min, collectionMonst.increasePhysicalSlashingAttack.max);
+                increasedPhysicalPierceAttack = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalPierceAttack.min, collectionMonst.increasePhysicalPierceAttack.max);
+
+                increasedSoulMeeleeAttack = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalMeeleeAttack.min, collectionMonst.increasePhysicalMeeleeAttack.max);
+                increasedSoulRangeAttack = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalRangeAttack.min, collectionMonst.increasePhysicalRangeAttack.max);
+                increasedSoulSpecialAttack = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalSpecialAttack.min, collectionMonst.increasePhysicalSpecialAttack.max);
+                increasedSoulBluntAttack = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalBluntAttack.min, collectionMonst.increasePhysicalBluntAttack.max);
+                increasedSoulSlashingAttack = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalSlashingAttack.min, collectionMonst.increasePhysicalSlashingAttack.max);
+                increasedSoulPierceAttack = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalPierceAttack.min, collectionMonst.increasePhysicalPierceAttack.max);
+
+                increasedPhysicalMeeleeDefense = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalMeeleeDefense.min, collectionMonst.increasePhysicalMeeleeDefense.max);
+                increasedPhysicalRangeDefense = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalRangeDefense.min, collectionMonst.increasePhysicalRangeDefense.max);
+                increasedPhysicalSpecialDefense = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalSpecialDefense.min, collectionMonst.increasePhysicalSpecialDefense.max);
+                increasedPhysicalBluntDefense = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalBluntDefense.min, collectionMonst.increasePhysicalBluntDefense.max);
+                increasedPhysicalSlashingDefense = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalSlashingDefense.min, collectionMonst.increasePhysicalSlashingDefense.max);
+                increasedPhysicalPierceDefense = randomizeMonstLevelUpStats(collectionMonst.increasePhysicalPierceDefense.min, collectionMonst.increasePhysicalPierceDefense.max);
+
+                increasedSoulMeeleeDefense = randomizeMonstLevelUpStats(collectionMonst.increaseSoulMeeleeDefense.min, collectionMonst.increaseSoulMeeleeDefense.max);
+                increasedSoulRangeDefense = randomizeMonstLevelUpStats(collectionMonst.increaseSoulRangeDefense.min, collectionMonst.increaseSoulRangeDefense.max);
+                increasedSoulSpecialDefense = randomizeMonstLevelUpStats(collectionMonst.increaseSoulSpecialDefense.min, collectionMonst.increaseSoulSpecialDefense.max);
+                increasedSoulBluntDefense = randomizeMonstLevelUpStats(collectionMonst.increaseSoulBluntDefense.min, collectionMonst.increaseSoulBluntDefense.max);
+                increasedSoulSlashingDefense = randomizeMonstLevelUpStats(collectionMonst.increaseSoulSlashingDefense.min, collectionMonst.increaseSoulSlashingDefense.max);
+                increasedSoulPierceDefense = randomizeMonstLevelUpStats(collectionMonst.increaseSoulPierceDefense.min, collectionMonst.increaseSoulPierceDefense.max);
                 break;
 
             default:
                 console.error("Level Up failed as no Option was given or option for Level Up was invalid.")
         }
+        /*
+                console.log("staticType:", wildMonst.staticType);
+                console.log("increaseHealthStatic:", wildMonst.increaseHealthStatic);
+                console.log("health:", wildMonst.health);
+
+         */
 
         finalHealth = increasedHealth + collectionMonst.health;
         finalPhysicalAttack = increasedPhysicalAttack + collectionMonst.physicalAttack;
@@ -1222,16 +1880,47 @@ export function increaseNormalCollectionAndTeamLvlUpStats(surrogateID) {
         finalSpeed = increasedSpeed + collectionMonst.speed;
         finalMana = increasedMana + collectionMonst.mana;
         finalStamina = increasedStamina + collectionMonst.stamina;
+
+        finalPhysicalMeeleeAttack = increasedPhysicalMeeleeAttack + collectionMonst.physicalMeeleeAttack
+        finalPhysicalRangeAttack = increasedPhysicalRangeAttack + collectionMonst.physicalRangeAttack
+        finalPhysicalSpecialAttack = increasedPhysicalSpecialAttack + collectionMonst.physicalSpecialAttack
+        finalPhysicalBluntAttack = increasedPhysicalBluntAttack + collectionMonst.physicalBluntAttack
+        finalPhysicalSlashingAttack = increasedPhysicalSlashingAttack + collectionMonst.physicalSlashingAttack
+        finalPhysicalPierceAttack = increasedPhysicalPierceAttack + collectionMonst.physicalPierceAttack
+
+        finalSoulMeeleeAttack = increasedSoulMeeleeAttack + collectionMonst.soulMeeleeAttack
+        finalSoulRangeAttack = increasedSoulRangeAttack + collectionMonst.soulRangeAttack
+        finalSoulSpecialAttack = increasedSoulSpecialAttack + collectionMonst.soulSpecialAttack
+        finalSoulBluntAttack = increasedSoulBluntAttack + collectionMonst.soulBluntAttack
+        finalSoulSlashingAttack = increasedSoulSlashingAttack + collectionMonst.soulSlashingAttack
+        finalSoulPierceAttack = increasedSoulPierceAttack + collectionMonst.soulPierceAttack
+
+        finalPhysicalMeeleeDefense = increasedPhysicalMeeleeDefense + collectionMonst.physicalMeeleeDefense
+        finalPhysicalRangeDefense = increasedPhysicalRangeDefense + collectionMonst.physicalRangeDefense
+        finalPhysicalSpecialDefense = increasedPhysicalSpecialDefense + collectionMonst.physicalSpecialDefense
+        finalPhysicalBluntDefense = increasedPhysicalBluntDefense + collectionMonst.physicalBluntDefense
+        finalPhysicalSlashingDefense = increasedPhysicalSlashingDefense + collectionMonst.physicalSlashingDefense
+        finalPhysicalPierceDefense = increasedPhysicalPierceDefense + collectionMonst.physicalPierceDefense
+
+        finalSoulMeeleeDefense = increasedSoulMeeleeDefense + collectionMonst.soulMeeleeDefense
+        finalSoulRangeDefense = increasedSoulRangeDefense + collectionMonst.soulRangeDefense
+        finalSoulSpecialDefense = increasedSoulSpecialDefense + collectionMonst.soulSpecialDefense
+        finalSoulBluntDefense = increasedSoulBluntDefense + collectionMonst.soulBluntDefense
+        finalSoulSlashingDefense = increasedSoulSlashingDefense + collectionMonst.soulSlashingDefense
+        finalSoulPierceDefense = increasedSoulPierceDefense + collectionMonst.soulPierceDefense
+
         necessaryEp = collectionMonst.necessaryEp * collectionMonst.increaseNecessaryLvlUpEp;
         increaseNecessaryLvlUpEp = collectionMonst.increaseNecessaryLvlUpEp;
         currentEp = 0;
         level = nextLevel;
+
     }
 
 
     const levelUpMonst = {
         ...collectionMonst,
         health: finalHealth,
+        maxHealth: finalHealth,
         physicalAttack: finalPhysicalAttack,
         physicalDefense: finalPhysicalDefense,
         soulAttack: finalSoulAttack,
@@ -1239,12 +1928,42 @@ export function increaseNormalCollectionAndTeamLvlUpStats(surrogateID) {
         speed: finalSpeed,
         mana: finalMana,
         stamina: finalStamina,
-        level: level,
+
+        physicalMeeleeAttack: finalPhysicalMeeleeAttack,
+        physicalRangeAttack: finalPhysicalRangeAttack,
+        physicalSpecialAttack: finalPhysicalSpecialAttack,
+        physicalBluntAttack: finalPhysicalBluntAttack,
+        physicalSlashingAttack: finalPhysicalSlashingAttack,
+        physicalPierceAttack: finalPhysicalPierceAttack,
+
+        soulMeeleeAttack: finalSoulMeeleeAttack,
+        soulRangeAttack: finalSoulRangeAttack,
+        soulSpecialAttack: finalSoulSpecialAttack,
+        soulBluntAttack: finalSoulBluntAttack,
+        soulSlashingAttack: finalSoulSlashingAttack,
+        soulPierceAttack: finalSoulPierceAttack,
+
+        physicalMeeleeDefense: finalPhysicalMeeleeDefense,
+        physicalRangeDefense: finalPhysicalRangeDefense,
+        physicalSpecialDefense: finalPhysicalSpecialDefense,
+        physicalBluntDefense: finalPhysicalBluntDefense,
+        physicalSlashingDefense: finalPhysicalSlashingDefense,
+        physicalPierceDefense: finalPhysicalPierceDefense,
+
+        soulMeeleeDefense: finalSoulMeeleeDefense,
+        soulRangeDefense: finalSoulRangeDefense,
+        soulSpecialDefense: finalSoulSpecialDefense,
+        soulBluntDefense: finalSoulBluntDefense,
+        soulSlashingDefense: finalSoulSlashingDefense,
+        soulPierceDefense: finalSoulPierceDefense,
+
         necessaryEp: necessaryEp,
         increaseNecessaryLvlUpEp: increaseNecessaryLvlUpEp,
-        currentEp: currentEp
+        currentEp: currentEp,
+        attacks: attacks,
+        level: level
     }
-    console.log("Increased stats for Monster: ", surrogateID);
+    console.log("Increased stats for Monster: ", levelUpMonst, " on level ", level);
     return levelUpMonst;
 }
 
@@ -1255,10 +1974,14 @@ export async function evolveCollectionAndTeamMonst(previousSurrogateID) {
     let level;
     let oldLevel
     let nextLevel
-    let nextEvol
     let necessaryEp
     let increaseNecessaryLvlUpEp;
     let currentEp;
+
+    let staticRandomType;
+    let collectionMonst;
+    let attacks;
+
     let increasedHealth
     let increasedPhysicalAttack
     let increasedPhysicalDefense
@@ -1267,36 +1990,62 @@ export async function evolveCollectionAndTeamMonst(previousSurrogateID) {
     let increasedSpeed
     let increasedMana
     let increasedStamina
-    let staticRandomType;
-    let collectionMonst;
 
-    const collectionMonstIndex = collection.findIndex(i => i.surrogateID === previousSurrogateID);
+    let increasedPhysicalMeeleeAttack
+    let increasedPhysicalRangeAttack
+    let increasedPhysicalSpecialAttack
+    let increasedPhysicalBluntAttack
+    let increasedPhysicalSlashingAttack
+    let increasedPhysicalPierceAttack
+
+    let increasedSoulMeeleeAttack
+    let increasedSoulRangeAttack
+    let increasedSoulSpecialAttack
+    let increasedSoulBluntAttack
+    let increasedSoulSlashingAttack
+    let increasedSoulPierceAttack
+
+    let increasedPhysicalMeeleeDefense
+    let increasedPhysicalRangeDefense
+    let increasedPhysicalSpecialDefense
+    let increasedPhysicalBluntDefense
+    let increasedPhysicalSlashingDefense
+    let increasedPhysicalPierceDefense
+
+    let increasedSoulMeeleeDefense
+    let increasedSoulRangeDefense
+    let increasedSoulSpecialDefense
+    let increasedSoulBluntDefense
+    let increasedSoulSlashingDefense
+    let increasedSoulPierceDefense
+
+    const wildMonstIndex = collection.findIndex(i => i.surrogateID === previousSurrogateID);
     console.log("test evolution function");
-    if (collectionMonstIndex === -1) {
+    if (wildMonstIndex === -1) {
         console.error("Monster does not exist in wild monsters!", previousSurrogateID);
         return null;
     } else {
-        collectionMonst = collection[collectionMonstIndex];
+        collectionMonst = collection[wildMonstIndex];
         const nextEvolution = collectionMonst.nextEvol;
         if (!nextEvolution) {
             console.error("Monster: ", previousSurrogateID, ", can not evolve because it has no further evolution!")
             return null;
         } else {
-            const usedCollectionIDs = getUsedIDs();
+            const usedIDs = getUsedIDs();
 
             // Finde die kleinste Nummer, die es noch nicht gibt
             let num = 1;
 
             const prefix = `${nextEvolution}#`;
 
-            while (usedWildIDs.includes(`${prefix}${num}`)) {
+            while (usedIDs.includes(`${prefix}${num}`)) {
                 num++;
             }
 
             newSurrogateID = `${prefix}${num}`;
 
-            usedCollectionIDs.push(newSurrogateID);
-            saveUsedIDs(usedCollectionIDs);
+            usedIDs.push(newSurrogateID);
+            saveUsedIDs(usedIDs);
         }
 
         const collectionMonstEvol = allMons.find(i => i.monsterID === nextEvolution);
@@ -1313,25 +2062,13 @@ export async function evolveCollectionAndTeamMonst(previousSurrogateID) {
         const maxLevel = collectionMonstEvol.maxLevel;
 
 
-        /*const nextEvolChangeStats = {
-            monsterID: monsterID,
-            surrogateID: surrogateID,
-            name: name,
-            type: type,
-            description: description,
-            icon: icon,
-            catchrate: catchrate,
-            evolLevel: evolLevel,
-            nextEvol: nextEvol,
-            maxLevel: maxLevel,
-        }
-
-         */
-
         level = collectionMonst.level;
         nextLevel = collectionMonst.level + 1
         oldLevel = collectionMonst.level;
         staticRandomType = collectionMonst.staticType;
+        attacks = checkWildIfLvlUpAttack(collectionMonst, nextLevel)
+        console.warn("current attacks: ", attacks)
+
         if (nextLevel === collectionMonst.evolLevel) {
             switch (staticRandomType) {
                 case "completeStatic":
@@ -1344,6 +2081,34 @@ export async function evolveCollectionAndTeamMonst(previousSurrogateID) {
                     increasedSpeed = collectionMonst.evolveIncreaseSpeedStatic;
                     increasedMana = collectionMonst.evolveIncreaseManaStatic;
                     increasedStamina = collectionMonst.evolveIncreaseStaminaStatic;
+
+                    increasedPhysicalMeeleeAttack = collectionMonst.evolveIncreasePhysicalMeeleeAttackStatic
+                    increasedPhysicalRangeAttack = collectionMonst.evolveIncreasePhysicalRangeAttackStatic
+                    increasedPhysicalSpecialAttack = collectionMonst.evolveIncreasePhysicalSpecialAttackStatic
+                    increasedPhysicalBluntAttack = collectionMonst.evolveIncreasePhysicalBluntAttackStatic
+                    increasedPhysicalSlashingAttack = collectionMonst.evolveIncreasePhysicalSlashingAttackStatic
+                    increasedPhysicalPierceAttack = collectionMonst.evolveIncreasePhysicalPierceAttackStatic
+
+                    increasedSoulMeeleeAttack = collectionMonst.evolveIncreaseSoulMeeleeAttackStatic
+                    increasedSoulRangeAttack = collectionMonst.evolveIncreaseSoulRangeAttackStatic
+                    increasedSoulSpecialAttack = collectionMonst.evolveIncreaseSoulSpecialAttackStatic
+                    increasedSoulBluntAttack = collectionMonst.evolveIncreaseSoulBluntAttackStatic
+                    increasedSoulSlashingAttack = collectionMonst.evolveIncreaseSoulSlashingAttackStatic
+                    increasedSoulPierceAttack = collectionMonst.evolveIncreaseSoulPierceAttackStatic
+
+                    increasedPhysicalMeeleeDefense = collectionMonst.evolveIncreasePhysicalMeeleeDefenseStatic
+                    increasedPhysicalRangeDefense = collectionMonst.evolveIncreasePhysicalRangeDefenseStatic
+                    increasedPhysicalSpecialDefense = collectionMonst.evolveIncreasePhysicalSpecialDefenseStatic
+                    increasedPhysicalBluntDefense = collectionMonst.evolveIncreasePhysicalBluntDefenseStatic
+                    increasedPhysicalSlashingDefense = collectionMonst.evolveIncreasePhysicalSlashingDefenseStatic
+                    increasedPhysicalPierceDefense = collectionMonst.evolveIncreasePhysicalPierceDefenseStatic
+
+                    increasedSoulMeeleeDefense = collectionMonst.evolveIncreaseSoulMeeleeDefenseStatic
+                    increasedSoulRangeDefense = collectionMonst.evolveIncreaseSoulRangeDefenseStatic
+                    increasedSoulSpecialDefense = collectionMonst.evolveIncreaseSoulSpecialDefenseStatic
+                    increasedSoulBluntDefense = collectionMonst.evolveIncreaseSoulBluntDefenseStatic
+                    increasedSoulSlashingDefense = collectionMonst.evolveIncreaseSoulSlashingDefenseStatic
+                    increasedSoulPierceDefense = collectionMonst.evolveIncreaseSoulPierceDefenseStatic
                     break;
 
                 case "onlyLevelRandom":
@@ -1356,6 +2121,34 @@ export async function evolveCollectionAndTeamMonst(previousSurrogateID) {
                     increasedSpeed = collectionMonst.evolveIncreaseSpeedStatic;
                     increasedMana = collectionMonst.evolveIncreaseManaStatic;
                     increasedStamina = collectionMonst.evolveIncreaseStaminaStatic;
+
+                    increasedPhysicalMeeleeAttack = collectionMonst.evolveIncreasePhysicalMeeleeAttackStatic
+                    increasedPhysicalRangeAttack = collectionMonst.evolveIncreasePhysicalRangeAttackStatic
+                    increasedPhysicalSpecialAttack = collectionMonst.evolveIncreasePhysicalSpecialAttackStatic
+                    increasedPhysicalBluntAttack = collectionMonst.evolveIncreasePhysicalBluntAttackStatic
+                    increasedPhysicalSlashingAttack = collectionMonst.evolveIncreasePhysicalSlashingAttackStatic
+                    increasedPhysicalPierceAttack = collectionMonst.evolveIncreasePhysicalPierceAttackStatic
+
+                    increasedSoulMeeleeAttack = collectionMonst.evolveIncreaseSoulMeeleeAttackStatic
+                    increasedSoulRangeAttack = collectionMonst.evolveIncreaseSoulRangeAttackStatic
+                    increasedSoulSpecialAttack = collectionMonst.evolveIncreaseSoulSpecialAttackStatic
+                    increasedSoulBluntAttack = collectionMonst.evolveIncreaseSoulBluntAttackStatic
+                    increasedSoulSlashingAttack = collectionMonst.evolveIncreaseSoulSlashingAttackStatic
+                    increasedSoulPierceAttack = collectionMonst.evolveIncreaseSoulPierceAttackStatic
+
+                    increasedPhysicalMeeleeDefense = collectionMonst.evolveIncreasePhysicalMeeleeDefenseStatic
+                    increasedPhysicalRangeDefense = collectionMonst.evolveIncreasePhysicalRangeDefenseStatic
+                    increasedPhysicalSpecialDefense = collectionMonst.evolveIncreasePhysicalSpecialDefenseStatic
+                    increasedPhysicalBluntDefense = collectionMonst.evolveIncreasePhysicalBluntDefenseStatic
+                    increasedPhysicalSlashingDefense = collectionMonst.evolveIncreasePhysicalSlashingDefenseStatic
+                    increasedPhysicalPierceDefense = collectionMonst.evolveIncreasePhysicalPierceDefenseStatic
+
+                    increasedSoulMeeleeDefense = collectionMonst.evolveIncreaseSoulMeeleeDefenseStatic
+                    increasedSoulRangeDefense = collectionMonst.evolveIncreaseSoulRangeDefenseStatic
+                    increasedSoulSpecialDefense = collectionMonst.evolveIncreaseSoulSpecialDefenseStatic
+                    increasedSoulBluntDefense = collectionMonst.evolveIncreaseSoulBluntDefenseStatic
+                    increasedSoulSlashingDefense = collectionMonst.evolveIncreaseSoulSlashingDefenseStatic
+                    increasedSoulPierceDefense = collectionMonst.evolveIncreaseSoulPierceDefenseStatic
                     break;
 
                 case "onlyStatsRandom":
@@ -1368,6 +2161,34 @@ export async function evolveCollectionAndTeamMonst(previousSurrogateID) {
                     increasedSpeed = randomizeMonstLevelUpStats(collectionMonst.evolveIncreaseSpeed.min, collectionMonst.evolveIncreaseSpeed.max);
                     increasedMana = randomizeMonstLevelUpStats(collectionMonst.evolveIncreaseMana.min, collectionMonst.evolveIncreaseMana.max);
                     increasedStamina = randomizeMonstLevelUpStats(collectionMonst.evolveIncreaseStamina.min, collectionMonst.evolveIncreaseStamina.max);
+
+                    increasedPhysicalMeeleeAttack = randomizeMonstLevelUpStats(collectionMonst.evolveIncreasePhysicalMeeleeAttack.min, collectionMonst.evolveIncreasePhysicalMeeleeAttack.max);
+                    increasedPhysicalRangeAttack = randomizeMonstLevelUpStats(collectionMonst.evolveIncreasePhysicalRangeAttack.min, collectionMonst.evolveIncreasePhysicalRangeAttack.max);
+                    increasedPhysicalSpecialAttack = randomizeMonstLevelUpStats(collectionMonst.evolveIncreasePhysicalSpecialAttack.min, collectionMonst.evolveIncreasePhysicalSpecialAttack.max);
+                    increasedPhysicalBluntAttack = randomizeMonstLevelUpStats(collectionMonst.evolveIncreasePhysicalBluntAttack.min, collectionMonst.evolveIncreasePhysicalBluntAttack.max);
+                    increasedPhysicalSlashingAttack = randomizeMonstLevelUpStats(collectionMonst.evolveIncreasePhysicalSlashingAttack.min, collectionMonst.evolveIncreasePhysicalSlashingAttack.max);
+                    increasedPhysicalPierceAttack = randomizeMonstLevelUpStats(collectionMonst.evolveIncreasePhysicalPierceAttack.min, collectionMonst.evolveIncreasePhysicalPierceAttack.max);
+
+                    increasedSoulMeeleeAttack = randomizeMonstLevelUpStats(collectionMonst.evolveIncreaseSoulMeeleeAttack.min, collectionMonst.evolveIncreaseSoulMeeleeAttack.max);
+                    increasedSoulRangeAttack = randomizeMonstLevelUpStats(collectionMonst.evolveIncreaseSoulRangeAttack.min, collectionMonst.evolveIncreaseSoulRangeAttack.max);
+                    increasedSoulSpecialAttack = randomizeMonstLevelUpStats(collectionMonst.evolveIncreaseSoulSpecialAttack.min, collectionMonst.evolveIncreaseSoulSpecialAttack.max);
+                    increasedSoulBluntAttack = randomizeMonstLevelUpStats(collectionMonst.evolveIncreaseSoulBluntAttack.min, collectionMonst.evolveIncreaseSoulBluntAttack.max);
+                    increasedSoulSlashingAttack = randomizeMonstLevelUpStats(collectionMonst.evolveIncreaseSoulSlashingAttack.min, collectionMonst.evolveIncreaseSoulSlashingAttack.max);
+                    increasedSoulPierceAttack = randomizeMonstLevelUpStats(collectionMonst.evolveIncreaseSoulPierceAttack.min, collectionMonst.evolveIncreaseSoulPierceAttack.max);
+
+                    increasedPhysicalMeeleeDefense = randomizeMonstLevelUpStats(collectionMonst.evolveIncreasePhysicalMeeleeDefense.min, collectionMonst.evolveIncreasePhysicalMeeleeDefense.max);
+                    increasedPhysicalRangeDefense = randomizeMonstLevelUpStats(collectionMonst.evolveIncreasePhysicalRangeDefense.min, collectionMonst.evolveIncreasePhysicalRangeDefense.max);
+                    increasedPhysicalSpecialDefense = randomizeMonstLevelUpStats(collectionMonst.evolveIncreasePhysicalSpecialDefense.min, collectionMonst.evolveIncreasePhysicalSpecialDefense.max);
+                    increasedPhysicalBluntDefense = randomizeMonstLevelUpStats(collectionMonst.evolveIncreasePhysicalBluntDefense.min, collectionMonst.evolveIncreasePhysicalBluntDefense.max);
+                    increasedPhysicalSlashingDefense = randomizeMonstLevelUpStats(collectionMonst.evolveIncreasePhysicalSlashingDefense.min, collectionMonst.evolveIncreasePhysicalSlashingDefense.max);
+                    increasedPhysicalPierceDefense = randomizeMonstLevelUpStats(collectionMonst.evolveIncreasePhysicalPierceDefense.min, collectionMonst.evolveIncreasePhysicalPierceDefense.max);
+
+                    increasedSoulMeeleeDefense = randomizeMonstLevelUpStats(collectionMonst.evolveIncreaseSoulMeeleeDefense.min, collectionMonst.evolveIncreaseSoulMeeleeDefense.max);
+                    increasedSoulRangeDefense = randomizeMonstLevelUpStats(collectionMonst.evolveIncreaseSoulRangeDefense.min, collectionMonst.evolveIncreaseSoulRangeDefense.max);
+                    increasedSoulSpecialDefense = randomizeMonstLevelUpStats(collectionMonst.evolveIncreaseSoulSpecialDefense.min, collectionMonst.evolveIncreaseSoulSpecialDefense.max);
+                    increasedSoulBluntDefense = randomizeMonstLevelUpStats(collectionMonst.evolveIncreaseSoulBluntDefense.min, collectionMonst.evolveIncreaseSoulBluntDefense.max);
+                    increasedSoulSlashingDefense = randomizeMonstLevelUpStats(collectionMonst.evolveIncreaseSoulSlashingDefense.min, collectionMonst.evolveIncreaseSoulSlashingDefense.max);
+                    increasedSoulPierceDefense = randomizeMonstLevelUpStats(collectionMonst.evolveIncreaseSoulPierceDefense.min, collectionMonst.evolveIncreaseSoulPierceDefense.max);
                     break;
 
                 case "completeRandom":
@@ -1380,6 +2201,34 @@ export async function evolveCollectionAndTeamMonst(previousSurrogateID) {
                     increasedSpeed = randomizeMonstLevelUpStats(collectionMonst.evolveIncreaseSpeed.min, collectionMonst.evolveIncreaseSpeed.max);
                     increasedMana = randomizeMonstLevelUpStats(collectionMonst.evolveIncreaseMana.min, collectionMonst.evolveIncreaseMana.max);
                     increasedStamina = randomizeMonstLevelUpStats(collectionMonst.evolveIncreaseStamina.min, collectionMonst.evolveIncreaseStamina.max);
+
+                    increasedPhysicalMeeleeAttack = randomizeMonstLevelUpStats(collectionMonst.evolveIncreasePhysicalMeeleeAttack.min, collectionMonst.evolveIncreasePhysicalMeeleeAttack.max);
+                    increasedPhysicalRangeAttack = randomizeMonstLevelUpStats(collectionMonst.evolveIncreasePhysicalRangeAttack.min, collectionMonst.evolveIncreasePhysicalRangeAttack.max);
+                    increasedPhysicalSpecialAttack = randomizeMonstLevelUpStats(collectionMonst.evolveIncreasePhysicalSpecialAttack.min, collectionMonst.evolveIncreasePhysicalSpecialAttack.max);
+                    increasedPhysicalBluntAttack = randomizeMonstLevelUpStats(collectionMonst.evolveIncreasePhysicalBluntAttack.min, collectionMonst.evolveIncreasePhysicalBluntAttack.max);
+                    increasedPhysicalSlashingAttack = randomizeMonstLevelUpStats(collectionMonst.evolveIncreasePhysicalSlashingAttack.min, collectionMonst.evolveIncreasePhysicalSlashingAttack.max);
+                    increasedPhysicalPierceAttack = randomizeMonstLevelUpStats(collectionMonst.evolveIncreasePhysicalPierceAttack.min, collectionMonst.evolveIncreasePhysicalPierceAttack.max);
+
+                    increasedSoulMeeleeAttack = randomizeMonstLevelUpStats(collectionMonst.evolveIncreaseSoulMeeleeAttack.min, collectionMonst.evolveIncreaseSoulMeeleeAttack.max);
+                    increasedSoulRangeAttack = randomizeMonstLevelUpStats(collectionMonst.evolveIncreaseSoulRangeAttack.min, collectionMonst.evolveIncreaseSoulRangeAttack.max);
+                    increasedSoulSpecialAttack = randomizeMonstLevelUpStats(collectionMonst.evolveIncreaseSoulSpecialAttack.min, collectionMonst.evolveIncreaseSoulSpecialAttack.max);
+                    increasedSoulBluntAttack = randomizeMonstLevelUpStats(collectionMonst.evolveIncreaseSoulBluntAttack.min, collectionMonst.evolveIncreaseSoulBluntAttack.max);
+                    increasedSoulSlashingAttack = randomizeMonstLevelUpStats(collectionMonst.evolveIncreaseSoulSlashingAttack.min, collectionMonst.evolveIncreaseSoulSlashingAttack.max);
+                    increasedSoulPierceAttack = randomizeMonstLevelUpStats(collectionMonst.evolveIncreaseSoulPierceAttack.min, collectionMonst.evolveIncreaseSoulPierceAttack.max);
+
+                    increasedPhysicalMeeleeDefense = randomizeMonstLevelUpStats(collectionMonst.evolveIncreasePhysicalMeeleeDefense.min, collectionMonst.evolveIncreasePhysicalMeeleeDefense.max);
+                    increasedPhysicalRangeDefense = randomizeMonstLevelUpStats(collectionMonst.evolveIncreasePhysicalRangeDefense.min, collectionMonst.evolveIncreasePhysicalRangeDefense.max);
+                    increasedPhysicalSpecialDefense = randomizeMonstLevelUpStats(collectionMonst.evolveIncreasePhysicalSpecialDefense.min, collectionMonst.evolveIncreasePhysicalSpecialDefense.max);
+                    increasedPhysicalBluntDefense = randomizeMonstLevelUpStats(collectionMonst.evolveIncreasePhysicalBluntDefense.min, collectionMonst.evolveIncreasePhysicalBluntDefense.max);
+                    increasedPhysicalSlashingDefense = randomizeMonstLevelUpStats(collectionMonst.evolveIncreasePhysicalSlashingDefense.min, collectionMonst.evolveIncreasePhysicalSlashingDefense.max);
+                    increasedPhysicalPierceDefense = randomizeMonstLevelUpStats(collectionMonst.evolveIncreasePhysicalPierceDefense.min, collectionMonst.evolveIncreasePhysicalPierceDefense.max);
+
+                    increasedSoulMeeleeDefense = randomizeMonstLevelUpStats(collectionMonst.evolveIncreaseSoulMeeleeDefense.min, collectionMonst.evolveIncreaseSoulMeeleeDefense.max);
+                    increasedSoulRangeDefense = randomizeMonstLevelUpStats(collectionMonst.evolveIncreaseSoulRangeDefense.min, collectionMonst.evolveIncreaseSoulRangeDefense.max);
+                    increasedSoulSpecialDefense = randomizeMonstLevelUpStats(collectionMonst.evolveIncreaseSoulSpecialDefense.min, collectionMonst.evolveIncreaseSoulSpecialDefense.max);
+                    increasedSoulBluntDefense = randomizeMonstLevelUpStats(collectionMonst.evolveIncreaseSoulBluntDefense.min, collectionMonst.evolveIncreaseSoulBluntDefense.max);
+                    increasedSoulSlashingDefense = randomizeMonstLevelUpStats(collectionMonst.evolveIncreaseSoulSlashingDefense.min, collectionMonst.evolveIncreaseSoulSlashingDefense.max);
+                    increasedSoulPierceDefense = randomizeMonstLevelUpStats(collectionMonst.evolveIncreaseSoulPierceDefense.min, collectionMonst.evolveIncreaseSoulPierceDefense.max);
                     break;
 
                 default:
@@ -1394,11 +2243,44 @@ export async function evolveCollectionAndTeamMonst(previousSurrogateID) {
             const finalSpeed = increasedSpeed + collectionMonst.speed;
             const finalMana = increasedMana + collectionMonst.mana;
             const finalStamina = increasedStamina + collectionMonst.stamina;
+
+            const finalPhysicalMeeleeAttack = increasedPhysicalMeeleeAttack + collectionMonst.physicalMeeleeAttack
+            const finalPhysicalRangeAttack = increasedPhysicalRangeAttack + collectionMonst.physicalRangeAttack
+            const finalPhysicalSpecialAttack = increasedPhysicalSpecialAttack + collectionMonst.physicalSpecialAttack
+            const finalPhysicalBluntAttack = increasedPhysicalBluntAttack + collectionMonst.physicalBluntAttack
+            const finalPhysicalSlashingAttack = increasedPhysicalSlashingAttack + collectionMonst.physicalSlashingAttack
+            const finalPhysicalPierceAttack = increasedPhysicalPierceAttack + collectionMonst.physicalPierceAttack
+
+            const finalSoulMeeleeAttack = increasedSoulMeeleeAttack + collectionMonst.soulMeeleeAttack
+            const finalSoulRangeAttack = increasedSoulRangeAttack + collectionMonst.soulRangeAttack
+            const finalSoulSpecialAttack = increasedSoulSpecialAttack + collectionMonst.soulSpecialAttack
+            const finalSoulBluntAttack = increasedSoulBluntAttack + collectionMonst.soulBluntAttack
+            const finalSoulSlashingAttack = increasedSoulSlashingAttack + collectionMonst.soulSlashingAttack
+            const finalSoulPierceAttack = increasedSoulPierceAttack + collectionMonst.soulPierceAttack
+
+            const finalPhysicalMeeleeDefense = increasedPhysicalMeeleeDefense + collectionMonst.physicalMeeleeDefense
+            const finalPhysicalRangeDefense = increasedPhysicalRangeDefense + collectionMonst.physicalRangeDefense
+            const finalPhysicalSpecialDefense = increasedPhysicalSpecialDefense + collectionMonst.physicalSpecialDefense
+            const finalPhysicalBluntDefense = increasedPhysicalBluntDefense + collectionMonst.physicalBluntDefense
+            const finalPhysicalSlashingDefense = increasedPhysicalSlashingDefense + collectionMonst.physicalSlashingDefense
+            const finalPhysicalPierceDefense = increasedPhysicalPierceDefense + collectionMonst.physicalPierceDefense
+
+            const finalSoulMeeleeDefense = increasedSoulMeeleeDefense + collectionMonst.soulMeeleeDefense
+            const finalSoulRangeDefense = increasedSoulRangeDefense + collectionMonst.soulRangeDefense
+            const finalSoulSpecialDefense = increasedSoulSpecialDefense + collectionMonst.soulSpecialDefense
+            const finalSoulBluntDefense = increasedSoulBluntDefense + collectionMonst.soulBluntDefense
+            const finalSoulSlashingDefense = increasedSoulSlashingDefense + collectionMonst.soulSlashingDefense
+            const finalSoulPierceDefense = increasedSoulPierceDefense + collectionMonstEvol.soulPierceDefense
+
             necessaryEp = collectionMonst.necessaryEp * collectionMonst.increaseNecessaryLvlUpEp;
             increaseNecessaryLvlUpEp = collectionMonst.increaseNecessaryLvlUpEp;
             currentEp = 0;
             level = nextLevel;
 
+            const lvlUpAttacks = collectionMonstEvol.attackLearnSet;
+            const staticLvlUpAttacks = collectionMonstEvol.attackStaticSet;
+            const evolveAttacks = collectionMonstEvol.attackEvolutionSet;
+            attacks = giveWildMonstEvolveAttack(collectionMonst)
 
             const evolvedMonst = {
                 ...collectionMonst,
@@ -1415,7 +2297,10 @@ export async function evolveCollectionAndTeamMonst(previousSurrogateID) {
                 nextEvol: nextEvol,
                 icon: icon,
                 maxLevel: maxLevel,
+                attacks: attacks,
+
                 health: finalHealth,
+                maxHealth: finalHealth,
                 physicalAttack: finalPhysicalAttack,
                 physicalDefense: finalPhysicalDefense,
                 soulAttack: finalSoulAttack,
@@ -1423,21 +2308,54 @@ export async function evolveCollectionAndTeamMonst(previousSurrogateID) {
                 speed: finalSpeed,
                 mana: finalMana,
                 stamina: finalStamina,
+
+                physicalMeeleeAttack: finalPhysicalMeeleeAttack,
+                physicalRangeAttack: finalPhysicalRangeAttack,
+                physicalSpecialAttack: finalPhysicalSpecialAttack,
+                physicalBluntAttack: finalPhysicalBluntAttack,
+                physicalSlashingAttack: finalPhysicalSlashingAttack,
+                physicalPierceAttack: finalPhysicalPierceAttack,
+
+                soulMeeleeAttack: finalSoulMeeleeAttack,
+                soulRangeAttack: finalSoulRangeAttack,
+                soulSpecialAttack: finalSoulSpecialAttack,
+                soulBluntAttack: finalSoulBluntAttack,
+                soulSlashingAttack: finalSoulSlashingAttack,
+                soulPierceAttack: finalSoulPierceAttack,
+
+                physicalMeeleeDefense: finalPhysicalMeeleeDefense,
+                physicalRangeDefense: finalPhysicalRangeDefense,
+                physicalSpecialDefense: finalPhysicalSpecialDefense,
+                physicalBluntDefense: finalPhysicalBluntDefense,
+                physicalSlashingDefense: finalPhysicalSlashingDefense,
+                physicalPierceDefense: finalPhysicalPierceDefense,
+
+                soulMeeleeDefense: finalSoulMeeleeDefense,
+                soulRangeDefense: finalSoulRangeDefense,
+                soulSpecialDefense: finalSoulSpecialDefense,
+                soulBluntDefense: finalSoulBluntDefense,
+                soulSlashingDefense: finalSoulSlashingDefense,
+                soulPierceDefense: finalSoulPierceDefense,
+
                 level: level,
                 necessaryEp: necessaryEp,
                 increaseNecessaryLvlUpEp: increaseNecessaryLvlUpEp,
-                currentEp: currentEp
+                currentEp: currentEp,
+                lvlUpAttacks: lvlUpAttacks,
+                staticLvlUpAttacks: staticLvlUpAttacks,
+                evolveAttacks: evolveAttacks,
             }
-            collection[collectionMonstIndex] = evolvedMonst;
-            saveCollection(collection)
+            collection[wildMonstIndex] = evolvedMonst;
+            saveWildMonst(collection)
             console.log("Evolved Monster: ", collectionMonst.surrogateID, " with level ", oldLevel, " to Monster: ", evolvedMonst.surrogateID, " with Level: ", level);
             return evolvedMonst;
         } else {
-            console.error("Level up not possible as the Level for evolution is not reached yet.")
+            console.error("Evolution and level up not possible as the Level for evolution is not reached yet.")
             return collectionMonst;
         }
     }
 }
+
 
 /*
 export function levelCollectionAndTeamMonstUp(surrogateID) {
@@ -1631,7 +2549,7 @@ export function increaseEp(surrogateID, epValue) {
 }
 
 
-export function loadMonstInfo(surrogateID) {
+export async function loadMonstInfo(surrogateID) {
     const collection = getCollection();
 
     const monst = collection.find(monst => monst.surrogateID === surrogateID);
@@ -1757,6 +2675,8 @@ export async function createCompleteRandomMonster(monsterID) {
     }
 }
 
+//todo: eine methode erstellen, die ein story monster erstellt und nur auf story monsters.json zugreift und dieses genau so erstellt, wie es da statisch aufgebaut ist
+
 export function catchMonster(surrogateID) {
     const wildMons = getWildMonst();
     const monst = loadWildMonstInfo(surrogateID);
@@ -1782,7 +2702,7 @@ export function catchMonster(surrogateID) {
 
 //todo in fight scene after fight clear all wildMons. also when monster flees so that it can not be brought back
 
-/*
+
 export function addMonstToCollection(surrogateID) {
     console.log("test for adding Monster to collection");
     const wildMons = getWildMonst();
@@ -1810,6 +2730,32 @@ export function addMonstToCollection(surrogateID) {
         console.log("Collection after adding: ", collection)
     }
 }
+
+export function removeMonstFromCollection(surrogateID) {
+    console.log("testing function call for removing monster from collection")
+    let collection = getCollection()
+    let team = getTeam()
+
+    const monstIndex = collection.findIndex(i => i.surrogateID === surrogateID)
+    const monst = collection[monstIndex]
+
+    if (!monst) {
+        console.log("Monster ", monst, " was not in collection in the first place so it will not be removed.");
+        return null;
+    } else {
+        if (team.some(i => i.surrogateID === surrogateID)) {
+            removeMonstFromTeam(surrogateID);
+        }
+
+        collection.splice(monstIndex, 1);
+
+
+        saveCollection(collection);
+        console.log("Removed from Collection:", surrogateID);
+        console.log("Collection after removing: ", collection);
+    }
+}
+
 
 /*
 export async function addMonstToCollection(monsterID) {
@@ -1874,9 +2820,9 @@ export async function addMonstToCollection(monsterID) {
     console.log("added to collection: ", monsterID);
     console.log("collection after adding: ", collection);
 }
- */
 
-/*export function addMonstToTeam(surrogateID) {
+*/
+export function addMonstToTeam(surrogateID) {
     let collection = getCollection();
     let team = getTeam();
     const monst = collection.find(i => i.surrogateID === surrogateID)
@@ -1897,69 +2843,19 @@ export async function addMonstToCollection(monsterID) {
                 teamMonst: true,
                 isMain: false
             }
+            console.log("about to add monster ", teamMonst, " to team")
             team.push(teamMonst)
             saveTeam(team);
         }
     }
 }
 
-/*
-export async function addMonstToTeam(surrogateID) {
-    let collection = await getCollection();
+
+export function removeMonstFromTeam(surrogateID) {
     let team = getTeam();
-    const monDef = collection.find(i => i.surrogateID === surrogateID);
-    if (!monDef) {
-        console.log("Mon nicht in Collection!", surrogateID);
-        return;
-    }
+    const monst = team.find(i => i.surrogateID === surrogateID);
 
-    // Prüfen, ob das Monster bereits im Team ist
-    const alreadyInTeam = team.find(i => i.surrogateID === surrogateID);
-    if (alreadyInTeam) {
-        console.warn("Monster ist bereits im Team!");
-        return;
-    }
-
-    if (team.length >= 5) {
-        console.warn("Das Team ist voll");
-        return;
-    } else {
-        team.push({
-            surrogateID: monDef.surrogateID,
-            monsterID: monDef.monsterID,
-            monsterName: monDef.name,
-            sortingID: monDef.sortingID,
-            teamMember: true,
-            type: monDef.type,
-            health: monDef.health,
-            currentHealth: monDef.currentHealth,
-            physicalAttack: monDef.physicalAttack,
-            physicalDefense: monDef.physicalDefense,
-            soulAttack: monDef.soulAttack,
-            soulDefense: monDef.soulDefense,
-            speed: monDef.speed,
-            description: monDef.description,
-            isParalyzed: false,
-            isBurnt: false,
-            isAsleep: false,
-            isFrozen: false,
-            isPoisoned: false,
-            inventory: [2],
-            attacks: [4]
-        });
-    }
-    saveTeam(team);
-    console.log("added to Team: ", surrogateID);
-    console.log("Team after adding: ", team);
-}
-
- */
-
-export async function removeMonstFromTeam(surrogateID) {
-    let team = getTeam();
-    const mon = team.find(i => i.surrogateID === surrogateID);
-
-    if (!mon) {
+    if (!monst) {
         console.log("Monster not in Team!");
         return;
     }
@@ -2041,22 +2937,11 @@ export function randomizeMonstBaseLevel() {
 
 }
 
-
-export async function spawnMonst(monsterID) {
-    const wildSurrogateID = await createBaseMonst(monsterID);
-
-    if (!wildSurrogateID) {
-        return null;
-    }
-
-    const finalMonster = createFinalMonst(wildSurrogateID);
-    console.log("monster ", finalMonster, " was just spawned")
-    return finalMonster;
-
+export function spawnRandomWildMonst() {
+    //todo: gleiche logik wie bei map based level anwenden um je nach map random monster erstellen zu lassen
 }
 
-
-function increaseWildMonstLevelupStats() {
+export function spawnStoryMonst() {
 
 }
 
