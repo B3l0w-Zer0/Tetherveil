@@ -170,6 +170,131 @@
 
 /*     <<<   !!!   ^ General Menu Monsters Inventory End ^   !!!   >>>     */
 
+/*     <<<   !!!   v Fight Menu v   !!!   >>>     */
+
+/*     <<<   !!!   v Your own fight Menu Field   !!!   >>>     */
+.basic-info-field {
+    position: absolute;
+    display: grid;
+    grid-template-rows: repeat(3, 1fr);
+    gap: 10px;
+    height: 35%;
+    width: 35%;
+    background: blue;
+    left: 5%;
+    top: 5%;
+}
+
+.single-info-field-name {
+    position: relative;
+    display: flex;
+
+    background: yellow;
+}
+
+.single-info-field-level {
+    position: relative;
+    display: flex;
+
+    background: green;
+}
+
+.single-info-field-type {
+    position: relative;
+    display: flex;
+
+    background: red;
+}
+
+.extended-info-button {
+    position: absolute;
+    display: flex;
+    height: 15%;
+    width: 35%;
+    left: 5%;
+    bottom: 40%;
+    background: turquoise;
+}
+
+.health-bar-fight {
+    position: absolute;
+    display: flex;
+    height: 15%;
+    width: 50%;
+    top: 5%;
+    right: 5%;
+    background: green;
+}
+
+.mana-bar-fight {
+    position: absolute;
+    display: flex;
+    height: 15%;
+    width: 50%;
+    top: 25%;
+    right: 5%;
+    background: purple;
+}
+
+.stamina-bar-fight {
+    position: absolute;
+    display: flex;
+    height: 15%;
+    width: 50%;
+    top: 45%;
+    right: 5%;
+    background: yellow;
+}
+
+.attack-button {
+    position: absolute;
+    display: flex;
+    height: 30%;
+    width: 28%;
+    bottom: 5%;
+    left: 4%;
+    background: red;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.action-button {
+    position: absolute;
+    display: flex;
+    height: 30%;
+    width: 28%;
+    bottom: 5%;
+    left: 36%;
+    background: blue;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.run-away-button {
+    position: absolute;
+    display: flex;
+    height: 30%;
+    width: 28%;
+    bottom: 5%;
+    right: 4%;
+    background: green;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+/*     <<<   !!!   ^ End of your own fight Menu Field ^   !!!   >>>     */
+
+
+/*     <<<   !!!   v Enemy fight Field v   !!!   >>>     */
+.enemy-field-wrapper {
+
+}
+/*     <<<   !!!   ^ Enemy fight Menu End ^   !!!   >>>     */
+
+
+/*     <<<   !!!   ^ Fight Menu End ^   !!!   >>>     */
+
+
+
 /*     <<<   !!!   v Quest Menu v   !!!   >>>     */
 
 
